@@ -2,244 +2,313 @@
 <html lang="zh">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>词境 · 英语生词本</title>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<title>词境</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 :root{
-  --ink:#1c1917;--ink2:#44403c;--ink3:#78716c;--ink4:#a8a29e;
-  --paper:#faf9f7;--paper2:#f5f3f0;--paper3:#ede8e3;
-  --line:#e7e3de;--line2:#d6d0ca;
-  --accent:#c2400c;--accent-bg:#fff3ee;--accent-mid:#ea580c;
-  --green:#2d6a2d;--green-bg:#f0f7f0;--green-mid:#4a7c4a;
-  --blue:#1e4d8c;--blue-bg:#f0f4fb;--blue-mid:#2563eb;
-  --gold:#92620a;--gold-bg:#fdf8ee;--gold-mid:#b45309;
-  --purple:#5b21b6;--purple-bg:#f5f3ff;--purple-mid:#7c3aed;
-  --r:6px;--r2:10px;
+  --bg:#f2f1ec;--bg2:#faf9f6;--bg3:#eceae3;
+  --ink:#18181b;--ink2:#3f3f46;--ink3:#71717a;--ink4:#a1a1aa;
+  --line:#e4e4e7;--line2:#d4d4d8;
+  --primary:#dc4f1e;--primary-light:#fff1ed;--primary-dark:#b83d14;
+  --cet4:#be185d;--cet4-light:#fdf2f8;
+  --cet6:#6d28d9;--cet6-light:#f5f3ff;
+  --success:#15803d;--success-light:#f0fdf4;
+  --warning:#b45309;--warning-light:#fffbeb;
+  --info:#1d4ed8;--info-light:#eff6ff;
+  --r:10px;--r2:16px;--r3:20px;
+  --safe-bottom:env(safe-area-inset-bottom,0px);
+  --nav-h:64px;
+  --shadow-sm:0 1px 2px rgba(0,0,0,.06);
+  --shadow:0 2px 8px rgba(0,0,0,.08),0 1px 2px rgba(0,0,0,.04);
+  --shadow-lg:0 8px 24px rgba(0,0,0,.12),0 2px 6px rgba(0,0,0,.06);
 }
-body{background:var(--paper);color:var(--ink);font-family:'Lora',Georgia,serif;font-size:15px;line-height:1.7}
-button{cursor:pointer;font-family:inherit;border-radius:var(--r);transition:all .15s}
-button:active{transform:scale(.97)}
-input,select{font-family:inherit}
 
-.shell{display:flex;min-height:100vh}
-.rail{width:210px;background:var(--paper2);border-right:1px solid var(--line);display:flex;flex-direction:column;flex-shrink:0;padding:1.25rem 0}
-.body{flex:1;padding:2.5rem 2rem;overflow-y:auto}
+html,body{height:100%;overflow:hidden}
+body{background:var(--bg);color:var(--ink);font-family:'DM Sans',system-ui,sans-serif;font-size:15px;line-height:1.6;overscroll-behavior:none}
 
-.brand{padding:0 1.25rem 1.25rem;border-bottom:1px solid var(--line);margin-bottom:.75rem}
-.brand-name{font-family:'Noto Serif SC',serif;font-size:18px;font-weight:700;letter-spacing:.05em}
-.brand-name span{color:var(--accent)}
-.brand-sub{font-size:11px;color:var(--ink4);margin-top:2px;font-style:italic}
+/* App shell */
+.app{display:flex;flex-direction:column;height:100%;max-width:480px;margin:0 auto;position:relative;background:var(--bg)}
+.app-body{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;padding-bottom:calc(var(--nav-h) + var(--safe-bottom) + 16px)}
 
-.nav-link{display:flex;align-items:center;gap:9px;padding:.55rem 1.25rem;font-size:13.5px;color:var(--ink3);cursor:pointer;border:none;background:none;width:100%;text-align:left;transition:background .1s,color .1s}
-.nav-link:hover{background:var(--paper3);color:var(--ink)}
-.nav-link.on{background:var(--paper3);color:var(--accent);font-weight:600}
-.nav-link svg{width:15px;height:15px;opacity:.7;flex-shrink:0}
-.nav-link.on svg{opacity:1}
-.nav-sect{font-size:10px;color:var(--ink4);padding:.7rem 1.25rem .2rem;text-transform:uppercase;letter-spacing:.08em}
-.rail-foot{margin-top:auto;padding:1rem 1.25rem;border-top:1px solid var(--line)}
-.streak{font-size:12.5px;color:var(--gold);background:var(--gold-bg);border-radius:var(--r);padding:.45rem .75rem;font-family:'Noto Serif SC',serif}
+/* Bottom nav */
+.bottom-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;height:calc(var(--nav-h) + var(--safe-bottom));padding-bottom:var(--safe-bottom);background:rgba(250,249,246,.95);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-top:0.5px solid var(--line);display:flex;align-items:flex-start;z-index:100}
+.nav-tab{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:.75rem .25rem .5rem;gap:4px;cursor:pointer;border:none;background:none;color:var(--ink4);transition:color .2s;font-size:10px;font-family:'DM Sans',sans-serif;font-weight:500;letter-spacing:.02em}
+.nav-tab.active{color:var(--primary)}
+.nav-tab svg{width:22px;height:22px;transition:transform .2s}
+.nav-tab.active svg{transform:scale(1.1)}
+.nav-tab-label{font-size:10px;margin-top:1px}
 
-.page-title{font-family:'Noto Serif SC',serif;font-size:22px;font-weight:700;margin-bottom:1.5rem;letter-spacing:.03em}
-.card{background:#fff;border:1px solid var(--line);border-radius:var(--r2);padding:1.25rem}
-.card+.card{margin-top:1rem}
+/* Pages */
+.page{display:none;padding:0}
+.page.active{display:block}
 
-.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:1.5rem}
-.stat{background:var(--paper2);border-radius:var(--r2);padding:1rem;text-align:center;border:1px solid var(--line)}
-.stat-n{font-size:26px;font-weight:700;font-family:'Noto Serif SC',serif}
-.stat-l{font-size:11px;color:var(--ink3);margin-top:3px;font-family:sans-serif}
+/* Page header */
+.ph{padding:1.25rem 1.25rem .75rem;display:flex;align-items:center;justify-content:space-between}
+.ph-title{font-family:'Noto Serif SC',serif;font-size:22px;font-weight:700;letter-spacing:.02em}
+.ph-sub{font-size:12px;color:var(--ink4);margin-top:1px;font-family:'DM Sans',sans-serif}
+.ph-action{background:none;border:none;color:var(--ink3);font-size:13px;font-family:'DM Sans',sans-serif;font-weight:500;cursor:pointer;padding:.25rem .5rem;border-radius:var(--r)}
 
-.btn{padding:9px 18px;font-size:13.5px;border:none;font-weight:600;border-radius:var(--r)}
-.btn-primary{background:var(--accent);color:#fff}.btn-primary:hover{background:var(--accent-mid)}
-.btn-blue{background:var(--blue-mid);color:#fff}.btn-blue:hover{opacity:.88}
-.btn-purple{background:var(--purple-mid);color:#fff}.btn-purple:hover{opacity:.88}
-.btn-ghost{background:transparent;border:1px solid var(--line2);color:var(--ink2)}.btn-ghost:hover{background:var(--paper3)}
-.btn-sm{padding:6px 13px;font-size:12.5px}
-.btn-danger{background:var(--accent-bg);color:var(--accent);border:1px solid #fcd6c3}
+/* Cards */
+.card{background:var(--bg2);border-radius:var(--r2);padding:1.125rem;margin:0 1rem 1rem;box-shadow:var(--shadow-sm);border:0.5px solid var(--line)}
+.card-flush{background:var(--bg2);border-radius:var(--r2);overflow:hidden;margin:0 1rem 1rem;box-shadow:var(--shadow-sm);border:0.5px solid var(--line)}
 
-.badge{display:inline-block;padding:2px 10px;border-radius:20px;font-size:11.5px;font-weight:600}
-.b-new{background:var(--blue-bg);color:var(--blue)}
-.b-learning{background:var(--gold-bg);color:var(--gold)}
-.b-mastered{background:var(--green-bg);color:var(--green)}
-.b-weak{background:var(--accent-bg);color:var(--accent)}
-.b-cet4{background:#fce7f3;color:#9d174d}
-.b-cet6{background:#ede9fe;color:#5b21b6}
+/* Hero card on home */
+.hero{margin:0 1rem 1rem;border-radius:var(--r3);padding:1.5rem;background:linear-gradient(135deg,var(--primary) 0%,#f97316 100%);color:#fff;position:relative;overflow:hidden;box-shadow:var(--shadow-lg)}
+.hero::before{content:'';position:absolute;top:-30px;right:-30px;width:140px;height:140px;border-radius:50%;background:rgba(255,255,255,.1)}
+.hero::after{content:'';position:absolute;bottom:-40px;right:20px;width:100px;height:100px;border-radius:50%;background:rgba(255,255,255,.07)}
+.hero-label{font-size:11px;opacity:.8;text-transform:uppercase;letter-spacing:.1em;font-weight:600;margin-bottom:.5rem}
+.hero-num{font-family:'DM Serif Display',serif;font-size:52px;line-height:1;margin-bottom:.25rem}
+.hero-sub{font-size:13px;opacity:.85}
+.hero-streak{position:absolute;top:1.25rem;right:1.25rem;background:rgba(255,255,255,.2);border-radius:20px;padding:.35rem .75rem;font-size:12px;font-weight:600;backdrop-filter:blur(10px)}
 
-.tbl{width:100%;border-collapse:collapse}
-.tbl th{text-align:left;font-size:11px;color:var(--ink4);font-weight:600;padding:0 12px 8px;border-bottom:1px solid var(--line);text-transform:uppercase;letter-spacing:.05em;font-family:sans-serif}
-.tbl td{padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:middle}
-.tbl tr:last-child td{border-bottom:none}
-.tbl tr:hover td{background:var(--paper2)}
-.w-en{font-weight:600;font-size:15px}
-.w-ph{color:var(--gold-mid);font-size:12.5px;margin-top:1px;font-style:italic}
-.w-cn{color:var(--ink2);font-size:13px}
-.w-ex{font-size:12px;color:var(--ink4);font-style:italic;margin-top:2px}
-.w-acts{display:flex;gap:6px;justify-content:flex-end}
+/* Stats row */
+.stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:.75rem;margin:0 1rem 1rem}
+.stat-box{background:var(--bg2);border-radius:var(--r2);padding:.875rem;text-align:center;border:0.5px solid var(--line)}
+.stat-n{font-size:22px;font-weight:700;font-family:'DM Serif Display',serif}
+.stat-l{font-size:11px;color:var(--ink4);margin-top:2px;font-weight:500}
 
-.field{margin-bottom:1rem}
-.label{font-size:12.5px;color:var(--ink3);margin-bottom:4px;display:block;font-family:sans-serif}
-.inp{width:100%;padding:9px 12px;border:1px solid var(--line2);border-radius:var(--r);font-size:14px;background:#fff;color:var(--ink);outline:none;transition:border-color .15s,box-shadow .15s}
-.inp:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(194,64,12,.1)}
-.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+/* Progress bars */
+.prog-item{margin:0 1rem .75rem}
+.prog-head{display:flex;justify-content:space-between;font-size:12.5px;margin-bottom:6px;color:var(--ink2);font-weight:500}
+.prog-track{height:8px;background:var(--bg3);border-radius:4px;overflow:hidden}
+.prog-fill{height:100%;border-radius:4px;transition:width .6s cubic-bezier(.34,1.56,.64,1)}
 
-/* Game */
-.game-wrap{max-width:520px;margin:0 auto}
-.hearts{display:flex;gap:5px;margin-bottom:1.25rem}
-.pbar{height:7px;background:var(--paper3);border-radius:4px;margin-bottom:1.5rem;overflow:hidden}
-.pfill{height:100%;border-radius:4px;transition:width .4s}
-.pfill-my{background:var(--green-mid)}
-.pfill-cet4{background:#db2777}
-.pfill-cet6{background:var(--purple-mid)}
-.speak-btn{width:84px;height:84px;border-radius:50%;border:1.5px solid var(--line2);background:var(--paper2);display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;cursor:pointer;transition:all .15s}
-.speak-btn:hover{border-color:var(--accent);background:var(--accent-bg)}
-.speak-btn.playing{border-color:var(--green-mid);background:var(--green-bg)}
-.speak-btn svg{width:36px;height:36px;fill:var(--ink3)}
-.speak-btn.playing svg{fill:var(--green)}
-.hint{text-align:center;font-size:12.5px;color:var(--ink4);margin-bottom:1.25rem;font-style:italic}
-.meaning-box{background:var(--paper2);border-radius:var(--r2);padding:.875rem 1rem;margin-bottom:1.25rem;text-align:center;border:1px solid var(--line)}
-.m-pos{font-size:10.5px;color:var(--ink4);text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px;font-family:sans-serif}
-.m-cn{font-size:16px;font-weight:600;font-family:'Noto Serif SC',serif}
-.m-ex{font-size:12.5px;color:var(--ink3);margin-top:4px;font-style:italic}
-.slots{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin-bottom:1.25rem;min-height:52px;align-items:center}
-.slot{width:38px;height:48px;border-bottom:2px solid var(--line2);display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:600;transition:border-color .15s;text-transform:lowercase}
-.slot.active{border-color:var(--accent)}
-.slot.space{border-bottom-color:transparent;width:16px}
-.slot.correct{border-color:var(--green-mid);color:var(--green)}
-.slot.wrong{border-color:var(--accent);color:var(--accent)}
-.kbd{display:flex;flex-direction:column;gap:5px;margin-bottom:1.25rem}
+/* Section label */
+.section-label{padding:.75rem 1.25rem .375rem;font-size:11px;color:var(--ink4);text-transform:uppercase;letter-spacing:.08em;font-weight:600}
+
+/* Quick actions */
+.quick-actions{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin:0 1rem 1rem}
+.qa-btn{border:none;border-radius:var(--r2);padding:1rem;display:flex;flex-direction:column;align-items:flex-start;gap:.5rem;cursor:pointer;font-family:'DM Sans',sans-serif;transition:transform .15s,box-shadow .15s;text-align:left}
+.qa-btn:active{transform:scale(.97)}
+.qa-btn .qa-icon{font-size:22px}
+.qa-btn .qa-label{font-size:14px;font-weight:600;color:#fff}
+.qa-btn .qa-sub{font-size:11px;opacity:.8;color:#fff}
+.qa-practice{background:linear-gradient(135deg,var(--primary),#f97316)}
+.qa-batch{background:linear-gradient(135deg,var(--info),#0ea5e9)}
+.qa-cet4{background:linear-gradient(135deg,var(--cet4),#ec4899)}
+.qa-cet6{background:linear-gradient(135deg,var(--cet6),#8b5cf6)}
+
+/* Notice banner */
+.banner{margin:0 1rem .75rem;padding:.75rem 1rem;border-radius:var(--r);font-size:13px;display:flex;align-items:center;gap:.5rem;font-weight:500}
+.banner-warn{background:var(--warning-light);color:var(--warning)}
+.banner-ok{background:var(--success-light);color:var(--success)}
+.banner-info{background:var(--info-light);color:var(--info)}
+
+/* Practice page */
+.source-grid{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin:0 1rem 1rem}
+.src-card{border:2px solid var(--line);border-radius:var(--r2);padding:1rem;cursor:pointer;transition:all .2s;background:var(--bg2);text-align:center}
+.src-card:active{transform:scale(.97)}
+.src-card.sel-my{border-color:var(--primary);background:var(--primary-light)}
+.src-card.sel-cet4{border-color:var(--cet4);background:var(--cet4-light)}
+.src-card.sel-cet6{border-color:var(--cet6);background:var(--cet6-light)}
+.src-card.sel-all{border-color:var(--info);background:var(--info-light)}
+.src-icon{font-size:28px;margin-bottom:.375rem}
+.src-name{font-size:13px;font-weight:600}
+.src-cnt{font-size:11px;color:var(--ink4);margin-top:2px}
+
+.mode-pills{display:flex;gap:.5rem;margin:0 1rem 1rem;overflow-x:auto;padding-bottom:2px}
+.mode-pill{flex-shrink:0;padding:.5rem 1rem;border-radius:20px;border:1.5px solid var(--line2);font-size:13px;font-weight:600;cursor:pointer;background:var(--bg2);color:var(--ink3);transition:all .2s;font-family:'DM Sans',sans-serif}
+.mode-pill.on-my{background:var(--primary);color:#fff;border-color:var(--primary)}
+.mode-pill.on-cet4{background:var(--cet4);color:#fff;border-color:var(--cet4)}
+.mode-pill.on-cet6{background:var(--cet6);color:#fff;border-color:var(--cet6)}
+.mode-pill.on-all{background:var(--info);color:#fff;border-color:var(--info)}
+
+/* Game area */
+.game-area{padding:0 1rem}
+.hearts-row{display:flex;gap:6px;margin-bottom:1rem}
+.h-icon{width:22px;height:22px}
+.speak-circle{width:80px;height:80px;border-radius:50%;border:2px solid var(--line2);background:var(--bg2);display:flex;align-items:center;justify-content:center;margin:.5rem auto 1rem;cursor:pointer;transition:all .2s;box-shadow:var(--shadow)}
+.speak-circle:active{transform:scale(.93)}
+.speak-circle.playing{border-color:var(--primary);background:var(--primary-light);box-shadow:0 0 0 6px rgba(220,79,30,.15)}
+.speak-circle svg{width:34px;height:34px;fill:var(--ink3)}
+.speak-circle.playing svg{fill:var(--primary)}
+.meaning-pill{background:var(--bg3);border-radius:var(--r2);padding:.875rem 1rem;margin-bottom:1rem;text-align:center}
+.mp-pos{font-size:10px;color:var(--ink4);text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px;font-weight:600}
+.mp-cn{font-size:17px;font-weight:600;font-family:'Noto Serif SC',serif}
+.mp-ex{font-size:12.5px;color:var(--ink3);margin-top:4px;font-style:italic}
+.slots-row{display:flex;gap:5px;justify-content:center;flex-wrap:wrap;margin-bottom:1rem;min-height:50px;align-items:center}
+.slot{width:36px;height:46px;border-bottom:2.5px solid var(--line2);display:flex;align-items:center;justify-content:center;font-size:19px;font-weight:700;transition:border-color .15s;text-transform:lowercase;font-family:'DM Serif Display',serif}
+.slot.active{border-color:var(--primary)}
+.slot.space{border-bottom-color:transparent;width:14px}
+.slot.correct{border-color:var(--success);color:var(--success)}
+.slot.wrong{border-color:var(--primary);color:var(--primary)}
+.kbd-wrap{display:flex;flex-direction:column;gap:5px;margin-bottom:1rem}
 .krow{display:flex;gap:4px;justify-content:center}
-.key{min-width:34px;height:44px;padding:0 5px;border:1px solid var(--line2);border-radius:var(--r);background:#fff;font-size:15px;font-weight:600;cursor:pointer;color:var(--ink);transition:background .1s}
-.key:hover{background:var(--paper3)}
-.key.bs{min-width:52px;font-size:12px;font-family:sans-serif}
-.check-btn{width:100%;padding:13px;border:none;color:#fff;font-size:15px;font-weight:600;border-radius:var(--r);cursor:pointer}
-.check-btn-my{background:var(--green-mid)}.check-btn-my:not(:disabled):hover{background:var(--green)}
-.check-btn-cet4{background:#db2777}.check-btn-cet4:not(:disabled):hover{background:#be185d}
-.check-btn-cet6{background:var(--purple-mid)}.check-btn-cet6:not(:disabled):hover{background:var(--purple)}
-.check-btn:disabled{opacity:.35;cursor:default}
-.feedback{border-radius:var(--r);padding:.7rem 1rem;margin-bottom:1rem;font-size:14px;font-weight:600;text-align:center;font-family:'Noto Serif SC',serif}
-.fb-ok{background:var(--green-bg);color:var(--green);border:1px solid #bddcbd}
-.fb-fail{background:var(--accent-bg);color:var(--accent);border:1px solid #fcd6c3}
-.next-btn{width:100%;padding:13px;border:1px solid var(--line2);background:#fff;color:var(--ink);font-size:15px;font-weight:600;border-radius:var(--r);cursor:pointer}
-.next-btn:hover{background:var(--paper2)}
+.key{min-width:32px;height:42px;padding:0 4px;border:1px solid var(--line2);border-radius:8px;background:var(--bg2);font-size:15px;font-weight:600;cursor:pointer;color:var(--ink);transition:background .1s;box-shadow:0 1px 0 var(--line2)}
+.key:active{background:var(--bg3);transform:translateY(1px);box-shadow:none}
+.key.bs{min-width:48px;font-size:12px;font-family:'DM Sans',sans-serif}
+.check-btn{width:100%;padding:14px;border:none;color:#fff;font-size:15px;font-weight:600;border-radius:var(--r2);cursor:pointer;font-family:'DM Sans',sans-serif;transition:opacity .15s}
+.check-btn:disabled{opacity:.3;cursor:default}
+.cb-my{background:var(--primary)}.cb-cet4{background:var(--cet4)}.cb-cet6{background:var(--cet6)}.cb-all{background:var(--info)}
+.fb{border-radius:var(--r);padding:.75rem 1rem;margin-bottom:1rem;font-size:14px;font-weight:600;text-align:center;font-family:'Noto Serif SC',serif}
+.fb-ok{background:var(--success-light);color:var(--success)}
+.fb-fail{background:var(--primary-light);color:var(--primary)}
+.next-btn{width:100%;padding:14px;border:1.5px solid var(--line2);background:var(--bg2);color:var(--ink);font-size:15px;font-weight:600;border-radius:var(--r2);cursor:pointer;font-family:'DM Sans',sans-serif}
+.next-btn:active{background:var(--bg3)}
+.choice-grid{display:grid;grid-template-columns:1fr 1fr;gap:.625rem;margin-bottom:1rem}
+.ch-btn{padding:14px 12px;border:1.5px solid var(--line2);border-radius:var(--r);background:var(--bg2);font-size:13.5px;cursor:pointer;text-align:left;transition:all .15s;font-family:'Noto Serif SC',serif;line-height:1.4}
+.ch-btn:active{background:var(--bg3)}
+.ch-btn.ok{background:var(--success-light);border-color:var(--success);color:var(--success)}
+.ch-btn.fail{background:var(--primary-light);border-color:var(--primary);color:var(--primary)}
+.ch-btn.show{background:var(--success-light);border-color:var(--success);color:var(--success)}
 
-.choice-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:1.25rem}
-.choice-btn{padding:14px 15px;border:1px solid var(--line2);border-radius:var(--r);background:#fff;font-size:13.5px;cursor:pointer;text-align:left;transition:all .1s;font-family:'Noto Serif SC',serif;line-height:1.4}
-.choice-btn:hover{background:var(--paper2)}
-.choice-btn.ok{background:var(--green-bg);border-color:var(--green-mid);color:var(--green)}
-.choice-btn.fail{background:var(--accent-bg);border-color:var(--accent);color:var(--accent)}
-.choice-btn.show{background:var(--green-bg);border-color:var(--green-mid);color:var(--green)}
+/* Finish */
+.finish-card{margin:1rem;border-radius:var(--r3);padding:2rem;text-align:center;background:var(--bg2);border:0.5px solid var(--line)}
+.finish-emoji{font-size:48px;margin-bottom:1rem;display:block}
+.finish-title{font-family:'DM Serif Display',serif;font-size:26px;margin-bottom:.25rem}
+.finish-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:.75rem;margin:1.25rem 0}
+.fs{background:var(--bg3);border-radius:var(--r);padding:.875rem;text-align:center}
+.fs-n{font-size:22px;font-weight:700;font-family:'DM Serif Display',serif}
+.fs-l{font-size:11px;color:var(--ink4);margin-top:2px}
 
-.tabs{display:flex;gap:8px;margin-bottom:1.5rem;flex-wrap:wrap}
-.tab{padding:7px 16px;border:1px solid var(--line2);border-radius:20px;font-size:13px;color:var(--ink3);background:#fff;cursor:pointer;font-family:sans-serif}
-.tab.on-my{background:var(--green-mid);color:#fff;border-color:var(--green-mid);font-weight:600}
-.tab.on-cet4{background:#db2777;color:#fff;border-color:#db2777;font-weight:600}
-.tab.on-cet6{background:var(--purple-mid);color:#fff;border-color:var(--purple-mid);font-weight:600}
+/* Wordbook */
+.word-row{padding:1rem 1.25rem;border-bottom:0.5px solid var(--line);display:flex;align-items:center;gap:.875rem;background:var(--bg2)}
+.word-row:last-child{border-bottom:none}
+.wr-body{flex:1;min-width:0}
+.wr-en{font-size:15px;font-weight:600;font-family:'DM Serif Display',serif}
+.wr-ph{font-size:12px;color:var(--warning);font-style:italic;margin-top:1px}
+.wr-cn{font-size:13px;color:var(--ink2);margin-top:2px}
+.wr-right{display:flex;flex-direction:column;align-items:flex-end;gap:.375rem;flex-shrink:0}
 
-/* Source selector */
-.source-selector{display:flex;gap:10px;margin-bottom:1.5rem;flex-wrap:wrap}
-.source-card{flex:1;min-width:120px;padding:1rem;border:2px solid var(--line);border-radius:var(--r2);cursor:pointer;text-align:center;transition:all .15s;background:#fff}
-.source-card:hover{border-color:var(--line2)}
-.source-card.selected-my{border-color:var(--green-mid);background:var(--green-bg)}
-.source-card.selected-cet4{border-color:#db2777;background:#fdf2f8}
-.source-card.selected-cet6{border-color:var(--purple-mid);background:var(--purple-bg)}
-.source-card.selected-all{border-color:var(--blue-mid);background:var(--blue-bg)}
-.source-icon{font-size:24px;margin-bottom:6px}
-.source-label{font-size:13px;font-weight:600;font-family:'Noto Serif SC',serif}
-.source-count{font-size:11px;color:var(--ink4);margin-top:2px;font-family:sans-serif}
+/* Badges */
+.badge{display:inline-block;padding:2px 9px;border-radius:20px;font-size:11px;font-weight:600;font-family:'DM Sans',sans-serif}
+.b-new{background:var(--info-light);color:var(--info)}
+.b-learning{background:var(--warning-light);color:var(--warning)}
+.b-mastered{background:var(--success-light);color:var(--success)}
+.b-weak{background:var(--primary-light);color:var(--primary)}
+.b-cet4{background:var(--cet4-light);color:var(--cet4)}
+.b-cet6{background:var(--cet6-light);color:var(--cet6)}
 
-.finish-center{text-align:center;padding:2.5rem}
-.finish-ico{width:64px;height:64px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem}
-.finish-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:1.25rem 0}
-.fs{background:var(--paper2);border-radius:var(--r2);padding:.875rem;text-align:center}
-.fs-n{font-size:22px;font-weight:700;font-family:'Noto Serif SC',serif}
-.fs-l{font-size:11px;color:var(--ink3);margin-top:2px;font-family:sans-serif}
-
-.toast{position:fixed;bottom:24px;right:24px;background:var(--ink);color:#fff;padding:10px 18px;border-radius:var(--r);font-size:13.5px;opacity:0;transition:opacity .3s;pointer-events:none;z-index:999;font-family:sans-serif}
-.toast.show{opacity:1}
-
-.chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:1rem}
-.chip{padding:4px 12px;border:1px solid var(--line2);border-radius:20px;font-size:12.5px;background:#fff;cursor:pointer;color:var(--ink3);font-family:sans-serif}
+/* Filter chips */
+.chips{display:flex;gap:.5rem;padding:.5rem 1rem;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.chip{flex-shrink:0;padding:5px 13px;border:1.5px solid var(--line2);border-radius:20px;font-size:12.5px;background:var(--bg2);cursor:pointer;color:var(--ink3);font-weight:500;font-family:'DM Sans',sans-serif;white-space:nowrap;transition:all .15s}
 .chip.on{background:var(--ink);color:#fff;border-color:var(--ink)}
 
-.prog-wrap{background:var(--paper2);border-radius:var(--r2);padding:1rem;border:1px solid var(--line);margin-bottom:1rem}
-.prog-label{display:flex;justify-content:space-between;font-size:13px;margin-bottom:8px;color:var(--ink2);font-family:sans-serif}
-.prog-bar{height:9px;background:var(--paper3);border-radius:5px;overflow:hidden}
-.prog-fill{height:100%;border-radius:5px;transition:width .5s}
+/* Search bar */
+.search-bar{margin:.5rem 1rem .75rem;position:relative}
+.search-bar input{width:100%;padding:.75rem 1rem .75rem 2.5rem;border:1.5px solid var(--line2);border-radius:var(--r2);font-size:14px;background:var(--bg2);color:var(--ink);outline:none;font-family:'DM Sans',sans-serif}
+.search-bar input:focus{border-color:var(--primary)}
+.search-icon{position:absolute;left:.75rem;top:50%;transform:translateY(-50%);color:var(--ink4);pointer-events:none}
 
-.sync-banner{padding:.65rem 1rem;border-radius:var(--r);font-size:13px;display:flex;align-items:center;gap:8px;font-family:sans-serif;margin-bottom:1rem}
-.sync-warn-banner{background:var(--gold-bg);color:var(--gold-mid);border:1px solid #e9d8a0}
-.sync-ok-banner{background:var(--green-bg);color:var(--green);border:1px solid #bddcbd}
-.sync-dot{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:4px;vertical-align:middle}
-.sync-ok{background:#4ade80}.sync-pending{background:#fbbf24;animation:blink 1s infinite}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+/* Add form */
+.form-section{margin:0 1rem 1rem}
+.field{margin-bottom:.875rem}
+.label{font-size:12px;color:var(--ink3);margin-bottom:5px;display:block;font-weight:600;text-transform:uppercase;letter-spacing:.04em}
+.inp{width:100%;padding:.75rem 1rem;border:1.5px solid var(--line2);border-radius:var(--r);font-size:14.5px;background:var(--bg2);color:var(--ink);outline:none;transition:border-color .15s;font-family:'DM Sans',sans-serif;-webkit-appearance:none}
+.inp:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(220,79,30,.1)}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:.75rem}
+textarea.inp{resize:none;min-height:100px;line-height:1.6}
 
-/* CET level badge on word card */
-.level-tag{display:inline-block;padding:1px 7px;border-radius:3px;font-size:10.5px;font-weight:700;font-family:sans-serif;margin-left:6px;vertical-align:middle}
-.tag-cet4{background:#fce7f3;color:#9d174d}
-.tag-cet6{background:#ede9fe;color:#5b21b6}
-.tag-my{background:var(--gold-bg);color:var(--gold-mid)}
+/* Buttons */
+.btn{padding:.75rem 1.25rem;font-size:14px;font-weight:600;border-radius:var(--r2);cursor:pointer;border:none;font-family:'DM Sans',sans-serif;transition:all .15s;display:inline-flex;align-items:center;justify-content:center;gap:.375rem}
+.btn:active{transform:scale(.97)}
+.btn-primary{background:var(--primary);color:#fff}
+.btn-primary:hover{background:var(--primary-dark)}
+.btn-blue{background:var(--info);color:#fff}
+.btn-ghost{background:var(--bg3);color:var(--ink2);border:1px solid var(--line2)}
+.btn-sm{padding:.5rem .875rem;font-size:12.5px;border-radius:var(--r)}
+.btn-danger{background:var(--primary-light);color:var(--primary)}
+.btn-full{width:100%}
 
-@media(max-width:680px){
-  .shell{flex-direction:column}
-  .rail{width:100%;flex-direction:row;flex-wrap:wrap;padding:.5rem;border-right:none;border-bottom:1px solid var(--line)}
-  .brand,.rail-foot,.nav-sect{display:none}
-  .nav-link{flex-direction:column;gap:2px;padding:.4rem .65rem;font-size:10.5px}
-  .body{padding:1rem}
-  .stats{grid-template-columns:repeat(2,1fr)}
-  .row2{grid-template-columns:1fr}
-  .choice-grid{grid-template-columns:1fr}
-  .source-selector{flex-direction:column}
-  .finish-stats{grid-template-columns:repeat(3,1fr)}
+/* AI status bar */
+.ai-bar{background:var(--info-light);border-radius:var(--r);padding:.75rem 1rem;margin-bottom:.875rem;border:1px solid #bfdbfe}
+.ai-bar-title{font-size:12.5px;font-weight:600;color:var(--info);margin-bottom:.5rem;display:flex;align-items:center;gap:.375rem}
+.ai-bar input{width:100%;padding:.625rem .875rem;border:1px solid #bfdbfe;border-radius:var(--r);font-size:12.5px;background:#fff;color:var(--ink);outline:none;font-family:monospace}
+.ai-bar input:focus{border-color:var(--info)}
+
+/* Batch import */
+.batch-item{padding:.875rem 1rem;border-bottom:0.5px solid var(--line);display:flex;gap:.75rem;align-items:flex-start;background:var(--bg2)}
+.batch-item:last-child{border-bottom:none}
+.batch-item.sel{background:#fff9f7}
+.batch-item.exists{opacity:.45}
+.batch-check{width:20px;height:20px;flex-shrink:0;margin-top:2px;cursor:pointer;accent-color:var(--primary)}
+.bi-en{font-size:15px;font-weight:600;font-family:'DM Serif Display',serif}
+.bi-ph{font-size:12px;color:var(--warning);font-style:italic}
+.bi-cn{font-size:13px;color:var(--ink2);margin-top:3px}
+.bi-ex{font-size:12px;color:var(--ink4);font-style:italic;margin-top:2px}
+
+/* Settings */
+.settings-group{margin:0 1rem 1rem}
+.sg-header{font-size:11px;color:var(--ink4);text-transform:uppercase;letter-spacing:.07em;font-weight:600;padding:.75rem 0 .375rem}
+.sg-body{background:var(--bg2);border-radius:var(--r2);overflow:hidden;border:0.5px solid var(--line)}
+.sg-row{padding:.875rem 1rem;border-bottom:0.5px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:.75rem}
+.sg-row:last-child{border-bottom:none}
+.sg-label{font-size:14px;font-weight:500}
+.sg-sub{font-size:12px;color:var(--ink4);margin-top:1px}
+.sg-action{color:var(--primary);font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap}
+
+/* Toast */
+.toast{position:fixed;top:1rem;left:50%;transform:translateX(-50%) translateY(-80px);background:rgba(24,24,27,.92);color:#fff;padding:.75rem 1.25rem;border-radius:var(--r2);font-size:13.5px;font-weight:500;z-index:999;transition:transform .3s cubic-bezier(.34,1.56,.64,1);font-family:'DM Sans',sans-serif;white-space:nowrap;backdrop-filter:blur(10px)}
+.toast.show{transform:translateX(-50%) translateY(0)}
+
+/* Source tag */
+.src-tag{display:inline-block;padding:1px 7px;border-radius:3px;font-size:10px;font-weight:700;font-family:'DM Sans',sans-serif}
+.st-my{background:var(--warning-light);color:var(--warning)}
+.st-cet4{background:var(--cet4-light);color:var(--cet4)}
+.st-cet6{background:var(--cet6-light);color:var(--cet6)}
+
+/* loading */
+.loading{text-align:center;padding:3rem 1rem;color:var(--ink4);font-size:14px}
+.spinner{width:32px;height:32px;border:3px solid var(--line2);border-top-color:var(--primary);border-radius:50%;animation:spin .7s linear infinite;margin:0 auto 1rem}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* Animations */
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.fade-up{animation:fadeUp .3s ease both}
+
+/* Desktop layout */
+@media(min-width:480px){
+  .app{border-left:0.5px solid var(--line);border-right:0.5px solid var(--line);box-shadow:0 0 40px rgba(0,0,0,.06)}
+  .bottom-nav{border-radius:0 0 var(--r2) var(--r2)}
 }
+
+/* Scrollbar */
+::-webkit-scrollbar{width:0;height:0}
 </style>
 </head>
 <body>
-<div class="shell">
-  <aside class="rail">
-    <div class="brand">
-      <div class="brand-name">词<span>境</span></div>
-      <div class="brand-sub" id="word-count-sub">英语生词本</div>
-    </div>
-    <span class="nav-sect">学习</span>
-    <button class="nav-link on" id="nl-home" onclick="go('home')">
-      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>首页
+<div class="app">
+  <div class="app-body" id="app-body">
+    <!-- Pages rendered here -->
+    <div class="page active" id="pg-home"></div>
+    <div class="page" id="pg-practice"></div>
+    <div class="page" id="pg-words"></div>
+    <div class="page" id="pg-add"></div>
+    <div class="page" id="pg-settings"></div>
+  </div>
+  <nav class="bottom-nav">
+    <button class="nav-tab active" id="nt-home" onclick="go('home')">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+      <span class="nav-tab-label">首页</span>
     </button>
-    <button class="nav-link" id="nl-practice" onclick="go('practice')">
-      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>开始练习
+    <button class="nav-tab" id="nt-practice" onclick="go('practice')">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>
+      <span class="nav-tab-label">练习</span>
     </button>
-    <button class="nav-link" id="nl-words" onclick="go('words')">
-      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-1 9H9V9h10v2zm-4 4H9v-2h6v2zm4-8H9V5h10v2z"/></svg>生词库
+    <button class="nav-tab" id="nt-words" onclick="go('words')">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-1 9H9V9h10v2zm-4 4H9v-2h6v2zm4-8H9V5h10v2z"/></svg>
+      <span class="nav-tab-label">词库</span>
     </button>
-    <button class="nav-link" id="nl-cet" onclick="go('cet')">
-      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 3c1.93 0 3.5 1.57 3.5 3.5S13.93 13 12 13s-3.5-1.57-3.5-3.5S10.07 6 12 6zm7 13H5v-.23c0-.62.28-1.2.76-1.58C7.47 15.82 9.64 15 12 15s4.53.82 6.24 2.19c.48.38.76.97.76 1.58V19z"/></svg>四六级词库
+    <button class="nav-tab" id="nt-add" onclick="go('add')">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/></svg>
+      <span class="nav-tab-label">添加</span>
     </button>
-    <button class="nav-link" id="nl-mistakes" onclick="go('mistakes')">
-      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>错题本
+    <button class="nav-tab" id="nt-settings" onclick="go('settings')">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
+      <span class="nav-tab-label">设置</span>
     </button>
-    <button class="nav-link" id="nl-add" onclick="go('add')">
-      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/></svg>添加生词
-    </button>
-    <span class="nav-sect">系统</span>
-    <button class="nav-link" id="nl-settings" onclick="go('settings')">
-      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>设置
-    </button>
-    <div class="rail-foot">
-      <div class="streak" id="streak-txt">连续 0 天</div>
-    </div>
-  </aside>
-  <main class="body" id="body"></main>
+  </nav>
 </div>
 <div class="toast" id="toast"></div>
-
 <script>
-// ═══════════════════════════════════════
-// CET4 & CET6 词库（精选各100个高频词）
-// ═══════════════════════════════════════
 const CET4_WORDS=[
   {word:"abandon",phonetic:"/əˈbændən/",pos:"动词",meaning:"放弃，遗弃",example:"He abandoned the project halfway.",level:"cet4"},
   {word:"ability",phonetic:"/əˈbɪlɪti/",pos:"名词",meaning:"能力，才能",example:"She has the ability to learn quickly.",level:"cet4"},
-  {word:"academic",phonetic:"/ˌækəˈdemɪk/",pos:"形容词",meaning:"学术的，学业的",example:"Academic performance is important.",level:"cet4"},
+  {word:"academic",phonetic:"/ˌækəˈdemɪk/",pos:"形容词",meaning:"学术的",example:"Academic performance is important.",level:"cet4"},
   {word:"access",phonetic:"/ˈækses/",pos:"名词/动词",meaning:"进入，访问",example:"We need access to the internet.",level:"cet4"},
   {word:"achieve",phonetic:"/əˈtʃiːv/",pos:"动词",meaning:"实现，完成",example:"Hard work helps you achieve goals.",level:"cet4"},
   {word:"acknowledge",phonetic:"/əkˈnɒlɪdʒ/",pos:"动词",meaning:"承认，致谢",example:"He acknowledged his mistake.",level:"cet4"},
@@ -251,7 +320,7 @@ const CET4_WORDS=[
   {word:"advance",phonetic:"/ədˈvɑːns/",pos:"动词/名词",meaning:"前进，进步",example:"Technology continues to advance.",level:"cet4"},
   {word:"advantage",phonetic:"/ədˈvɑːntɪdʒ/",pos:"名词",meaning:"优势，好处",example:"Education gives you an advantage.",level:"cet4"},
   {word:"affect",phonetic:"/əˈfekt/",pos:"动词",meaning:"影响，感动",example:"Weather affects our mood.",level:"cet4"},
-  {word:"afford",phonetic:"/əˈfɔːrd/",pos:"动词",meaning:"负担得起，提供",example:"Can you afford a new car?",level:"cet4"},
+  {word:"afford",phonetic:"/əˈfɔːrd/",pos:"动词",meaning:"负担得起",example:"Can you afford a new car?",level:"cet4"},
   {word:"aggressive",phonetic:"/əˈɡresɪv/",pos:"形容词",meaning:"侵略的，积极的",example:"Don't be too aggressive in business.",level:"cet4"},
   {word:"analyze",phonetic:"/ˈænəlaɪz/",pos:"动词",meaning:"分析",example:"We need to analyze the data.",level:"cet4"},
   {word:"ancient",phonetic:"/ˈeɪnʃənt/",pos:"形容词",meaning:"古代的，古老的",example:"China has an ancient civilization.",level:"cet4"},
@@ -265,7 +334,6 @@ const CET4_WORDS=[
   {word:"arrange",phonetic:"/əˈreɪndʒ/",pos:"动词",meaning:"安排，整理",example:"Please arrange the meeting.",level:"cet4"},
   {word:"aspect",phonetic:"/ˈæspekt/",pos:"名词",meaning:"方面，方向",example:"Consider every aspect of the problem.",level:"cet4"},
   {word:"assess",phonetic:"/əˈses/",pos:"动词",meaning:"评估，评定",example:"Teachers assess student progress.",level:"cet4"},
-  {word:"associate",phonetic:"/əˈsəʊʃieɪt/",pos:"动词",meaning:"联系，结交",example:"Don't associate with bad people.",level:"cet4"},
   {word:"assume",phonetic:"/əˈsjuːm/",pos:"动词",meaning:"假设，承担",example:"Don't assume the worst.",level:"cet4"},
   {word:"atmosphere",phonetic:"/ˈætməsfɪər/",pos:"名词",meaning:"大气，气氛",example:"The atmosphere was friendly.",level:"cet4"},
   {word:"attach",phonetic:"/əˈtætʃ/",pos:"动词",meaning:"附上，依附",example:"Please attach the file.",level:"cet4"},
@@ -274,7 +342,7 @@ const CET4_WORDS=[
   {word:"attract",phonetic:"/əˈtrækt/",pos:"动词",meaning:"吸引，引起",example:"Flowers attract bees.",level:"cet4"},
   {word:"available",phonetic:"/əˈveɪləbl/",pos:"形容词",meaning:"可用的，有空的",example:"Is the room available?",level:"cet4"},
   {word:"avoid",phonetic:"/əˈvɔɪd/",pos:"动词",meaning:"避免，逃避",example:"Avoid eating too much sugar.",level:"cet4"},
-  {word:"aware",phonetic:"/əˈweər/",pos:"形容词",meaning:"意识到的，知道的",example:"Be aware of your surroundings.",level:"cet4"},
+  {word:"aware",phonetic:"/əˈweər/",pos:"形容词",meaning:"意识到的",example:"Be aware of your surroundings.",level:"cet4"},
   {word:"balance",phonetic:"/ˈbæləns/",pos:"名词/动词",meaning:"平衡，余额",example:"Maintain a healthy work-life balance.",level:"cet4"},
   {word:"barrier",phonetic:"/ˈbæriər/",pos:"名词",meaning:"障碍，屏障",example:"Language can be a barrier.",level:"cet4"},
   {word:"benefit",phonetic:"/ˈbenɪfɪt/",pos:"名词/动词",meaning:"好处，利益",example:"Exercise benefits your health.",level:"cet4"},
@@ -287,7 +355,138 @@ const CET4_WORDS=[
   {word:"colleague",phonetic:"/ˈkɒliːɡ/",pos:"名词",meaning:"同事，同僚",example:"My colleague helped me finish.",level:"cet4"},
   {word:"communicate",phonetic:"/kəˈmjuːnɪkeɪt/",pos:"动词",meaning:"交流，通讯",example:"It's important to communicate clearly.",level:"cet4"},
   {word:"community",phonetic:"/kəˈmjuːnɪti/",pos:"名词",meaning:"社区，共同体",example:"Give back to your community.",level:"cet4"},
-].map((w,i)=>({...w,id:10000+i,status:'new',wrongCount:0,practiceCount:0,addedAt:'2024-01-01'}));
+  {word:"compare",phonetic:"/kəmˈpeər/",pos:"动词",meaning:"比较，对比",example:"Compare prices before buying.",level:"cet4"},
+  {word:"compete",phonetic:"/kəmˈpiːt/",pos:"动词",meaning:"竞争，比赛",example:"Many companies compete for customers.",level:"cet4"},
+  {word:"complex",phonetic:"/ˈkɒmpleks/",pos:"形容词/名词",meaning:"复杂的，综合体",example:"This is a complex problem.",level:"cet4"},
+  {word:"concentrate",phonetic:"/ˈkɒnsəntreɪt/",pos:"动词",meaning:"集中，专心",example:"Please concentrate on your work.",level:"cet4"},
+  {word:"concept",phonetic:"/ˈkɒnsept/",pos:"名词",meaning:"概念，观念",example:"Explain the concept clearly.",level:"cet4"},
+  {word:"concern",phonetic:"/kənˈsɜːrn/",pos:"名词/动词",meaning:"关心，担忧",example:"I am concerned about your health.",level:"cet4"},
+  {word:"conclude",phonetic:"/kənˈkluːd/",pos:"动词",meaning:"得出结论，结束",example:"He concluded the speech well.",level:"cet4"},
+  {word:"conduct",phonetic:"/ˈkɒndʌkt/",pos:"名词/动词",meaning:"行为，进行",example:"They conducted a survey.",level:"cet4"},
+  {word:"confirm",phonetic:"/kənˈfɜːrm/",pos:"动词",meaning:"确认，证实",example:"Please confirm your reservation.",level:"cet4"},
+  {word:"conflict",phonetic:"/ˈkɒnflɪkt/",pos:"名词/动词",meaning:"冲突，矛盾",example:"Avoid conflict with coworkers.",level:"cet4"},
+  {word:"consider",phonetic:"/kənˈsɪdər/",pos:"动词",meaning:"考虑，认为",example:"Consider all your options.",level:"cet4"},
+  {word:"consist",phonetic:"/kənˈsɪst/",pos:"动词",meaning:"由…组成",example:"The team consists of five members.",level:"cet4"},
+  {word:"constant",phonetic:"/ˈkɒnstənt/",pos:"形容词",meaning:"不断的，持续的",example:"Practice requires constant effort.",level:"cet4"},
+  {word:"construct",phonetic:"/kənˈstrʌkt/",pos:"动词",meaning:"建造，构建",example:"They constructed a new building.",level:"cet4"},
+  {word:"contribute",phonetic:"/kənˈtrɪbjuːt/",pos:"动词",meaning:"贡献，捐助",example:"Everyone should contribute to society.",level:"cet4"},
+  {word:"convenient",phonetic:"/kənˈviːniənt/",pos:"形容词",meaning:"方便的，合适的",example:"The store is conveniently located.",level:"cet4"},
+  {word:"convince",phonetic:"/kənˈvɪns/",pos:"动词",meaning:"说服，使确信",example:"He convinced me to try.",level:"cet4"},
+  {word:"cope",phonetic:"/kəʊp/",pos:"动词",meaning:"应对，处理",example:"How do you cope with stress?",level:"cet4"},
+  {word:"create",phonetic:"/kriˈeɪt/",pos:"动词",meaning:"创造，创建",example:"Create something new every day.",level:"cet4"},
+  {word:"culture",phonetic:"/ˈkʌltʃər/",pos:"名词",meaning:"文化，教养",example:"Every country has its own culture.",level:"cet4"},
+  {word:"curious",phonetic:"/ˈkjʊəriəs/",pos:"形容词",meaning:"好奇的",example:"Children are naturally curious.",level:"cet4"},
+  {word:"current",phonetic:"/ˈkʌrənt/",pos:"形容词/名词",meaning:"当前的，潮流",example:"Keep up with current events.",level:"cet4"},
+  {word:"damage",phonetic:"/ˈdæmɪdʒ/",pos:"名词/动词",meaning:"损害，损坏",example:"The storm caused major damage.",level:"cet4"},
+  {word:"data",phonetic:"/ˈdeɪtə/",pos:"名词",meaning:"数据，资料",example:"Analyze the data carefully.",level:"cet4"},
+  {word:"debate",phonetic:"/dɪˈbeɪt/",pos:"名词/动词",meaning:"辩论，讨论",example:"There was a heated debate.",level:"cet4"},
+  {word:"decline",phonetic:"/dɪˈklaɪn/",pos:"动词/名词",meaning:"拒绝，下降",example:"Sales declined last quarter.",level:"cet4"},
+  {word:"define",phonetic:"/dɪˈfaɪn/",pos:"动词",meaning:"定义，界定",example:"Define the problem clearly.",level:"cet4"},
+  {word:"demand",phonetic:"/dɪˈmɑːnd/",pos:"名词/动词",meaning:"需求，要求",example:"Demand for electric cars is rising.",level:"cet4"},
+  {word:"depend",phonetic:"/dɪˈpend/",pos:"动词",meaning:"依靠，取决于",example:"Success depends on hard work.",level:"cet4"},
+  {word:"describe",phonetic:"/dɪˈskraɪb/",pos:"动词",meaning:"描述，描写",example:"Describe what you see.",level:"cet4"},
+  {word:"despite",phonetic:"/dɪˈspaɪt/",pos:"介词",meaning:"尽管，即使",example:"Despite the rain, they went out.",level:"cet4"},
+  {word:"develop",phonetic:"/dɪˈveləp/",pos:"动词",meaning:"发展，开发",example:"Develop your skills every day.",level:"cet4"},
+  {word:"digital",phonetic:"/ˈdɪdʒɪtl/",pos:"形容词",meaning:"数字的，数码的",example:"We live in a digital age.",level:"cet4"},
+  {word:"disappear",phonetic:"/ˌdɪsəˈpɪər/",pos:"动词",meaning:"消失，不见",example:"The problem seemed to disappear.",level:"cet4"},
+  {word:"discover",phonetic:"/dɪˈskʌvər/",pos:"动词",meaning:"发现，找到",example:"Scientists discovered a new species.",level:"cet4"},
+  {word:"discuss",phonetic:"/dɪˈskʌs/",pos:"动词",meaning:"讨论，商量",example:"Let's discuss the plan.",level:"cet4"},
+  {word:"display",phonetic:"/dɪˈspleɪ/",pos:"动词/名词",meaning:"展示，显示",example:"Display your work proudly.",level:"cet4"},
+  {word:"distinguish",phonetic:"/dɪˈstɪŋɡwɪʃ/",pos:"动词",meaning:"区分，辨别",example:"Can you distinguish the two sounds?",level:"cet4"},
+  {word:"distribute",phonetic:"/dɪˈstrɪbjuːt/",pos:"动词",meaning:"分发，分配",example:"Distribute the handouts to students.",level:"cet4"},
+  {word:"economy",phonetic:"/ɪˈkɒnəmi/",pos:"名词",meaning:"经济，节约",example:"The economy is growing.",level:"cet4"},
+  {word:"educate",phonetic:"/ˈedʒukeɪt/",pos:"动词",meaning:"教育，培养",example:"It's important to educate children.",level:"cet4"},
+  {word:"eliminate",phonetic:"/ɪˈlɪmɪneɪt/",pos:"动词",meaning:"消除，淘汰",example:"Eliminate all unnecessary steps.",level:"cet4"},
+  {word:"emphasize",phonetic:"/ˈemfəsaɪz/",pos:"动词",meaning:"强调，重视",example:"Teachers emphasize reading skills.",level:"cet4"},
+  {word:"enable",phonetic:"/ɪˈneɪbl/",pos:"动词",meaning:"使能够，允许",example:"Technology enables remote work.",level:"cet4"},
+  {word:"encourage",phonetic:"/ɪnˈkʌrɪdʒ/",pos:"动词",meaning:"鼓励，促进",example:"Encourage your friends to try.",level:"cet4"},
+  {word:"environment",phonetic:"/ɪnˈvaɪrənmənt/",pos:"名词",meaning:"环境，自然环境",example:"Protect the environment.",level:"cet4"},
+  {word:"establish",phonetic:"/ɪˈstæblɪʃ/",pos:"动词",meaning:"建立，创立",example:"They established a new company.",level:"cet4"},
+  {word:"evaluate",phonetic:"/ɪˈvæljueɪt/",pos:"动词",meaning:"评估，评价",example:"Evaluate your progress regularly.",level:"cet4"},
+  {word:"evidence",phonetic:"/ˈevɪdəns/",pos:"名词",meaning:"证据，证明",example:"Show me the evidence.",level:"cet4"},
+  {word:"examine",phonetic:"/ɪɡˈzæmɪn/",pos:"动词",meaning:"检查，考试",example:"The doctor examined the patient.",level:"cet4"},
+  {word:"exception",phonetic:"/ɪkˈsepʃən/",pos:"名词",meaning:"例外，异常",example:"There are always exceptions to rules.",level:"cet4"},
+  {word:"exist",phonetic:"/ɪɡˈzɪst/",pos:"动词",meaning:"存在，生存",example:"Do aliens exist?",level:"cet4"},
+  {word:"expand",phonetic:"/ɪkˈspænd/",pos:"动词",meaning:"扩大，扩展",example:"The company plans to expand.",level:"cet4"},
+  {word:"expect",phonetic:"/ɪkˈspekt/",pos:"动词",meaning:"期待，预计",example:"What do you expect from life?",level:"cet4"},
+  {word:"experience",phonetic:"/ɪkˈspɪəriəns/",pos:"名词/动词",meaning:"经历，经验",example:"Learning from experience is valuable.",level:"cet4"},
+  {word:"experiment",phonetic:"/ɪkˈsperɪmənt/",pos:"名词/动词",meaning:"实验，试验",example:"The experiment was a success.",level:"cet4"},
+  {word:"explain",phonetic:"/ɪkˈspleɪn/",pos:"动词",meaning:"解释，说明",example:"Please explain your idea.",level:"cet4"},
+  {word:"explore",phonetic:"/ɪkˈsplɔːr/",pos:"动词",meaning:"探索，勘探",example:"Explore new possibilities.",level:"cet4"},
+  {word:"express",phonetic:"/ɪkˈspres/",pos:"动词",meaning:"表达，表示",example:"Express your feelings clearly.",level:"cet4"},
+  {word:"feature",phonetic:"/ˈfiːtʃər/",pos:"名词/动词",meaning:"特征，特色",example:"What features does this phone have?",level:"cet4"},
+  {word:"flexible",phonetic:"/ˈfleksɪbl/",pos:"形容词",meaning:"灵活的，柔韧的",example:"Be flexible in your approach.",level:"cet4"},
+  {word:"focus",phonetic:"/ˈfəʊkəs/",pos:"动词/名词",meaning:"集中，焦点",example:"Focus on what matters most.",level:"cet4"},
+  {word:"function",phonetic:"/ˈfʌŋkʃən/",pos:"名词/动词",meaning:"功能，起作用",example:"What function does this button have?",level:"cet4"},
+  {word:"fundamental",phonetic:"/ˌfʌndəˈmentl/",pos:"形容词",meaning:"基本的，根本的",example:"This is a fundamental principle.",level:"cet4"},
+  {word:"generate",phonetic:"/ˈdʒenəreɪt/",pos:"动词",meaning:"产生，生成",example:"Solar panels generate electricity.",level:"cet4"},
+  {word:"global",phonetic:"/ˈɡləʊbl/",pos:"形容词",meaning:"全球的，全球性的",example:"Climate change is a global issue.",level:"cet4"},
+  {word:"identify",phonetic:"/aɪˈdentɪfaɪ/",pos:"动词",meaning:"识别，鉴定",example:"Identify the main problem.",level:"cet4"},
+  {word:"ignore",phonetic:"/ɪɡˈnɔːr/",pos:"动词",meaning:"忽视，不理睬",example:"Don't ignore your health.",level:"cet4"},
+  {word:"impact",phonetic:"/ˈɪmpækt/",pos:"名词/动词",meaning:"影响，冲击",example:"Social media has a big impact.",level:"cet4"},
+  {word:"implement",phonetic:"/ˈɪmplɪment/",pos:"动词",meaning:"实施，执行",example:"Implement the plan step by step.",level:"cet4"},
+  {word:"improve",phonetic:"/ɪmˈpruːv/",pos:"动词",meaning:"改善，提高",example:"Practice improves performance.",level:"cet4"},
+  {word:"indicate",phonetic:"/ˈɪndɪkeɪt/",pos:"动词",meaning:"表明，指示",example:"Research indicates a trend.",level:"cet4"},
+  {word:"individual",phonetic:"/ˌɪndɪˈvɪdʒuəl/",pos:"名词/形容词",meaning:"个人，个体的",example:"Respect each individual's opinion.",level:"cet4"},
+  {word:"influence",phonetic:"/ˈɪnfluəns/",pos:"名词/动词",meaning:"影响，作用",example:"Friends influence your choices.",level:"cet4"},
+  {word:"innovation",phonetic:"/ˌɪnəˈveɪʃən/",pos:"名词",meaning:"创新，革新",example:"Innovation drives progress.",level:"cet4"},
+  {word:"inspire",phonetic:"/ɪnˈspaɪər/",pos:"动词",meaning:"激励，启发",example:"Great leaders inspire others.",level:"cet4"},
+  {word:"involve",phonetic:"/ɪnˈvɒlv/",pos:"动词",meaning:"涉及，包含",example:"The project involves many steps.",level:"cet4"},
+  {word:"issue",phonetic:"/ˈɪʃuː/",pos:"名词/动词",meaning:"问题，发行",example:"Address the issue immediately.",level:"cet4"},
+  {word:"maintain",phonetic:"/meɪnˈteɪn/",pos:"动词",meaning:"维持，保持",example:"Maintain a healthy lifestyle.",level:"cet4"},
+  {word:"manage",phonetic:"/ˈmænɪdʒ/",pos:"动词",meaning:"管理，设法做到",example:"She manages a team of ten.",level:"cet4"},
+  {word:"measure",phonetic:"/ˈmeʒər/",pos:"名词/动词",meaning:"测量，措施",example:"Measure twice, cut once.",level:"cet4"},
+  {word:"motivation",phonetic:"/ˌməʊtɪˈveɪʃən/",pos:"名词",meaning:"动机，积极性",example:"What is your motivation?",level:"cet4"},
+  {word:"negative",phonetic:"/ˈneɡətɪv/",pos:"形容词",meaning:"负面的，否定的",example:"Avoid negative thinking.",level:"cet4"},
+  {word:"obtain",phonetic:"/əbˈteɪn/",pos:"动词",meaning:"获得，得到",example:"Obtain the necessary information.",level:"cet4"},
+  {word:"obvious",phonetic:"/ˈɒbviəs/",pos:"形容词",meaning:"明显的，显然的",example:"The answer is obvious.",level:"cet4"},
+  {word:"occur",phonetic:"/əˈkɜːr/",pos:"动词",meaning:"发生，出现",example:"Accidents can occur anywhere.",level:"cet4"},
+  {word:"opportunity",phonetic:"/ˌɒpəˈtjuːnɪti/",pos:"名词",meaning:"机会，时机",example:"Seize every opportunity.",level:"cet4"},
+  {word:"overcome",phonetic:"/ˌəʊvəˈkʌm/",pos:"动词",meaning:"克服，战胜",example:"Overcome your fears.",level:"cet4"},
+  {word:"participate",phonetic:"/pɑːˈtɪsɪpeɪt/",pos:"动词",meaning:"参与，参加",example:"Everyone should participate.",level:"cet4"},
+  {word:"pattern",phonetic:"/ˈpætərn/",pos:"名词",meaning:"模式，图案",example:"Identify the pattern.",level:"cet4"},
+  {word:"performance",phonetic:"/pəˈfɔːrməns/",pos:"名词",meaning:"表现，性能",example:"Improve your performance.",level:"cet4"},
+  {word:"positive",phonetic:"/ˈpɒzətɪv/",pos:"形容词",meaning:"积极的，正面的",example:"Stay positive no matter what.",level:"cet4"},
+  {word:"potential",phonetic:"/pəˈtenʃəl/",pos:"名词/形容词",meaning:"潜力，潜在的",example:"You have great potential.",level:"cet4"},
+  {word:"pressure",phonetic:"/ˈpreʃər/",pos:"名词",meaning:"压力，压强",example:"Don't let pressure stop you.",level:"cet4"},
+  {word:"previous",phonetic:"/ˈpriːviəs/",pos:"形容词",meaning:"以前的，先前的",example:"Review previous lessons.",level:"cet4"},
+  {word:"principle",phonetic:"/ˈprɪnsɪpl/",pos:"名词",meaning:"原则，原理",example:"Stick to your principles.",level:"cet4"},
+  {word:"process",phonetic:"/ˈprəʊses/",pos:"名词/动词",meaning:"过程，处理",example:"Trust the process.",level:"cet4"},
+  {word:"produce",phonetic:"/prəˈdjuːs/",pos:"动词",meaning:"生产，产生",example:"The factory produces cars.",level:"cet4"},
+  {word:"promote",phonetic:"/prəˈməʊt/",pos:"动词",meaning:"促进，晋升",example:"Promote healthy habits.",level:"cet4"},
+  {word:"propose",phonetic:"/prəˈpəʊz/",pos:"动词",meaning:"提议，求婚",example:"He proposed a new plan.",level:"cet4"},
+  {word:"prove",phonetic:"/pruːv/",pos:"动词",meaning:"证明，证实",example:"Prove your point with facts.",level:"cet4"},
+  {word:"provide",phonetic:"/prəˈvaɪd/",pos:"动词",meaning:"提供，供给",example:"Provide clear instructions.",level:"cet4"},
+  {word:"purpose",phonetic:"/ˈpɜːrpəs/",pos:"名词",meaning:"目的，意图",example:"What is the purpose of this?",level:"cet4"},
+  {word:"quality",phonetic:"/ˈkwɒlɪti/",pos:"名词/形容词",meaning:"质量，品质",example:"Never compromise on quality.",level:"cet4"},
+  {word:"realize",phonetic:"/ˈrɪəlaɪz/",pos:"动词",meaning:"意识到，实现",example:"I realized my mistake too late.",level:"cet4"},
+  {word:"reduce",phonetic:"/rɪˈdjuːs/",pos:"动词",meaning:"减少，降低",example:"Reduce waste in daily life.",level:"cet4"},
+  {word:"reflect",phonetic:"/rɪˈflekt/",pos:"动词",meaning:"反映，反思",example:"Reflect on your experience.",level:"cet4"},
+  {word:"relationship",phonetic:"/rɪˈleɪʃənʃɪp/",pos:"名词",meaning:"关系，联系",example:"Build strong relationships.",level:"cet4"},
+  {word:"relevant",phonetic:"/ˈreləvənt/",pos:"形容词",meaning:"相关的，有关的",example:"Provide relevant information.",level:"cet4"},
+  {word:"require",phonetic:"/rɪˈkwaɪər/",pos:"动词",meaning:"需要，要求",example:"This job requires experience.",level:"cet4"},
+  {word:"research",phonetic:"/rɪˈsɜːrtʃ/",pos:"名词/动词",meaning:"研究，调查",example:"Research the topic thoroughly.",level:"cet4"},
+  {word:"resource",phonetic:"/rɪˈsɔːrs/",pos:"名词",meaning:"资源，财力",example:"Use your resources wisely.",level:"cet4"},
+  {word:"respond",phonetic:"/rɪˈspɒnd/",pos:"动词",meaning:"回应，响应",example:"Respond to emails promptly.",level:"cet4"},
+  {word:"responsible",phonetic:"/rɪˈspɒnsɪbl/",pos:"形容词",meaning:"负责的，有责任的",example:"Be responsible for your actions.",level:"cet4"},
+  {word:"reveal",phonetic:"/rɪˈviːl/",pos:"动词",meaning:"揭示，透露",example:"The report reveals new findings.",level:"cet4"},
+  {word:"significant",phonetic:"/sɪɡˈnɪfɪkənt/",pos:"形容词",meaning:"重要的，显著的",example:"This is a significant discovery.",level:"cet4"},
+  {word:"similar",phonetic:"/ˈsɪmɪlər/",pos:"形容词",meaning:"相似的，类似的",example:"We have similar interests.",level:"cet4"},
+  {word:"situation",phonetic:"/ˌsɪtʃuˈeɪʃən/",pos:"名词",meaning:"情况，形势",example:"Assess the situation carefully.",level:"cet4"},
+  {word:"skill",phonetic:"/skɪl/",pos:"名词",meaning:"技能，技巧",example:"Develop new skills constantly.",level:"cet4"},
+  {word:"strategy",phonetic:"/ˈstrætədʒi/",pos:"名词",meaning:"战略，策略",example:"Create a winning strategy.",level:"cet4"},
+  {word:"structure",phonetic:"/ˈstrʌktʃər/",pos:"名词/动词",meaning:"结构，构建",example:"The structure of the essay is clear.",level:"cet4"},
+  {word:"support",phonetic:"/səˈpɔːrt/",pos:"名词/动词",meaning:"支持，支撑",example:"Support your team members.",level:"cet4"},
+  {word:"survive",phonetic:"/səˈvaɪv/",pos:"动词",meaning:"生存，幸存",example:"How do plants survive in the desert?",level:"cet4"},
+  {word:"tendency",phonetic:"/ˈtendənsi/",pos:"名词",meaning:"趋势，倾向",example:"There is a tendency to overwork.",level:"cet4"},
+  {word:"therefore",phonetic:"/ˈðeəfɔːr/",pos:"副词",meaning:"因此，所以",example:"I studied hard, therefore I passed.",level:"cet4"},
+  {word:"tradition",phonetic:"/trəˈdɪʃən/",pos:"名词",meaning:"传统，惯例",example:"Respect cultural traditions.",level:"cet4"},
+  {word:"transfer",phonetic:"/ˈtrænsfɜːr/",pos:"动词/名词",meaning:"转移，传递",example:"Transfer the files to the new folder.",level:"cet4"},
+  {word:"transform",phonetic:"/trænsˈfɔːrm/",pos:"动词",meaning:"变形，改变",example:"Education can transform lives.",level:"cet4"},
+  {word:"unique",phonetic:"/juːˈniːk/",pos:"形容词",meaning:"独特的，唯一的",example:"Everyone is unique.",level:"cet4"},
+  {word:"various",phonetic:"/ˈveəriəs/",pos:"形容词",meaning:"各种各样的",example:"There are various ways to learn.",level:"cet4"},
+  {word:"voluntary",phonetic:"/ˈvɒləntri/",pos:"形容词",meaning:"自愿的，志愿的",example:"Participation is voluntary.",level:"cet4"},
+].map((w,i)=>({...w,id:10000+i}));
 
 const CET6_WORDS=[
   {word:"abolish",phonetic:"/əˈbɒlɪʃ/",pos:"动词",meaning:"废除，废止",example:"They voted to abolish the law.",level:"cet6"},
@@ -304,7 +503,7 @@ const CET6_WORDS=[
   {word:"analogy",phonetic:"/əˈnælədʒi/",pos:"名词",meaning:"类比，比拟",example:"He explained it by analogy.",level:"cet6"},
   {word:"anticipate",phonetic:"/ænˈtɪsɪpeɪt/",pos:"动词",meaning:"预期，期盼",example:"We anticipate strong sales.",level:"cet6"},
   {word:"arbitrary",phonetic:"/ˈɑːrbɪtreri/",pos:"形容词",meaning:"任意的，武断的",example:"The decision seemed arbitrary.",level:"cet6"},
-  {word:"articulate",phonetic:"/ɑːrˈtɪkjuleɪt/",pos:"动词/形容词",meaning:"表达清晰的，表明",example:"She is very articulate.",level:"cet6"},
+  {word:"articulate",phonetic:"/ɑːrˈtɪkjuleɪt/",pos:"形容词/动词",meaning:"表达清晰的",example:"She is very articulate.",level:"cet6"},
   {word:"aspire",phonetic:"/əˈspaɪər/",pos:"动词",meaning:"渴望，立志",example:"He aspires to be a doctor.",level:"cet6"},
   {word:"assert",phonetic:"/əˈsɜːrt/",pos:"动词",meaning:"断言，维护",example:"She asserted her innocence.",level:"cet6"},
   {word:"authentic",phonetic:"/ɔːˈθentɪk/",pos:"形容词",meaning:"真实的，可靠的",example:"This is an authentic painting.",level:"cet6"},
@@ -325,7 +524,7 @@ const CET6_WORDS=[
   {word:"consensus",phonetic:"/kənˈsensəs/",pos:"名词",meaning:"共识，一致意见",example:"They reached a consensus.",level:"cet6"},
   {word:"contemplate",phonetic:"/ˈkɒntəmpleɪt/",pos:"动词",meaning:"沉思，考虑",example:"Take time to contemplate your options.",level:"cet6"},
   {word:"contradict",phonetic:"/ˌkɒntrəˈdɪkt/",pos:"动词",meaning:"与…矛盾，反驳",example:"His actions contradict his words.",level:"cet6"},
-  {word:"controversial",phonetic:"/ˌkɒntrəˈvɜːrʃəl/",pos:"形容词",meaning:"有争议的，引起争论的",example:"This is a controversial topic.",level:"cet6"},
+  {word:"controversial",phonetic:"/ˌkɒntrəˈvɜːrʃəl/",pos:"形容词",meaning:"有争议的",example:"This is a controversial topic.",level:"cet6"},
   {word:"convey",phonetic:"/kənˈveɪ/",pos:"动词",meaning:"传达，运输",example:"Convey my regards to your family.",level:"cet6"},
   {word:"crucial",phonetic:"/ˈkruːʃəl/",pos:"形容词",meaning:"至关重要的，关键的",example:"Sleep is crucial for health.",level:"cet6"},
   {word:"cultivate",phonetic:"/ˈkʌltɪveɪt/",pos:"动词",meaning:"培养，耕种",example:"Cultivate good habits early.",level:"cet6"},
@@ -340,7 +539,105 @@ const CET6_WORDS=[
   {word:"diminish",phonetic:"/dɪˈmɪnɪʃ/",pos:"动词",meaning:"减少，降低",example:"The pain slowly diminished.",level:"cet6"},
   {word:"discrepancy",phonetic:"/dɪˈskrepənsi/",pos:"名词",meaning:"差异，不符合",example:"There is a discrepancy in the data.",level:"cet6"},
   {word:"diverse",phonetic:"/daɪˈvɜːrs/",pos:"形容词",meaning:"多样的，不同的",example:"Our team is very diverse.",level:"cet6"},
-].map((w,i)=>({...w,id:20000+i,status:'new',wrongCount:0,practiceCount:0,addedAt:'2024-01-01'}));
+  {word:"dominate",phonetic:"/ˈdɒmɪneɪt/",pos:"动词",meaning:"支配，主导",example:"One team dominated the game.",level:"cet6"},
+  {word:"dynamic",phonetic:"/daɪˈnæmɪk/",pos:"形容词/名词",meaning:"动态的，有活力的",example:"The market is very dynamic.",level:"cet6"},
+  {word:"elaborate",phonetic:"/ɪˈlæbərət/",pos:"形容词/动词",meaning:"精心制作的，详细说明",example:"Please elaborate on your idea.",level:"cet6"},
+  {word:"emerge",phonetic:"/ɪˈmɜːrdʒ/",pos:"动词",meaning:"出现，浮现",example:"New trends emerge every year.",level:"cet6"},
+  {word:"empirical",phonetic:"/ɪmˈpɪrɪkl/",pos:"形容词",meaning:"以经验为依据的",example:"Empirical evidence is important.",level:"cet6"},
+  {word:"endeavor",phonetic:"/ɪnˈdevər/",pos:"名词/动词",meaning:"努力，尽力",example:"Endeavor to do your best.",level:"cet6"},
+  {word:"enforce",phonetic:"/ɪnˈfɔːrs/",pos:"动词",meaning:"执行，强制",example:"Laws must be enforced fairly.",level:"cet6"},
+  {word:"enhance",phonetic:"/ɪnˈhɑːns/",pos:"动词",meaning:"增强，提高",example:"Exercise enhances your mood.",level:"cet6"},
+  {word:"enterprise",phonetic:"/ˈentərpraɪz/",pos:"名词",meaning:"企业，事业",example:"Start your own enterprise.",level:"cet6"},
+  {word:"entity",phonetic:"/ˈentɪti/",pos:"名词",meaning:"实体，存在",example:"A company is a legal entity.",level:"cet6"},
+  {word:"equivalent",phonetic:"/ɪˈkwɪvələnt/",pos:"形容词/名词",meaning:"等价的，相等的",example:"Find an equivalent solution.",level:"cet6"},
+  {word:"excessive",phonetic:"/ɪkˈsesɪv/",pos:"形容词",meaning:"过度的，过分的",example:"Avoid excessive screen time.",level:"cet6"},
+  {word:"explicit",phonetic:"/ɪkˈsplɪsɪt/",pos:"形容词",meaning:"明确的，清楚的",example:"Give explicit instructions.",level:"cet6"},
+  {word:"exploit",phonetic:"/ɪkˈsplɔɪt/",pos:"动词",meaning:"利用，剥削",example:"Don't exploit others for gain.",level:"cet6"},
+  {word:"facilitate",phonetic:"/fəˈsɪlɪteɪt/",pos:"动词",meaning:"促进，使容易",example:"Technology facilitates communication.",level:"cet6"},
+  {word:"fluctuate",phonetic:"/ˈflʌktʃueɪt/",pos:"动词",meaning:"波动，起伏",example:"Prices fluctuate with demand.",level:"cet6"},
+  {word:"formulate",phonetic:"/ˈfɔːrmjuleɪt/",pos:"动词",meaning:"制定，规划",example:"Formulate a clear strategy.",level:"cet6"},
+  {word:"fragile",phonetic:"/ˈfrædʒaɪl/",pos:"形容词",meaning:"易碎的，脆弱的",example:"Handle the fragile item with care.",level:"cet6"},
+  {word:"framework",phonetic:"/ˈfreɪmwɜːrk/",pos:"名词",meaning:"框架，体系",example:"Build a solid framework first.",level:"cet6"},
+  {word:"friction",phonetic:"/ˈfrɪkʃən/",pos:"名词",meaning:"摩擦，冲突",example:"There was friction between the teams.",level:"cet6"},
+  {word:"hierarchy",phonetic:"/ˈhaɪərɑːrki/",pos:"名词",meaning:"等级制度，层次结构",example:"Understand the company hierarchy.",level:"cet6"},
+  {word:"hypothesis",phonetic:"/haɪˈpɒθəsɪs/",pos:"名词",meaning:"假设，假说",example:"Test your hypothesis with data.",level:"cet6"},
+  {word:"ideology",phonetic:"/ˌaɪdiˈɒlədʒi/",pos:"名词",meaning:"意识形态，思想体系",example:"Political ideology varies widely.",level:"cet6"},
+  {word:"illuminate",phonetic:"/ɪˈluːmɪneɪt/",pos:"动词",meaning:"照明，阐明",example:"Her speech illuminated the issue.",level:"cet6"},
+  {word:"implicit",phonetic:"/ɪmˈplɪsɪt/",pos:"形容词",meaning:"隐含的，含蓄的",example:"There was an implicit threat.",level:"cet6"},
+  {word:"incentive",phonetic:"/ɪnˈsentɪv/",pos:"名词",meaning:"激励，动机",example:"Bonuses are a good incentive.",level:"cet6"},
+  {word:"inevitable",phonetic:"/ɪnˈevɪtəbl/",pos:"形容词",meaning:"不可避免的",example:"Change is inevitable.",level:"cet6"},
+  {word:"infrastructure",phonetic:"/ˈɪnfrəstrʌktʃər/",pos:"名词",meaning:"基础设施",example:"Good infrastructure boosts economy.",level:"cet6"},
+  {word:"inherent",phonetic:"/ɪnˈhɪərənt/",pos:"形容词",meaning:"固有的，内在的",example:"There are inherent risks in every job.",level:"cet6"},
+  {word:"initiative",phonetic:"/ɪˈnɪʃətɪv/",pos:"名词",meaning:"主动性，倡议",example:"Take the initiative to improve.",level:"cet6"},
+  {word:"innovation",phonetic:"/ˌɪnəˈveɪʃən/",pos:"名词",meaning:"创新，革新",example:"Innovation is key to success.",level:"cet6"},
+  {word:"integrate",phonetic:"/ˈɪntɪɡreɪt/",pos:"动词",meaning:"整合，融合",example:"Integrate new ideas into practice.",level:"cet6"},
+  {word:"intellectual",phonetic:"/ˌɪntəˈlektʃuəl/",pos:"形容词/名词",meaning:"智力的，知识分子",example:"Intellectual curiosity drives learning.",level:"cet6"},
+  {word:"interpret",phonetic:"/ɪnˈtɜːrprɪt/",pos:"动词",meaning:"解释，口译",example:"How do you interpret this poem?",level:"cet6"},
+  {word:"intuition",phonetic:"/ˌɪntjuˈɪʃən/",pos:"名词",meaning:"直觉，本能",example:"Trust your intuition.",level:"cet6"},
+  {word:"justify",phonetic:"/ˈdʒʌstɪfaɪ/",pos:"动词",meaning:"证明…正当，辩护",example:"Justify your decision with facts.",level:"cet6"},
+  {word:"liability",phonetic:"/ˌlaɪəˈbɪlɪti/",pos:"名词",meaning:"责任，债务",example:"Know your legal liability.",level:"cet6"},
+  {word:"legitimate",phonetic:"/lɪˈdʒɪtɪmət/",pos:"形容词",meaning:"合法的，正当的",example:"Is this a legitimate business?",level:"cet6"},
+  {word:"lucrative",phonetic:"/ˈluːkrətɪv/",pos:"形容词",meaning:"有利可图的，赚钱的",example:"It is a lucrative career.",level:"cet6"},
+  {word:"manipulate",phonetic:"/məˈnɪpjuleɪt/",pos:"动词",meaning:"操纵，控制",example:"Don't manipulate others.",level:"cet6"},
+  {word:"mechanism",phonetic:"/ˈmekənɪzəm/",pos:"名词",meaning:"机制，机械装置",example:"Understand the mechanism of change.",level:"cet6"},
+  {word:"mitigate",phonetic:"/ˈmɪtɪɡeɪt/",pos:"动词",meaning:"减轻，缓和",example:"Mitigate the impact of stress.",level:"cet6"},
+  {word:"momentum",phonetic:"/məˈmentəm/",pos:"名词",meaning:"动力，势头",example:"Build momentum in your project.",level:"cet6"},
+  {word:"notion",phonetic:"/ˈnəʊʃən/",pos:"名词",meaning:"概念，想法",example:"Challenge traditional notions.",level:"cet6"},
+  {word:"objective",phonetic:"/əbˈdʒektɪv/",pos:"名词/形容词",meaning:"目标，客观的",example:"Set clear objectives.",level:"cet6"},
+  {word:"obsolete",phonetic:"/ˌɒbsəˈliːt/",pos:"形容词",meaning:"废弃的，过时的",example:"Old technology becomes obsolete.",level:"cet6"},
+  {word:"offspring",phonetic:"/ˈɒfsprɪŋ/",pos:"名词",meaning:"后代，产物",example:"The offspring inherited the trait.",level:"cet6"},
+  {word:"overwhelm",phonetic:"/ˌəʊvəˈwelm/",pos:"动词",meaning:"使不知所措，压倒",example:"Don't let stress overwhelm you.",level:"cet6"},
+  {word:"paradox",phonetic:"/ˈpærədɒks/",pos:"名词",meaning:"矛盾，悖论",example:"That's an interesting paradox.",level:"cet6"},
+  {word:"perceive",phonetic:"/pəˈsiːv/",pos:"动词",meaning:"感知，理解",example:"How do you perceive this problem?",level:"cet6"},
+  {word:"persist",phonetic:"/pəˈsɪst/",pos:"动词",meaning:"坚持，持续",example:"Persist in the face of challenges.",level:"cet6"},
+  {word:"phenomenon",phonetic:"/fɪˈnɒmɪnən/",pos:"名词",meaning:"现象，奇事",example:"Social media is a global phenomenon.",level:"cet6"},
+  {word:"pragmatic",phonetic:"/præɡˈmætɪk/",pos:"形容词",meaning:"务实的，实用主义的",example:"Take a pragmatic approach.",level:"cet6"},
+  {word:"precedent",phonetic:"/ˈpresɪdənt/",pos:"名词",meaning:"先例，惯例",example:"This case sets a precedent.",level:"cet6"},
+  {word:"predominant",phonetic:"/prɪˈdɒmɪnənt/",pos:"形容词",meaning:"主要的，卓越的",example:"English is predominant in science.",level:"cet6"},
+  {word:"prejudice",phonetic:"/ˈpredʒudɪs/",pos:"名词/动词",meaning:"偏见，歧视",example:"Fight against racial prejudice.",level:"cet6"},
+  {word:"premise",phonetic:"/ˈpremɪs/",pos:"名词",meaning:"前提，假设",example:"Question the premise of the argument.",level:"cet6"},
+  {word:"prestige",phonetic:"/preˈstiːʒ/",pos:"名词",meaning:"声望，威信",example:"Work at a company with prestige.",level:"cet6"},
+  {word:"prolong",phonetic:"/prəˈlɒŋ/",pos:"动词",meaning:"延长，拖延",example:"Don't prolong a difficult decision.",level:"cet6"},
+  {word:"propaganda",phonetic:"/ˌprɒpəˈɡændə/",pos:"名词",meaning:"宣传，鼓动",example:"Be critical of propaganda.",level:"cet6"},
+  {word:"prosperous",phonetic:"/ˈprɒspərəs/",pos:"形容词",meaning:"繁荣的，兴旺的",example:"A prosperous community benefits all.",level:"cet6"},
+  {word:"prototype",phonetic:"/ˈprəʊtətaɪp/",pos:"名词",meaning:"原型，样机",example:"Build a prototype before production.",level:"cet6"},
+  {word:"provoke",phonetic:"/prəˈvəʊk/",pos:"动词",meaning:"激怒，引发",example:"Don't provoke unnecessary conflict.",level:"cet6"},
+  {word:"rational",phonetic:"/ˈræʃənl/",pos:"形容词",meaning:"理性的，合理的",example:"Make rational decisions.",level:"cet6"},
+  {word:"rectify",phonetic:"/ˈrektɪfaɪ/",pos:"动词",meaning:"纠正，修正",example:"Rectify the mistake immediately.",level:"cet6"},
+  {word:"reinforce",phonetic:"/ˌriːɪnˈfɔːrs/",pos:"动词",meaning:"加强，强化",example:"Reinforce good habits daily.",level:"cet6"},
+  {word:"reluctant",phonetic:"/rɪˈlʌktənt/",pos:"形容词",meaning:"不情愿的，勉强的",example:"She was reluctant to speak.",level:"cet6"},
+  {word:"remnant",phonetic:"/ˈremnənt/",pos:"名词",meaning:"残余，遗迹",example:"Remnants of the old wall remain.",level:"cet6"},
+  {word:"renowned",phonetic:"/rɪˈnaʊnd/",pos:"形容词",meaning:"著名的，有声望的",example:"She is renowned for her research.",level:"cet6"},
+  {word:"resilient",phonetic:"/rɪˈzɪliənt/",pos:"形容词",meaning:"有弹性的，能复原的",example:"Be resilient in difficult times.",level:"cet6"},
+  {word:"restraint",phonetic:"/rɪˈstreɪnt/",pos:"名词",meaning:"克制，约束",example:"Exercise restraint in arguments.",level:"cet6"},
+  {word:"rhetoric",phonetic:"/ˈretərɪk/",pos:"名词",meaning:"修辞，花言巧语",example:"His speech was full of rhetoric.",level:"cet6"},
+  {word:"rigorous",phonetic:"/ˈrɪɡərəs/",pos:"形容词",meaning:"严格的，缜密的",example:"A rigorous process ensures quality.",level:"cet6"},
+  {word:"scenario",phonetic:"/sɪˈnɑːriəʊ/",pos:"名词",meaning:"场景，方案",example:"Consider the worst-case scenario.",level:"cet6"},
+  {word:"scrutiny",phonetic:"/ˈskruːtɪni/",pos:"名词",meaning:"严格审查，仔细检查",example:"The plan is under public scrutiny.",level:"cet6"},
+  {word:"segregate",phonetic:"/ˈseɡrɪɡeɪt/",pos:"动词",meaning:"隔离，分离",example:"Don't segregate groups unfairly.",level:"cet6"},
+  {word:"simultaneously",phonetic:"/ˌsɪməlˈteɪniəsli/",pos:"副词",meaning:"同时地",example:"She multitasks simultaneously.",level:"cet6"},
+  {word:"skeptical",phonetic:"/ˈskeptɪkl/",pos:"形容词",meaning:"怀疑的，多疑的",example:"Be skeptical of fake news.",level:"cet6"},
+  {word:"sophisticated",phonetic:"/səˈfɪstɪkeɪtɪd/",pos:"形容词",meaning:"复杂的，老练的",example:"This is a sophisticated system.",level:"cet6"},
+  {word:"speculation",phonetic:"/ˌspekjuˈleɪʃən/",pos:"名词",meaning:"推测，投机",example:"Avoid speculation without facts.",level:"cet6"},
+  {word:"spontaneous",phonetic:"/spɒnˈteɪniəs/",pos:"形容词",meaning:"自发的，自然的",example:"A spontaneous reaction surprised us.",level:"cet6"},
+  {word:"subordinate",phonetic:"/səˈbɔːrdɪnət/",pos:"形容词/名词",meaning:"下属的，次要的",example:"Treat subordinates with respect.",level:"cet6"},
+  {word:"subtle",phonetic:"/ˈsʌtl/",pos:"形容词",meaning:"微妙的，不明显的",example:"There is a subtle difference.",level:"cet6"},
+  {word:"suppress",phonetic:"/səˈpres/",pos:"动词",meaning:"压制，抑制",example:"Don't suppress your emotions.",level:"cet6"},
+  {word:"sustainable",phonetic:"/səˈsteɪnəbl/",pos:"形容词",meaning:"可持续的",example:"Adopt sustainable practices.",level:"cet6"},
+  {word:"synthesis",phonetic:"/ˈsɪnθəsɪs/",pos:"名词",meaning:"综合，合成",example:"Synthesis of ideas leads to innovation.",level:"cet6"},
+  {word:"tangible",phonetic:"/ˈtændʒɪbl/",pos:"形容词",meaning:"有形的，切实的",example:"Show tangible results.",level:"cet6"},
+  {word:"transparent",phonetic:"/trænsˈpærənt/",pos:"形容词",meaning:"透明的，坦诚的",example:"Be transparent in your dealings.",level:"cet6"},
+  {word:"trivial",phonetic:"/ˈtrɪviəl/",pos:"形容词",meaning:"微不足道的，琐碎的",example:"Don't worry about trivial things.",level:"cet6"},
+  {word:"underlying",phonetic:"/ˌʌndəˈlaɪɪŋ/",pos:"形容词",meaning:"潜在的，根本的",example:"Find the underlying cause.",level:"cet6"},
+  {word:"undermine",phonetic:"/ˌʌndəˈmaɪn/",pos:"动词",meaning:"暗中破坏，削弱",example:"Don't undermine your team's efforts.",level:"cet6"},
+  {word:"unprecedented",phonetic:"/ʌnˈpresɪdentɪd/",pos:"形容词",meaning:"史无前例的",example:"This is an unprecedented situation.",level:"cet6"},
+  {word:"validate",phonetic:"/ˈvælɪdeɪt/",pos:"动词",meaning:"验证，确认",example:"Validate your assumptions with data.",level:"cet6"},
+  {word:"versatile",phonetic:"/ˈvɜːrsətaɪl/",pos:"形容词",meaning:"多才多艺的，多用途的",example:"A versatile skill set is valuable.",level:"cet6"},
+  {word:"vigorous",phonetic:"/ˈvɪɡərəs/",pos:"形容词",meaning:"精力充沛的，强健的",example:"Take vigorous exercise daily.",level:"cet6"},
+  {word:"virtually",phonetic:"/ˈvɜːrtʃuəli/",pos:"副词",meaning:"实际上，几乎",example:"This is virtually impossible.",level:"cet6"},
+  {word:"vulnerability",phonetic:"/ˌvʌlnərəˈbɪlɪti/",pos:"名词",meaning:"脆弱性，易受攻击",example:"Acknowledge your vulnerability.",level:"cet6"},
+  {word:"widespread",phonetic:"/ˈwaɪdspred/",pos:"形容词",meaning:"广泛的，普遍的",example:"The disease is widespread.",level:"cet6"},
+].map((w,i)=>({...w,id:20000+i}));
 
 // ═══════════════════════════════════════
 // MY DEFAULT WORDS
@@ -348,14 +645,26 @@ const CET6_WORDS=[
 const MY_DEFAULT=[
   {id:1,word:"describe",phonetic:"/dɪˈskraɪb/",pos:"动词",meaning:"描述，描写",example:"She described the view beautifully.",status:"new",wrongCount:0,practiceCount:0,addedAt:"2024-01-01",level:"my"},
   {id:2,word:"scenery",phonetic:"/ˈsiːnəri/",pos:"名词",meaning:"风景，景色",example:"The mountain scenery was breathtaking.",status:"new",wrongCount:0,practiceCount:0,addedAt:"2024-01-01",level:"my"},
-  {id:3,word:"confident",phonetic:"/ˈkɒnfɪdənt/",pos:"形容词",meaning:"自信的",example:"She felt confident speaking English.",status:"new",wrongCount:0,practiceCount:0,addedAt:"2024-01-01",level:"my"},
-  {id:4,word:"framework",phonetic:"/ˈfreɪmwɜːrk/",pos:"名词",meaning:"框架，体系",example:"Here's a simple framework to follow.",status:"new",wrongCount:0,practiceCount:0,addedAt:"2024-01-01",level:"my"},
-  {id:5,word:"memorize",phonetic:"/ˈmeməraɪz/",pos:"动词",meaning:"记忆，背诵",example:"Try to memorize ten words a day.",status:"new",wrongCount:0,practiceCount:0,addedAt:"2024-01-01",level:"my"},
-  {id:6,word:"shadowing",phonetic:"/ˈʃædəʊɪŋ/",pos:"名词",meaning:"跟读练习法",example:"Shadowing helps improve your accent.",status:"new",wrongCount:0,practiceCount:0,addedAt:"2024-01-01",level:"my"},
-  {id:7,word:"comprehensible",phonetic:"/ˌkɒmprɪˈhensɪbl/",pos:"形容词",meaning:"可理解的",example:"Use comprehensible input to learn faster.",status:"new",wrongCount:0,practiceCount:0,addedAt:"2024-01-01",level:"my"},
-  {id:8,word:"efficient",phonetic:"/ɪˈfɪʃənt/",pos:"形容词",meaning:"高效的",example:"This method is four times more efficient.",status:"new",wrongCount:0,practiceCount:0,addedAt:"2024-01-01",level:"my"},
-  {id:9,word:"rejuvenating",phonetic:"/rɪˈdʒuːvəneɪtɪŋ/",pos:"形容词",meaning:"令人焕发活力的",example:"A walk in nature is rejuvenating.",status:"new",wrongCount:0,practiceCount:0,addedAt:"2024-01-01",level:"my"},
-  {id:10,word:"concrete",phonetic:"/ˈkɒŋkriːt/",pos:"形容词",meaning:"具体的；混凝土",example:"A concrete jungle means a big city.",status:"new",wrongCount:0,practiceCount:0,addedAt:"2024-01-01",level:"my"},
+  {id:3,word:"stories",phonetic:"/ˈstɔːriz/",pos:"名词",meaning:"故事（story复数）",example:"He loves telling travel stories.",status:"new",wrongCount:0,practiceCount:0,addedAt:"2024-01-01",level:"my"},
+  {id:4,word:"confident",phonetic:"/ˈkɒnfɪdənt/",pos:"形容词",meaning:"自信的",example:"She felt confident speaking English.",status:"new",wrongCount:0,practiceCount:0,addedAt:"2024-01-01",level:"my"},
+  {id:5,word:"framework",phonetic:"/ˈfreɪmwɜːrk/",pos:"名词",meaning:"框架，体系",example:"Here's a simple framework to follow.",status:"new",wrongCount:0,practiceCount:0,addedAt:"2024-01-01",level:"my"},
+  {id:6,word:"memorize",phonetic:"/ˈmeməraɪz/",pos:"动词",meaning:"记忆，背诵",example:"Try to memorize ten words a day.",status:"new",wrongCount:0,practiceCount:0,addedAt:"2024-01-01",level:"my"},
+  {id:7,word:"shadowing",phonetic:"/ˈʃædəʊɪŋ/",pos:"名词",meaning:"跟读练习法",example:"Shadowing helps improve your accent.",status:"new",wrongCount:0,practiceCount:0,addedAt:"2024-01-01",level:"my"},
+  {id:8,word:"practice",phonetic:"/ˈpræktɪs/",pos:"名词/动词",meaning:"练习",example:"Daily practice makes perfect.",status:"new",wrongCount:0,practiceCount:0,addedAt:"2024-01-01",level:"my"},
+  {id:9,word:"actually",phonetic:"/ˈæktʃuəli/",pos:"副词",meaning:"实际上，真正地",example:"Let's actually start speaking today.",status:"new",wrongCount:0,practiceCount:0,addedAt:"2024-01-01",level:"my"},
+  {id:10,word:"designed",phonetic:"/dɪˈzaɪnd/",pos:"动词",meaning:"设计的，旨在",example:"This course is designed for beginners.",status:"new",wrongCount:0,practiceCount:0,addedAt:"2024-01-01",level:"my"},
+  {id:11,word:"comprehensible",phonetic:"/ˌkɒmprɪˈhensɪbl/",pos:"形容词",meaning:"可理解的，易懂的",example:"Use comprehensible input to learn faster.",status:"new",wrongCount:0,practiceCount:0,addedAt:"2024-01-01",level:"my"},
+  {id:12,word:"input",phonetic:"/ˈɪnpʊt/",pos:"名词",meaning:"输入；语言输入",example:"Listening is a form of language input.",status:"new",wrongCount:0,practiceCount:0,addedAt:"2024-01-01",level:"my"},
+  {id:13,word:"efficient",phonetic:"/ɪˈfɪʃənt/",pos:"形容词",meaning:"高效的",example:"This method is four times more efficient.",status:"new",wrongCount:0,practiceCount:0,addedAt:"2024-01-01",level:"my"},
+  {id:14,word:"methods",phonetic:"/ˈmeθədz/",pos:"名词",meaning:"方法（复数）",example:"There are many methods to learn English.",status:"new",wrongCount:0,practiceCount:0,addedAt:"2024-01-01",level:"my"},
+  {id:15,word:"concrete",phonetic:"/ˈkɒŋkriːt/",pos:"形容词",meaning:"具体的；混凝土",example:"A concrete jungle means a big city.",status:"new",wrongCount:0,practiceCount:0,addedAt:"2024-01-01",level:"my"},
+  {id:16,word:"jungle",phonetic:"/ˈdʒʌŋɡl/",pos:"名词",meaning:"丛林；混凝土丛林",example:"New York is a real concrete jungle.",status:"new",wrongCount:0,practiceCount:0,addedAt:"2024-01-01",level:"my"},
+  {id:17,word:"soaking",phonetic:"/ˈsəʊkɪŋ/",pos:"形容词",meaning:"浑身湿透的",example:"I got soaking wet in the rain.",status:"new",wrongCount:0,practiceCount:0,addedAt:"2024-01-01",level:"my"},
+  {id:18,word:"chain",phonetic:"/tʃeɪn/",pos:"名词",meaning:"连锁店；链条",example:"They stayed at a hotel chain.",status:"new",wrongCount:0,practiceCount:0,addedAt:"2024-01-01",level:"my"},
+  {id:19,word:"rustling",phonetic:"/ˈrʌslɪŋ/",pos:"形容词",meaning:"沙沙作响的",example:"I heard the rustling of leaves.",status:"new",wrongCount:0,practiceCount:0,addedAt:"2024-01-01",level:"my"},
+  {id:20,word:"rejuvenating",phonetic:"/rɪˈdʒuːvəneɪtɪŋ/",pos:"形容词",meaning:"令人焕发活力的",example:"A walk in nature is rejuvenating.",status:"new",wrongCount:0,practiceCount:0,addedAt:"2024-01-01",level:"my"},
+  {id:21,word:"comprehensible input",phonetic:"/ˌkɒmprɪˈhensɪbl ˈɪnpʊt/",pos:"短语",meaning:"可理解性输入（语言习得理论）",example:"Videos are a great source of comprehensible input.",status:"new",wrongCount:0,practiceCount:0,addedAt:"2024-01-01",level:"my"},
+  {id:22,word:"rejuvenate",phonetic:"/rɪˈdʒuːvəneɪt/",pos:"动词",meaning:"使焕发活力，恢复精神",example:"Nature can rejuvenate your mind.",status:"new",wrongCount:0,practiceCount:0,addedAt:"2024-01-01",level:"my"},
 ];
 
 // ═══════════════════════════════════════
@@ -496,6 +805,7 @@ function render(){
   else if(page==='cet')b.innerHTML=renderCet();
   else if(page==='mistakes')b.innerHTML=renderMistakes(d);
   else if(page==='add')b.innerHTML=renderAdd();
+  else if(page==='batch')b.innerHTML=renderBatch();
   else if(page==='settings')b.innerHTML=renderSettings();
 }
 
@@ -926,6 +1236,163 @@ async function aiAutoFill(){
   }catch(e){if(st)st.textContent='❌ 失败';toast('查询失败，检查 API Key');}
 }
 
+// ═══════════════════════════════════════
+// BATCH IMPORT
+// ═══════════════════════════════════════
+let batchWords=[];
+let batchLoading=false;
+
+function renderBatch(){
+  const dsKey=loadCfg().dsKey;
+  return`
+<div class="page-title">批量导入生词</div>
+<div class="card" style="border-left:3px solid var(--blue-mid);margin-bottom:1rem">
+  <div style="font-size:12.5px;font-weight:600;color:var(--blue);margin-bottom:8px;font-family:sans-serif">🤖 AI 智能提取 + 自动补全</div>
+  <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+    <input class="inp" id="b-dskey" type="password" placeholder="DeepSeek API Key（sk-...）" value="${dsKey}" style="flex:1;min-width:180px;font-size:12px;font-family:monospace">
+  </div>
+  <div style="font-size:12px;color:var(--ink4);margin-top:6px;font-family:sans-serif">粘贴一段英文，AI 自动识别生词并补全所有信息。</div>
+</div>
+<div class="card" style="margin-bottom:1rem">
+  <div class="field">
+    <label class="label">粘贴英文文章或句子</label>
+    <textarea class="inp" id="b-text" placeholder="粘贴任意英文内容，例如：&#10;The mountain scenery was breathtaking. She felt confident and rejuvenating after the walk through the concrete jungle...&#10;&#10;AI 会自动提取其中的重要生词。"></textarea>
+  </div>
+  <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+    <button class="btn btn-blue" id="b-extract-btn" onclick="batchExtract()">🔍 AI 提取生词</button>
+    <span id="b-status" style="font-size:13px;color:var(--ink3);font-family:sans-serif"></span>
+  </div>
+</div>
+<div id="b-results"></div>`;
+}
+
+async function batchExtract(){
+  const text=document.getElementById('b-text')?.value.trim();
+  if(!text){toast('请先粘贴英文内容');return;}
+  const key=document.getElementById('b-dskey')?.value.trim()||loadCfg().dsKey;
+  if(!key){toast('请填写 DeepSeek API Key');return;}
+  saveCfg({dsKey:key});
+
+  const btn=document.getElementById('b-extract-btn');
+  const status=document.getElementById('b-status');
+  btn.disabled=true;btn.textContent='⏳ AI 分析中…';
+  if(status)status.textContent='正在提取生词，请稍候…';
+
+  try{
+    const res=await fetch('https://api.deepseek.com/chat/completions',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+key},
+      body:JSON.stringify({
+        model:'deepseek-chat',
+        max_tokens:2000,
+        temperature:0.3,
+        messages:[{role:'user',content:`从以下英文文本中提取5-15个有学习价值的英文单词或短语（排除简单词如 the/a/is/and 等），为每个词提供详细信息。
+
+文本：
+${text}
+
+只返回JSON数组，格式如下（不要其他文字）：
+[{"word":"单词","phonetic":"国际音标","pos":"词性中文","meaning":"中文释义","example":"原文中的例句或自造例句"}]`}]
+      })
+    });
+    const data=await res.json();
+    if(data.error){toast('API错误：'+data.error.message);return;}
+    
+    let content=data.choices[0].message.content.trim();
+    content=content.replace(/```json|```/g,'').trim();
+    const words=JSON.parse(content);
+    
+    const d=load();
+    const existingWords=new Set(d.words.map(w=>w.word.toLowerCase()));
+    
+    batchWords=words.map(w=>({
+      ...w,
+      selected:!existingWords.has(w.word.toLowerCase()),
+      exists:existingWords.has(w.word.toLowerCase())
+    }));
+
+    renderBatchResults();
+    if(status)status.textContent=`提取到 ${words.length} 个生词`;
+  }catch(e){
+    toast('提取失败，请检查 API Key 或网络');
+    console.error(e);
+  }finally{
+    btn.disabled=false;btn.textContent='🔍 AI 提取生词';
+  }
+}
+
+function renderBatchResults(){
+  if(!batchWords.length)return;
+  const selectedCount=batchWords.filter(w=>w.selected).length;
+  const container=document.getElementById('b-results');
+  container.innerHTML=`
+<div class="card" style="margin-bottom:1rem">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;flex-wrap:wrap;gap:8px">
+    <div style="font-weight:600;font-family:'Noto Serif SC',serif">提取结果 <span style="color:var(--ink4);font-size:13px;font-weight:400;font-family:sans-serif">共 ${batchWords.length} 个词，已选 ${selectedCount} 个</span></div>
+    <div style="display:flex;gap:8px">
+      <button class="btn btn-sm btn-ghost" onclick="batchSelectAll(true)">全选</button>
+      <button class="btn btn-sm btn-ghost" onclick="batchSelectAll(false)">全不选</button>
+      <button class="btn btn-sm btn-primary" onclick="batchAddWords()" ${selectedCount===0?'disabled':''}>加入词库 (${selectedCount})</button>
+    </div>
+  </div>
+  <div id="b-word-list">
+    ${batchWords.map((w,i)=>`
+    <div class="batch-word-card${w.selected?' selected':''}${w.exists?' exists':''}" id="bwc-${i}">
+      <input type="checkbox" class="batch-check" ${w.selected?'checked':''} ${w.exists?'disabled':''} onchange="batchToggle(${i},this.checked)">
+      <div class="batch-info">
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+          <span class="batch-en">${w.word}</span>
+          <span class="batch-ph">${w.phonetic||''}</span>
+          <span class="batch-tag ${w.exists?'batch-tag-exists':'batch-tag-new'}">${w.exists?'已存在':'新词'}</span>
+        </div>
+        <div class="batch-cn">${w.pos?`<span style="color:var(--ink4);font-size:11px;margin-right:6px">${w.pos}</span>`:''}${w.meaning}</div>
+        <div class="batch-ex">${w.example||''}</div>
+      </div>
+    </div>`).join('')}
+  </div>
+</div>`;
+}
+
+function batchToggle(i,checked){
+  batchWords[i].selected=checked;
+  const card=document.getElementById('bwc-'+i);
+  if(card){card.className='batch-word-card'+(checked?' selected':'')+(batchWords[i].exists?' exists':'');}
+  // 更新按钮计数
+  const sel=batchWords.filter(w=>w.selected).length;
+  const btn=document.querySelector('#b-results .btn-primary');
+  if(btn){btn.textContent=`加入词库 (${sel})`;btn.disabled=sel===0;}
+  const header=document.querySelector('#b-results .btn-primary')?.closest('.card')?.querySelector('span[style*="ink4"]');
+}
+
+function batchSelectAll(sel){
+  batchWords.forEach((w,i)=>{if(!w.exists){w.selected=sel;const card=document.getElementById('bwc-'+i);if(card)card.className='batch-word-card'+(sel?' selected':'');}});
+  renderBatchResults();
+}
+
+function batchAddWords(){
+  const toAdd=batchWords.filter(w=>w.selected&&!w.exists);
+  if(!toAdd.length){toast('没有选中的新词');return;}
+  const d=load();
+  toAdd.forEach(w=>{
+    d.words.push({
+      id:d.nextId++,
+      word:w.word,phonetic:w.phonetic||'',pos:w.pos||'',
+      meaning:w.meaning,example:w.example||'',
+      status:'new',wrongCount:0,practiceCount:0,
+      addedAt:new Date().toISOString().split('T')[0],level:'my'
+    });
+  });
+  save(d);
+  toast(`✓ 已添加 ${toAdd.length} 个生词！`);
+  gistPush();
+  // 标记为已存在
+  toAdd.forEach(w=>{
+    const bw=batchWords.find(b=>b.word===w.word);
+    if(bw){bw.exists=true;bw.selected=false;}
+  });
+  renderBatchResults();
+}
+
 function renderAdd(){
   const dsKey=loadCfg().dsKey;
   return`
@@ -1028,6 +1495,779 @@ function resetData(){if(!confirm('确定重置所有数据？'));else{localStora
 document.addEventListener('keydown',e=>{
   if(page!=='practice'||!gs.mode||gs.mode==='choice')return;
   if(e.key==='Backspace'){backspace();return;}
+  if(e.key==='Enter'&&!gs.checked){const b=document.querySelector('.check-btn');if(b&&!b.disabled)checkSpell();return;}
+  if(e.key==='Enter'&&gs.checked){nextWord();return;}
+  if(/^[a-zA-Z]$/.test(e.key))pressKey(e.key.toLowerCase());
+});
+
+render();
+setTimeout(async()=>{await gistSync();render();},800);
+
+
+// ═══════════════════════════════════════
+// NAV
+// ═══════════════════════════════════════
+let page='home';
+function go(p){
+  document.querySelectorAll('.page').forEach(el=>el.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(el=>el.classList.remove('active'));
+  document.getElementById('pg-'+p)?.classList.add('active');
+  document.getElementById('nt-'+p)?.classList.add('active');
+  // scroll to top
+  document.getElementById('app-body').scrollTop=0;
+  page=p;gs={};
+  render();
+}
+
+// ═══════════════════════════════════════
+// RENDER
+// ═══════════════════════════════════════
+function render(){
+  const d=load();checkStreak(d);
+  if(page==='home')renderHome(d);
+  else if(page==='practice')renderPractice();
+  else if(page==='words')renderWords(d);
+  else if(page==='add')renderAdd();
+  else if(page==='settings')renderSettings();
+}
+
+// ═══════════════════════════════════════
+// HOME
+// ═══════════════════════════════════════
+function renderHome(d){
+  const total=d.words.length,mastered=d.words.filter(w=>w.status==='mastered').length;
+  const learning=d.words.filter(w=>w.status==='learning').length,newW=d.words.filter(w=>w.status==='new').length;
+  const mistakes=d.words.filter(w=>w.wrongCount>0).length;
+  const myPct=total?Math.round(mastered/total*100):0;
+  const cp=loadCetProgress();
+  const cet4m=CET4_WORDS.filter(w=>cp[w.id]?.status==='mastered').length;
+  const cet6m=CET6_WORDS.filter(w=>cp[w.id]?.status==='mastered').length;
+  const cet4pct=Math.round(cet4m/CET4_WORDS.length*100);
+  const cet6pct=Math.round(cet6m/CET6_WORDS.length*100);
+  const {token}=getGistCfg();
+
+  document.getElementById('pg-home').innerHTML=`
+<div class="fade-up">
+  <div class="ph">
+    <div>
+      <div class="ph-title">词境</div>
+      <div class="ph-sub">每天进步一点点</div>
+    </div>
+    <button class="ph-action" onclick="go('settings')">⚙️</button>
+  </div>
+
+  ${!token?`<div class="banner banner-warn">☁️ 未开启云同步 <span onclick="go('settings')" style="font-weight:700;cursor:pointer;text-decoration:underline">去开启</span></div>`:''}
+  ${mistakes>0?`<div class="banner banner-info">📌 有 ${mistakes} 个错题待复习 <span onclick="startMistakePractice()" style="font-weight:700;cursor:pointer;text-decoration:underline">去练习</span></div>`:''}
+
+  <div class="hero">
+    <div class="hero-label">我的生词掌握</div>
+    <div class="hero-num">${myPct}<span style="font-size:24px;opacity:.8">%</span></div>
+    <div class="hero-sub">已掌握 ${mastered} / ${total} 个单词</div>
+    <div class="hero-streak">🔥 ${d.streak||0} 天连续</div>
+  </div>
+
+  <div class="stats-row">
+    <div class="stat-box">
+      <div class="stat-n" style="color:var(--info)">${newW}</div>
+      <div class="stat-l">待学习</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-n" style="color:var(--warning)">${learning}</div>
+      <div class="stat-l">学习中</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-n" style="color:var(--primary)">${mistakes}</div>
+      <div class="stat-l">需复习</div>
+    </div>
+  </div>
+
+  <div class="section-label">四六级进度</div>
+  <div class="prog-item">
+    <div class="prog-head"><span>四级 CET-4</span><span>${cet4m}/${CET4_WORDS.length} · ${cet4pct}%</span></div>
+    <div class="prog-track"><div class="prog-fill" style="width:${cet4pct}%;background:var(--cet4)"></div></div>
+  </div>
+  <div class="prog-item">
+    <div class="prog-head"><span>六级 CET-6</span><span>${cet6m}/${CET6_WORDS.length} · ${cet6pct}%</span></div>
+    <div class="prog-track"><div class="prog-fill" style="width:${cet6pct}%;background:var(--cet6)"></div></div>
+  </div>
+
+  <div class="section-label">快速入口</div>
+  <div class="quick-actions">
+    <button class="qa-btn qa-practice" onclick="go('practice')">
+      <span class="qa-icon">🎯</span>
+      <span class="qa-label">开始练习</span>
+      <span class="qa-sub">听写 · 选择题</span>
+    </button>
+    <button class="qa-btn qa-batch" onclick="go('add');setTimeout(()=>switchAddTab('batch'),100)">
+      <span class="qa-icon">📥</span>
+      <span class="qa-label">批量导入</span>
+      <span class="qa-sub">AI 提取生词</span>
+    </button>
+    <button class="qa-btn qa-cet4" onclick="practiceFrom('cet4')">
+      <span class="qa-icon">📚</span>
+      <span class="qa-label">四级练习</span>
+      <span class="qa-sub">${CET4_WORDS.length} 个高频词</span>
+    </button>
+    <button class="qa-btn qa-cet6" onclick="practiceFrom('cet6')">
+      <span class="qa-icon">🏆</span>
+      <span class="qa-label">六级练习</span>
+      <span class="qa-sub">${CET6_WORDS.length} 个高频词</span>
+    </button>
+  </div>
+</div>`;
+}
+
+function startMistakePractice(){
+  go('practice');
+  setTimeout(()=>startGame('mistakes'),200);
+}
+function practiceFrom(src){
+  practiceSource=src;
+  go('practice');
+  setTimeout(()=>drawPracticeUI(),100);
+}
+
+// ═══════════════════════════════════════
+// PRACTICE
+// ═══════════════════════════════════════
+let gs={};
+let practiceSource='my';
+
+function renderPractice(){
+  document.getElementById('pg-practice').innerHTML=`
+<div class="ph"><div class="ph-title">练习</div></div>
+<div id="practice-inner" class="fade-up"></div>`;
+  drawPracticeUI();
+}
+
+function drawPracticeUI(){
+  const d=load();
+  const inner=document.getElementById('practice-inner');
+  if(!inner)return;
+  if(gs.mode){drawGame();return;}
+  const myCnt=d.words.length,c4=CET4_WORDS.length,c6=CET6_WORDS.length;
+  inner.innerHTML=`
+<div class="section-label">选择题库</div>
+<div class="source-grid">
+  <div class="src-card${practiceSource==='my'?' sel-my':''}" onclick="selSrc('my')">
+    <div class="src-icon">📖</div>
+    <div class="src-name">我的生词</div>
+    <div class="src-cnt">${myCnt} 个</div>
+  </div>
+  <div class="src-card${practiceSource==='cet4'?' sel-cet4':''}" onclick="selSrc('cet4')">
+    <div class="src-icon">🎯</div>
+    <div class="src-name">四级词库</div>
+    <div class="src-cnt">${c4} 个</div>
+  </div>
+  <div class="src-card${practiceSource==='cet6'?' sel-cet6':''}" onclick="selSrc('cet6')">
+    <div class="src-icon">🏆</div>
+    <div class="src-name">六级词库</div>
+    <div class="src-cnt">${c6} 个</div>
+  </div>
+  <div class="src-card${practiceSource==='all'?' sel-all':''}" onclick="selSrc('all')">
+    <div class="src-icon">⚡</div>
+    <div class="src-name">全部混合</div>
+    <div class="src-cnt">${myCnt+c4+c6} 个</div>
+  </div>
+</div>
+<div class="section-label">选择模式</div>
+<div class="mode-pills">
+  <button class="mode-pill${gs.mode==='spell'?' on-'+practiceSource:''}" onclick="startGame('spell')">🎧 听写拼写</button>
+  <button class="mode-pill${gs.mode==='choice'?' on-'+practiceSource:''}" onclick="startGame('choice')">✅ 选择题</button>
+  <button class="mode-pill${gs.mode==='mistakes'?' on-'+practiceSource:''}" onclick="startGame('mistakes')">📌 练错题</button>
+</div>
+<div style="padding:0 1rem;margin-top:.5rem">
+  <div style="background:var(--bg3);border-radius:var(--r2);padding:1rem;font-size:13px;color:var(--ink3);text-align:center">
+    选好题库和模式，开始练习吧！
+  </div>
+</div>`;
+}
+
+function selSrc(s){
+  practiceSource=s;
+  drawPracticeUI();
+}
+
+function getPool(mode){
+  const d=load();
+  let words=[];
+  if(practiceSource==='my'||practiceSource==='all') words=[...words,...d.words.map(w=>({...w,_src:'my'}))];
+  if(practiceSource==='cet4'||practiceSource==='all') words=[...words,...CET4_WORDS.map(w=>({...w,...getCetWord(w.id),_src:'cet4'}))];
+  if(practiceSource==='cet6'||practiceSource==='all') words=[...words,...CET6_WORDS.map(w=>({...w,...getCetWord(w.id),_src:'cet6'}))];
+  if(mode==='mistakes') words=words.filter(w=>w.wrongCount>0);
+  return words;
+}
+
+function getAccentColor(){
+  return practiceSource==='cet4'?'var(--cet4)':practiceSource==='cet6'?'var(--cet6)':practiceSource==='all'?'var(--info)':'var(--primary)';
+}
+function getCbClass(){
+  return 'check-btn cb-'+(practiceSource==='cet4'?'cet4':practiceSource==='cet6'?'cet6':practiceSource==='all'?'all':'my');
+}
+
+function startGame(mode){
+  let pool=getPool(mode);
+  if(!pool.length){toast(mode==='mistakes'?'错题本为空！':'没有可练习的单词');return;}
+  pool=pool.sort(()=>Math.random()-.5);
+  gs={mode,queue:pool,idx:0,hearts:5,correct:0,checked:false,typed:[]};
+  if(mode!=='choice')initTyped();
+  drawGame();
+  setTimeout(()=>{if(mode!=='choice')speak(gs.queue[0].word);},500);
+}
+
+function initTyped(){
+  const w=gs.queue[gs.idx];
+  gs.typed=new Array(w.word.length).fill('');
+}
+
+function drawGame(){
+  const inner=document.getElementById('practice-inner');
+  if(!inner)return;
+  if(!gs.queue?.length){drawPracticeUI();return;}
+  if(gs.hearts<=0||gs.idx>=gs.queue.length){drawFinish();return;}
+  if(gs.mode==='choice')drawChoice();else drawSpell();
+}
+
+function saveWordProgress(w,ok){
+  if(w._src==='my'){
+    const d=load(),dw=d.words.find(x=>x.id===w.id);
+    if(dw){dw.practiceCount=(dw.practiceCount||0)+1;if(ok){if(dw.practiceCount>=3)dw.status='mastered';else if(dw.status==='new')dw.status='learning';}else{dw.wrongCount=(dw.wrongCount||0)+1;dw.status='learning';}save(d);}
+  }else{
+    const prog=getCetWord(w.id);
+    prog.practiceCount=(prog.practiceCount||0)+1;
+    if(ok){if(prog.practiceCount>=3)prog.status='mastered';else if(!prog.status||prog.status==='new')prog.status='learning';}
+    else{prog.wrongCount=(prog.wrongCount||0)+1;prog.status='learning';}
+    setCetWord(w.id,prog);
+  }
+}
+
+function drawSpell(){
+  const g=gs,w=g.queue[g.idx];
+  const prog=Math.round(g.idx/g.queue.length*100);
+  const totalL=w.word.replace(/ /g,'').length;
+  const filledL=g.typed.filter((c,i)=>w.word[i]!==' '&&c).length;
+  let slots='';
+  for(let i=0;i<w.word.length;i++){
+    if(w.word[i]===' '){slots+=`<div class="slot space"></div>`;continue;}
+    const ch=g.typed[i]||'';
+    let cls='slot';
+    if(g.checked)cls+=ch.toLowerCase()===w.word[i].toLowerCase()?' correct':' wrong';
+    else if(i===g.typed.filter((_,j)=>w.word[j]!==' ').length&&!ch)cls+=' active';
+    slots+=`<div class="${cls}">${ch}</div>`;
+  }
+  const ROWS=[['q','w','e','r','t','y','u','i','o','p'],['a','s','d','f','g','h','j','k','l'],['z','x','c','v','b','n','m']];
+  let keys='';
+  ROWS.forEach(row=>{keys+=`<div class="krow">${row.map(k=>`<button class="key" onclick="pressKey('${k}')">${k}</button>`).join('')}</div>`;});
+  keys+=`<div class="krow"><button class="key bs" onclick="backspace()">⌫</button></div>`;
+  const srcTag=w._src==='cet4'?'<span class="src-tag st-cet4">四级</span>':w._src==='cet6'?'<span class="src-tag st-cet6">六级</span>':'<span class="src-tag st-my">生词</span>';
+  const fb=g.checked?(g.typed.join('').toLowerCase()===w.word.toLowerCase()?`<div class="fb fb-ok">✓ 正确！</div>`:`<div class="fb fb-fail">正确拼写：<strong>${w.word}</strong></div>`):'';
+  const act=g.checked?`<button class="next-btn" onclick="nextWord()">继续 →</button>`:`<button class="${getCbClass()}"${filledL===totalL?'':' disabled'} onclick="checkSpell()">检查答案</button>`;
+  document.getElementById('practice-inner').innerHTML=`
+<div class="game-area fade-up">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.875rem">
+    <div class="hearts-row">${Array.from({length:5},(_,i)=>`<svg class="h-icon" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" fill="${i<g.hearts?'#ef4444':'#e4e4e7'}"/></svg>`).join('')}</div>
+    <div style="font-size:12px;color:var(--ink4);font-weight:500">${g.idx+1}/${g.queue.length} ${srcTag}</div>
+  </div>
+  <div style="height:6px;background:var(--bg3);border-radius:3px;margin-bottom:1.25rem;overflow:hidden"><div style="height:100%;width:${prog}%;background:${getAccentColor()};border-radius:3px;transition:width .4s"></div></div>
+  <button class="speak-circle" onclick="speak('${w.word.replace(/'/g,"\'")}')">
+    <svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.97z"/></svg>
+  </button>
+  <p style="text-align:center;font-size:12px;color:var(--ink4);margin-bottom:1rem">点击播放发音</p>
+  <div class="meaning-pill"><div class="mp-pos">${w.pos}</div><div class="mp-cn">${w.meaning}</div><div class="mp-ex">${w.example||''}</div></div>
+  <div class="slots-row">${slots}</div>
+  ${fb}
+  <div class="kbd-wrap">${keys}</div>
+  ${act}
+  <button class="btn btn-ghost btn-full" style="margin-top:.625rem" onclick="gs={};drawPracticeUI()">退出练习</button>
+</div>`;
+}
+
+function pressKey(k){
+  if(gs.checked)return;
+  const w=gs.queue[gs.idx].word;
+  for(let i=0;i<w.length;i++){if(w[i]===' ')continue;if(!gs.typed[i]){gs.typed[i]=k;break;}}
+  drawSpell();
+  const tL=w.replace(/ /g,'').length,fL=gs.typed.filter((c,i)=>w[i]!==' '&&c).length;
+  const b=document.querySelector('.check-btn');if(b)b.disabled=fL!==tL;
+}
+function backspace(){
+  if(gs.checked)return;
+  const w=gs.queue[gs.idx].word;
+  for(let i=w.length-1;i>=0;i--){if(w[i]===' ')continue;if(gs.typed[i]){gs.typed[i]='';break;}}
+  drawSpell();
+}
+function checkSpell(){
+  gs.checked=true;
+  const w=gs.queue[gs.idx];
+  const ok=gs.typed.join('').toLowerCase()===w.word.toLowerCase();
+  saveWordProgress(w,ok);
+  if(ok)gs.correct++;else gs.hearts=Math.max(0,gs.hearts-1);
+  drawSpell();
+}
+function nextWord(){
+  gs.idx++;gs.checked=false;
+  if(gs.idx<gs.queue.length){initTyped();drawGame();setTimeout(()=>speak(gs.queue[gs.idx].word),300);}
+  else drawFinish();
+}
+
+function drawChoice(){
+  const g=gs,w=g.queue[g.idx];
+  const prog=Math.round(g.idx/g.queue.length*100);
+  const others=g.queue.filter(x=>x.id!==w.id).sort(()=>Math.random()-.5).slice(0,3);
+  const opts=[w,...others].sort(()=>Math.random()-.5);
+  gs.choiceCorrect=w.id;
+  const srcTag=w._src==='cet4'?'<span class="src-tag st-cet4">四级</span>':w._src==='cet6'?'<span class="src-tag st-cet6">六级</span>':'<span class="src-tag st-my">生词</span>';
+  const fb=g.checked?(g.choiceSelected===w.id?`<div class="fb fb-ok">✓ 正确！</div>`:`<div class="fb fb-fail">正确：${w.meaning}</div>`):'';
+  const act=g.checked?`<button class="next-btn" onclick="nextWord()">继续 →</button>`:'';
+  document.getElementById('practice-inner').innerHTML=`
+<div class="game-area fade-up">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.875rem">
+    <div class="hearts-row">${Array.from({length:5},(_,i)=>`<svg class="h-icon" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" fill="${i<g.hearts?'#ef4444':'#e4e4e7'}"/></svg>`).join('')}</div>
+    <div style="font-size:12px;color:var(--ink4);font-weight:500">${g.idx+1}/${g.queue.length} ${srcTag}</div>
+  </div>
+  <div style="height:6px;background:var(--bg3);border-radius:3px;margin-bottom:1.5rem;overflow:hidden"><div style="height:100%;width:${prog}%;background:${getAccentColor()};border-radius:3px;transition:width .4s"></div></div>
+  <div style="text-align:center;margin-bottom:1.5rem">
+    <div style="font-size:30px;font-weight:700;font-family:'DM Serif Display',serif;margin-bottom:.375rem">${w.word}</div>
+    <div style="font-size:13px;color:var(--warning);font-style:italic;margin-bottom:.75rem">${w.phonetic||''}</div>
+    <button class="speak-circle" style="width:52px;height:52px;margin:.25rem auto" onclick="speak('${w.word.replace(/'/g,"\'")}')">
+      <svg viewBox="0 0 24 24" style="width:24px;height:24px"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.97z"/></svg>
+    </button>
+  </div>
+  <p style="text-align:center;font-size:12.5px;color:var(--ink4);margin-bottom:.875rem">选择正确的中文释义</p>
+  <div class="choice-grid">
+    ${opts.map(o=>{let cls='ch-btn';if(g.checked){if(o.id===w.id)cls+=' show';else if(o.id===g.choiceSelected)cls+=' fail';}return`<button class="${cls}" onclick="selectChoice(${o.id})" ${g.checked?'disabled':''}>${o.meaning}</button>`;}).join('')}
+  </div>
+  ${fb}${act}
+  <button class="btn btn-ghost btn-full" style="margin-top:.625rem" onclick="gs={};drawPracticeUI()">退出练习</button>
+</div>`;
+}
+
+function selectChoice(id){
+  if(gs.checked)return;
+  gs.checked=true;gs.choiceSelected=id;
+  const ok=id===gs.choiceCorrect,w=gs.queue[gs.idx];
+  saveWordProgress(w,ok);
+  if(ok)gs.correct++;else gs.hearts=Math.max(0,gs.hearts-1);
+  drawChoice();
+}
+
+function drawFinish(){
+  const g=gs,total=g.queue.length,pct=Math.round(g.correct/total*100);
+  const emoji=pct>=90?'🏆':pct>=70?'🎉':pct>=50?'💪':'📖';
+  document.getElementById('practice-inner').innerHTML=`
+<div class="finish-card fade-up">
+  <span class="finish-emoji">${emoji}</span>
+  <div class="finish-title">${g.hearts<=0?'本轮结束':'完成！'}</div>
+  <div style="font-size:13px;color:var(--ink3)">共 ${total} 个单词</div>
+  <div class="finish-stats">
+    <div class="fs"><div class="fs-n" style="color:var(--success)">${g.correct}</div><div class="fs-l">答对</div></div>
+    <div class="fs"><div class="fs-n" style="color:var(--primary)">${total-g.correct}</div><div class="fs-l">答错</div></div>
+    <div class="fs"><div class="fs-n">${pct}%</div><div class="fs-l">正确率</div></div>
+  </div>
+  <div style="display:flex;flex-direction:column;gap:.625rem">
+    <button class="btn btn-primary btn-full" onclick="startGame(gs.mode)">再练一轮</button>
+    <button class="btn btn-ghost btn-full" onclick="gs={};drawPracticeUI()">换个模式</button>
+  </div>
+</div>`;
+}
+
+// ═══════════════════════════════════════
+// WORDS PAGE
+// ═══════════════════════════════════════
+let _wf='all';
+let _cetLevel='cet4';
+let _cetFilter='all';
+let _cetSearch='';
+let _wordsTab='my'; // my | cet
+
+function renderWords(d){
+  const bm={new:'b-new',learning:'b-learning',mastered:'b-mastered'};
+  const lm={new:'待学习',learning:'学习中',mastered:'已掌握'};
+  const cp=loadCetProgress();
+
+  const myList=_wf==='all'?d.words:d.words.filter(w=>w.status===_wf);
+  const cetWords=_cetLevel==='cet4'?CET4_WORDS:CET6_WORDS;
+  let cetList=cetWords.map(w=>({...w,...getCetWord(w.id)}));
+  if(_cetFilter!=='all')cetList=cetList.filter(w=>w.status===_cetFilter);
+  if(_cetSearch)cetList=cetList.filter(w=>w.word.toLowerCase().includes(_cetSearch.toLowerCase())||w.meaning.includes(_cetSearch));
+
+  document.getElementById('pg-words').innerHTML=`
+<div class="ph">
+  <div class="ph-title">词库</div>
+</div>
+<div style="display:flex;gap:.5rem;padding:0 1rem .75rem;border-bottom:0.5px solid var(--line)">
+  <button class="btn btn-sm${_wordsTab==='my'?' btn-primary':' btn-ghost'}" onclick="_wordsTab='my';renderWords(load())">我的生词 (${d.words.length})</button>
+  <button class="btn btn-sm${_wordsTab==='cet'?' btn-primary':' btn-ghost'}" onclick="_wordsTab='cet';renderWords(load())">四六级词库</button>
+</div>
+
+${_wordsTab==='my'?`
+<div class="chips">
+  ${['all','new','learning','mastered'].map(s=>`<span class="chip${_wf===s?' on':''}" onclick="_wf='${s}';renderWords(load())">${{all:'全部',new:'待学习',learning:'学习中',mastered:'已掌握'}[s]}</span>`).join('')}
+</div>
+<div class="card-flush fade-up">
+  ${myList.length===0?`<div style="padding:2rem;text-align:center;color:var(--ink4);font-size:13px">暂无单词</div>`:''}
+  ${myList.map(w=>`
+  <div class="word-row">
+    <div class="wr-body">
+      <div class="wr-en">${w.word}</div>
+      <div class="wr-ph">${w.phonetic||''}</div>
+      <div class="wr-cn">${w.meaning}</div>
+    </div>
+    <div class="wr-right">
+      <span class="badge ${bm[w.status]||'b-new'}">${lm[w.status]||'待学习'}</span>
+      <div style="display:flex;gap:4px">
+        <button class="btn btn-sm btn-ghost" style="padding:3px 8px;font-size:11px" onclick="setStatus(${w.id},'${w.status==='mastered'?'new':'mastered'}')">${w.status==='mastered'?'取消':'掌握'}</button>
+        <button class="btn btn-sm btn-danger" style="padding:3px 8px;font-size:11px" onclick="delWord(${w.id})">删</button>
+      </div>
+    </div>
+  </div>`).join('')}
+</div>
+`:`
+<div style="display:flex;gap:.5rem;padding:.5rem 1rem;border-bottom:0.5px solid var(--line)">
+  <button class="btn btn-sm${_cetLevel==='cet4'?' btn-primary':' btn-ghost'}" style="background:${_cetLevel==='cet4'?'var(--cet4)':'transparent'}" onclick="_cetLevel='cet4';_cetFilter='all';_cetSearch='';renderWords(load())">四级</button>
+  <button class="btn btn-sm${_cetLevel==='cet6'?' btn-primary':' btn-ghost'}" style="background:${_cetLevel==='cet6'?'var(--cet6)':'transparent'}" onclick="_cetLevel='cet6';_cetFilter='all';_cetSearch='';renderWords(load())">六级</button>
+</div>
+<div class="search-bar">
+  <svg class="search-icon" viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+  <input class="inp" placeholder="搜索单词或释义…" value="${_cetSearch}" oninput="_cetSearch=this.value;renderWords(load())" style="padding-left:2.25rem">
+</div>
+<div class="chips">
+  ${['all','new','learning','mastered'].map(s=>`<span class="chip${_cetFilter===s?' on':''}" onclick="_cetFilter='${s}';renderWords(load())">${{all:'全部',new:'待学习',learning:'学习中',mastered:'已掌握'}[s]}</span>`).join('')}
+</div>
+<div class="card-flush fade-up">
+  ${cetList.map(w=>`
+  <div class="word-row">
+    <div class="wr-body">
+      <div class="wr-en">${w.word}</div>
+      <div class="wr-ph">${w.phonetic||''}</div>
+      <div class="wr-cn">${w.meaning}</div>
+    </div>
+    <div class="wr-right">
+      <span class="badge ${bm[w.status||'new']}">${lm[w.status||'new']}</span>
+      <button class="btn btn-sm btn-ghost" style="padding:3px 8px;font-size:11px" onclick="toggleCetMastered(${w.id},'${w.status||'new'}')">${(w.status||'new')==='mastered'?'取消':'掌握'}</button>
+    </div>
+  </div>`).join('')}
+</div>
+`}`;
+}
+
+function setStatus(id,s){const d=load(),w=d.words.find(w=>w.id===id);if(w){w.status=s;save(d);renderWords(load());toast(s==='mastered'?'✓ 已掌握':'已重置');}}
+function delWord(id){if(!confirm('确定删除？'))return;const d=load();d.words=d.words.filter(w=>w.id!==id);save(d);renderWords(load());toast('已删除');}
+function toggleCetMastered(id,status){const ns=status==='mastered'?'new':'mastered';setCetWord(id,{status:ns});renderWords(load());toast(ns==='mastered'?'✓ 已掌握':'已重置');}
+
+// ═══════════════════════════════════════
+// ADD PAGE (单个 + 批量 两个 Tab)
+// ═══════════════════════════════════════
+let _addTab='single';
+let batchWords=[];
+
+function renderAdd(){
+  const dsKey=loadCfg().dsKey;
+  document.getElementById('pg-add').innerHTML=`
+<div class="ph"><div class="ph-title">添加生词</div></div>
+<div style="display:flex;gap:.5rem;padding:0 1rem .75rem;border-bottom:0.5px solid var(--line)">
+  <button class="btn btn-sm${_addTab==='single'?' btn-primary':' btn-ghost'}" onclick="switchAddTab('single')">✏️ 单个添加</button>
+  <button class="btn btn-sm${_addTab==='batch'?' btn-primary':' btn-ghost'}" onclick="switchAddTab('batch')">📥 批量导入</button>
+</div>
+<div id="add-tab-body" class="fade-up"></div>`;
+  renderAddTabBody(dsKey);
+}
+
+function switchAddTab(tab){
+  _addTab=tab;
+  const dsKey=loadCfg().dsKey;
+  document.querySelectorAll('#pg-add .btn-sm').forEach((b,i)=>{
+    b.className='btn btn-sm '+((_addTab==='single'&&i===0)||(_addTab==='batch'&&i===1)?'btn-primary':'btn-ghost');
+  });
+  renderAddTabBody(dsKey);
+}
+
+function renderAddTabBody(dsKey){
+  const body=document.getElementById('add-tab-body');
+  if(!body)return;
+  if(_addTab==='single'){
+    body.innerHTML=`
+<div class="form-section" style="margin-top:1rem">
+  <div class="ai-bar">
+    <div class="ai-bar-title">🤖 DeepSeek AI 自动补全</div>
+    <div style="display:flex;gap:.5rem;align-items:center">
+      <input type="password" placeholder="DeepSeek API Key（sk-...）" value="${dsKey}" id="f-dskey" oninput="saveCfg({dsKey:this.value})" style="flex:1;padding:.625rem .875rem;border:1px solid #bfdbfe;border-radius:var(--r);font-size:12.5px;font-family:monospace;background:#fff;outline:none">
+      <span id="ai-st" style="font-size:12px;color:var(--info);white-space:nowrap;font-weight:600"></span>
+    </div>
+    <div style="font-size:11.5px;color:var(--info);margin-top:.375rem;opacity:.8">输入单词离开后自动查询补全</div>
+  </div>
+  <div class="row2">
+    <div class="field"><label class="label">英文单词 *</label><input class="inp" id="f-word" placeholder="e.g. magnificent" onblur="aiAutoFill()"></div>
+    <div class="field"><label class="label">音标</label><input class="inp" id="f-ph" placeholder="/mæɡˈnɪfɪsnt/"></div>
+  </div>
+  <div class="row2">
+    <div class="field"><label class="label">词性</label><input class="inp" id="f-pos" placeholder="形容词"></div>
+    <div class="field"><label class="label">中文释义 *</label><input class="inp" id="f-mean" placeholder="宏伟的"></div>
+  </div>
+  <div class="field"><label class="label">例句</label><input class="inp" id="f-ex" placeholder="The view was magnificent."></div>
+  <div style="display:flex;gap:.625rem">
+    <button class="btn btn-primary" style="flex:1" onclick="addWord()">+ 添加单词</button>
+    <button class="btn btn-ghost" onclick="clearForm()">清空</button>
+  </div>
+</div>`;
+  }else{
+    body.innerHTML=`
+<div class="form-section" style="margin-top:1rem">
+  <div class="ai-bar">
+    <div class="ai-bar-title">🤖 AI 智能提取</div>
+    <input type="password" placeholder="DeepSeek API Key（sk-...）" value="${dsKey}" id="b-dskey" oninput="saveCfg({dsKey:this.value})" style="width:100%;padding:.625rem .875rem;border:1px solid #bfdbfe;border-radius:var(--r);font-size:12.5px;font-family:monospace;background:#fff;outline:none;margin-bottom:.375rem">
+    <div style="font-size:11.5px;color:var(--info);opacity:.8">粘贴英文，AI 自动提取生词并补全</div>
+  </div>
+  <div class="field">
+    <label class="label">粘贴英文内容</label>
+    <textarea class="inp" id="b-text" placeholder="粘贴任意英文文章、句子、字幕…&#10;&#10;AI 会提取其中有学习价值的单词。" style="min-height:110px"></textarea>
+  </div>
+  <div style="display:flex;gap:.625rem;align-items:center;margin-bottom:1rem">
+    <button class="btn btn-blue" id="b-btn" style="flex:1" onclick="batchExtract()">🔍 AI 提取生词</button>
+    <span id="b-status" style="font-size:12.5px;color:var(--ink3);font-weight:500"></span>
+  </div>
+</div>
+<div id="b-results"></div>`;
+  }
+}
+
+async function aiAutoFill(){
+  const word=document.getElementById('f-word')?.value.trim();if(!word)return;
+  const key=loadCfg().dsKey;if(!key)return;
+  const st=document.getElementById('ai-st');if(st)st.textContent='⏳';
+  try{
+    const res=await fetch('https://api.deepseek.com/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+key},body:JSON.stringify({model:'deepseek-chat',max_tokens:200,temperature:0.3,messages:[{role:'user',content:`为英文单词"${word}"返回JSON（只返回JSON）：{"phonetic":"国际音标","pos":"词性中文","meaning":"中文释义简洁","example":"简单英文例句"}`}]})});
+    const data=await res.json();
+    if(data.error){if(st)st.textContent='❌';return;}
+    const j=JSON.parse(data.choices[0].message.content.trim().replace(/\`\`\`json|\`\`\`/g,'').trim());
+    document.getElementById('f-ph').value=j.phonetic||'';
+    document.getElementById('f-pos').value=j.pos||'';
+    document.getElementById('f-mean').value=j.meaning||'';
+    document.getElementById('f-ex').value=j.example||'';
+    if(st){st.textContent='✅';setTimeout(()=>{st.textContent=''},2000);}
+  }catch(e){if(st)st.textContent='❌';}
+}
+
+function addWord(){
+  const word=document.getElementById('f-word')?.value.trim();
+  const mean=document.getElementById('f-mean')?.value.trim();
+  if(!word||!mean){toast('请填写单词和释义');return;}
+  const d=load();
+  if(d.words.find(w=>w.word.toLowerCase()===word.toLowerCase())){toast('该单词已存在！');return;}
+  d.words.push({id:d.nextId++,word,phonetic:document.getElementById('f-ph').value.trim(),pos:document.getElementById('f-pos').value.trim(),meaning:mean,example:document.getElementById('f-ex').value.trim(),status:'new',wrongCount:0,practiceCount:0,addedAt:new Date().toISOString().split('T')[0],level:'my'});
+  save(d);toast(`✓ 已添加「${word}」`);clearForm();gistPush();
+}
+function clearForm(){['f-word','f-ph','f-pos','f-mean','f-ex'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});}
+
+async function batchExtract(){
+  const text=document.getElementById('b-text')?.value.trim();
+  if(!text){toast('请粘贴英文内容');return;}
+  const key=loadCfg().dsKey;
+  if(!key){toast('请填写 DeepSeek API Key');return;}
+  const btn=document.getElementById('b-btn'),st=document.getElementById('b-status');
+  btn.disabled=true;btn.textContent='⏳ 分析中…';if(st)st.textContent='';
+  try{
+    const res=await fetch('https://api.deepseek.com/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+key},body:JSON.stringify({model:'deepseek-chat',max_tokens:2000,temperature:0.3,messages:[{role:'user',content:`从以下英文文本提取5-15个有学习价值的单词（排除 the/a/is 等简单词），返回JSON数组（只返回JSON）：
+[{"word":"单词","phonetic":"音标","pos":"词性中文","meaning":"中文释义","example":"例句"}]
+
+文本：${text}`}]})});
+    const data=await res.json();
+    if(data.error){toast('API错误');return;}
+    let txt=data.choices[0].message.content.trim().replace(/\`\`\`json|\`\`\`/g,'').trim();
+    const words=JSON.parse(txt);
+    const d=load();
+    const existing=new Set(d.words.map(w=>w.word.toLowerCase()));
+    batchWords=words.map(w=>({...w,selected:!existing.has(w.word.toLowerCase()),exists:existing.has(w.word.toLowerCase())}));
+    if(st)st.textContent=`提取到 ${words.length} 个词`;
+    renderBatchResults();
+  }catch(e){toast('提取失败，检查 API Key 或网络');}
+  finally{btn.disabled=false;btn.textContent='🔍 AI 提取生词';}
+}
+
+function renderBatchResults(){
+  const sel=batchWords.filter(w=>w.selected).length;
+  const container=document.getElementById('b-results');
+  if(!container)return;
+  container.innerHTML=`
+<div style="display:flex;justify-content:space-between;align-items:center;padding:.75rem 1rem;border-bottom:0.5px solid var(--line);background:var(--bg2)">
+  <span style="font-size:13px;color:var(--ink3);font-weight:500">已选 ${sel} / ${batchWords.length} 个</span>
+  <div style="display:flex;gap:.5rem">
+    <button class="btn btn-sm btn-ghost" onclick="batchSelectAll(true)">全选</button>
+    <button class="btn btn-sm btn-primary" onclick="batchAddWords()" ${sel===0?'disabled':''}>加入词库(${sel})</button>
+  </div>
+</div>
+<div class="card-flush">
+${batchWords.map((w,i)=>`
+<div class="batch-item${w.selected?' sel':''}${w.exists?' exists':''}" id="bi-${i}">
+  <input type="checkbox" class="batch-check" ${w.selected?'checked':''} ${w.exists?'disabled':''} onchange="batchToggle(${i},this.checked)">
+  <div style="flex:1;min-width:0">
+    <div style="display:flex;align-items:center;gap:.5rem;flex-wrap:wrap">
+      <span class="bi-en">${w.word}</span>
+      <span class="bi-ph">${w.phonetic||''}</span>
+      <span class="badge ${w.exists?'b-learning':'b-new'}" style="font-size:10px">${w.exists?'已有':'新词'}</span>
+    </div>
+    <div class="bi-cn"><span style="font-size:11px;color:var(--ink4);margin-right:4px">${w.pos||''}</span>${w.meaning}</div>
+    <div class="bi-ex">${w.example||''}</div>
+  </div>
+</div>`).join('')}
+</div>`;
+}
+
+function batchToggle(i,checked){
+  batchWords[i].selected=checked;
+  const item=document.getElementById('bi-'+i);
+  if(item)item.className='batch-item'+(checked?' sel':'')+(batchWords[i].exists?' exists':'');
+  const sel=batchWords.filter(w=>w.selected).length;
+  const header=document.querySelector('#b-results .btn-primary');
+  if(header){header.textContent=`加入词库(${sel})`;header.disabled=sel===0;}
+  const cnt=document.querySelector('#b-results [style*="ink3"]');
+  if(cnt)cnt.textContent=`已选 ${sel} / ${batchWords.length} 个`;
+}
+function batchSelectAll(sel){
+  batchWords.forEach((w,i)=>{if(!w.exists){w.selected=sel;const el=document.getElementById('bi-'+i);if(el)el.className='batch-item'+(sel?' sel':'');}});
+  renderBatchResults();
+}
+function batchAddWords(){
+  const toAdd=batchWords.filter(w=>w.selected&&!w.exists);
+  if(!toAdd.length){toast('没有选中的新词');return;}
+  const d=load();
+  toAdd.forEach(w=>{d.words.push({id:d.nextId++,word:w.word,phonetic:w.phonetic||'',pos:w.pos||'',meaning:w.meaning,example:w.example||'',status:'new',wrongCount:0,practiceCount:0,addedAt:new Date().toISOString().split('T')[0],level:'my'});});
+  save(d);toast(`✓ 已添加 ${toAdd.length} 个生词！`);gistPush();
+  toAdd.forEach(w=>{const bw=batchWords.find(b=>b.word===w.word);if(bw){bw.exists=true;bw.selected=false;}});
+  renderBatchResults();
+}
+
+// ═══════════════════════════════════════
+// SETTINGS PAGE
+// ═══════════════════════════════════════
+function renderSettings(){
+  const {token,gistId}=getGistCfg();
+  const dsKey=loadCfg().dsKey;
+  document.getElementById('pg-settings').innerHTML=`
+<div class="ph"><div class="ph-title">设置</div></div>
+<div class="settings-group">
+  <div class="sg-header">☁️ 云同步（GitHub Gist）</div>
+  <div class="sg-body">
+    <div class="sg-row">
+      <div>
+        <div class="sg-label">GitHub Token</div>
+        <div class="sg-sub">${token?'已配置，数据自动同步':'未配置，数据仅存本机'}</div>
+      </div>
+      <span class="sg-action" onclick="showTokenInput()">${token?'修改':'配置'}</span>
+    </div>
+    ${gistId?`<div class="sg-row">
+      <div><div class="sg-label">同步状态</div><div class="sg-sub">Gist ID: ${gistId.slice(0,8)}…</div></div>
+      <span class="sg-action" onclick="gistPull(getGistCfg().token,getGistCfg().gistId).then(()=>{toast('✓ 已恢复数据');render();}).catch(()=>toast('拉取失败'))">恢复数据</span>
+    </div>`:''}
+    ${token?`<div class="sg-row">
+      <div><div class="sg-label">立即同步</div><div class="sg-sub">推送本地数据到云端</div></div>
+      <span class="sg-action" onclick="gistPush().then(()=>toast('✓ 同步成功'))">同步</span>
+    </div>`:''}
+  </div>
+  ${!token?`<div style="margin-top:.5rem;font-size:12px;color:var(--ink4);line-height:1.6">
+    需要 GitHub 账号 → <a href="https://github.com/settings/tokens/new?scopes=gist" target="_blank" style="color:var(--info)">点此生成 Token</a>（勾选 gist 权限）
+  </div>`:''}
+</div>
+
+<div class="settings-group">
+  <div class="sg-header">🤖 AI 自动补全</div>
+  <div class="sg-body">
+    <div class="sg-row">
+      <div>
+        <div class="sg-label">DeepSeek API Key</div>
+        <div class="sg-sub">${dsKey?'已配置':'未配置，添加生词时需要'}</div>
+      </div>
+      <span class="sg-action" onclick="showDsKeyInput()">${dsKey?'修改':'配置'}</span>
+    </div>
+  </div>
+</div>
+
+<div class="settings-group">
+  <div class="sg-header">💾 数据管理</div>
+  <div class="sg-body">
+    <div class="sg-row">
+      <div><div class="sg-label">导出备份</div><div class="sg-sub">保存 JSON 文件到本地</div></div>
+      <span class="sg-action" onclick="exportData()">导出</span>
+    </div>
+    <div class="sg-row">
+      <div><div class="sg-label">导入数据</div><div class="sg-sub">从 JSON 文件恢复</div></div>
+      <span class="sg-action" onclick="importData()">导入</span>
+    </div>
+    <div class="sg-row">
+      <div><div class="sg-label">重置所有数据</div><div class="sg-sub" style="color:var(--primary)">清空所有生词和进度</div></div>
+      <span class="sg-action" style="color:var(--primary)" onclick="resetData()">重置</span>
+    </div>
+  </div>
+</div>
+
+<div class="settings-group">
+  <div class="sg-header">ℹ️ 关于</div>
+  <div class="sg-body">
+    <div class="sg-row"><div><div class="sg-label">词境 v3.0</div><div class="sg-sub">英语学习生词本 · 支持四六级词库</div></div></div>
+  </div>
+</div>
+
+<div id="settings-modal"></div>`;
+}
+
+function showTokenInput(){
+  const {token,gistId}=getGistCfg();
+  document.getElementById('settings-modal').innerHTML=`
+<div style="position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;display:flex;align-items:flex-end" onclick="if(event.target===this)closeModal()">
+  <div style="background:var(--bg2);border-radius:var(--r3) var(--r3) 0 0;padding:1.5rem 1.25rem calc(1.5rem + var(--safe-bottom));width:100%;max-width:480px;margin:0 auto">
+    <div style="font-size:16px;font-weight:700;margin-bottom:1rem;font-family:'Noto Serif SC',serif">配置 GitHub Token</div>
+    <div class="field"><label class="label">GitHub Token</label><input class="inp" id="m-token" type="password" placeholder="ghp_xxxxxxxxxxxxxxxx" value="${token}" style="font-family:monospace;font-size:13px"></div>
+    ${gistId?`<div class="field"><label class="label">Gist ID（自动生成，可留空）</label><input class="inp" id="m-gistid" value="${gistId}" style="font-family:monospace;font-size:12px"></div>`:''}
+    <div style="display:flex;gap:.625rem;margin-top:.5rem">
+      <button class="btn btn-primary" style="flex:1" onclick="saveToken()">保存并同步</button>
+      <button class="btn btn-ghost" onclick="closeModal()">取消</button>
+    </div>
+  </div>
+</div>`;
+}
+
+function showDsKeyInput(){
+  const dsKey=loadCfg().dsKey;
+  document.getElementById('settings-modal').innerHTML=`
+<div style="position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;display:flex;align-items:flex-end" onclick="if(event.target===this)closeModal()">
+  <div style="background:var(--bg2);border-radius:var(--r3) var(--r3) 0 0;padding:1.5rem 1.25rem calc(1.5rem + var(--safe-bottom));width:100%;max-width:480px;margin:0 auto">
+    <div style="font-size:16px;font-weight:700;margin-bottom:1rem;font-family:'Noto Serif SC',serif">配置 DeepSeek API Key</div>
+    <div class="field"><label class="label">API Key</label><input class="inp" id="m-dskey" type="password" placeholder="sk-xxxxxxxxxxxxxxxx" value="${dsKey}" style="font-family:monospace;font-size:13px"></div>
+    <div style="font-size:12px;color:var(--ink4);margin-bottom:1rem">Key 仅存储在本地浏览器，不会上传</div>
+    <div style="display:flex;gap:.625rem">
+      <button class="btn btn-primary" style="flex:1" onclick="saveDsKey()">保存</button>
+      <button class="btn btn-ghost" onclick="closeModal()">取消</button>
+    </div>
+  </div>
+</div>`;
+}
+
+function closeModal(){document.getElementById('settings-modal').innerHTML='';}
+async function saveToken(){
+  const token=document.getElementById('m-token')?.value.trim();
+  if(!token){toast('请填写 Token');return;}
+  const gistIdEl=document.getElementById('m-gistid');
+  saveCfg({gistToken:token,gistId:gistIdEl?.value.trim()||''});
+  closeModal();toast('⏳ 正在同步…');
+  await gistSync();
+  renderSettings();
+  toast(syncState==='ok'?'☁️ 云同步已开启！':'⚠️ 同步失败');
+}
+function saveDsKey(){
+  const key=document.getElementById('m-dskey')?.value.trim();
+  saveCfg({dsKey:key});gistPush();
+  closeModal();toast('✓ 已保存');
+  renderSettings();
+}
+
+function exportData(){const d=load();const b=new Blob([JSON.stringify(d,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='cijing_backup_'+new Date().toISOString().split('T')[0]+'.json';a.click();}
+function importData(){const input=document.createElement('input');input.type='file';input.accept='.json';input.onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev=>{try{save(JSON.parse(ev.target.result));location.reload();}catch(e){toast('文件格式错误');}};r.readAsText(f);};input.click();}
+function resetData(){if(confirm('确定重置所有数据？')){localStorage.removeItem('ciJing_v3');location.reload();}}
+
+// keyboard for spelling
+document.addEventListener('keydown',e=>{
+  if(page!=='practice'||!gs.mode||gs.mode==='choice')return;
+  if(e.key==='Backspace'){e.preventDefault();backspace();return;}
   if(e.key==='Enter'&&!gs.checked){const b=document.querySelector('.check-btn');if(b&&!b.disabled)checkSpell();return;}
   if(e.key==='Enter'&&gs.checked){nextWord();return;}
   if(/^[a-zA-Z]$/.test(e.key))pressKey(e.key.toLowerCase());
