@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>我的英语生词本</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#f8f7f4;--bg2:#fff;--bg3:#f1efe8;
+  --text:#1a1a18;--text2:#5f5e5a;--text3:#888780;
+  --border:#e0ddd6;--border2:#ccc9c0;
+  --green:#3b6d11;--green-bg:#eaf3de;--green-mid:#639922;
+  --blue:#185fa5;--blue-bg:#e6f1fb;
+  --red:#a32d2d;--red-bg:#fcebeb;--red-mid:#e24b4a;
+  --amber:#633806;--amber-bg:#faeeda;--amber-mid:#ba7517;
+  --purple:#3c3489;--purple-bg:#eeedfe;
+  --radius:8px;--radius-lg:12px;
+}
+body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:15px;line-height:1.6}
+a{color:var(--blue);text-decoration:none}
+
+/* Layout */
+.app{display:flex;min-height:100vh}
+.sidebar{width:220px;background:var(--bg2);border-right:0.5px solid var(--border);padding:1.5rem 0;flex-shrink:0;display:flex;flex-direction:column}
+.main{flex:1;padding:2rem;overflow-y:auto}
+.logo{padding:0 1.25rem 1.25rem;border-bottom:0.5px solid var(--border);margin-bottom:0.75rem}
+.logo h1{font-size:16px;font-weight:600;color:var(--text)}
+.logo p{font-size:12px;color:var(--text3);margin-top:2px}
+.nav-item{display:flex;align-items:center;gap:10px;padding:0.6rem 1.25rem;cursor:pointer;color:var(--text2);font-size:14px;border-radius:0;transition:background 0.1s}
+.nav-item:hover{background:var(--bg3);color:var(--text)}
+.nav-item.active{background:var(--bg3);color:var(--text);font-weight:500}
+.nav-icon{width:18px;height:18px;opacity:0.7}
+.nav-section{font-size:11px;color:var(--text3);padding:0.75rem 1.25rem 0.25rem;text-transform:uppercase;letter-spacing:0.06em}
+.sidebar-footer{margin-top:auto;padding:1rem 1.25rem;border-top:0.5px solid var(--border)}
+.streak-badge{background:var(--amber-bg);color:var(--amber);border-radius:var(--radius);padding:0.5rem 0.75rem;font-size:13px;font-weight:500}
+
+/* Cards */
+.card{background:var(--bg2);border:0.5px solid var(--border);border-radius:var(--radius-lg);padding:1.25rem}
+.card+.card{margin-top:1rem}
+.page-title{font-size:20px;font-weight:600;margin-bottom:1.5rem;color:var(--text)}
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:1.5rem}
+.stat-card{background:var(--bg3);border-radius:var(--radius);padding:1rem;text-align:center}
+.stat-val{font-size:24px;font-weight:600}
+.stat-label{font-size:12px;color:var(--text3);margin-top:2px}
+
+/* Buttons */
+button{cursor:pointer;font-family:inherit;font-size:14px;border-radius:var(--radius);transition:opacity 0.15s,transform 0.1s}
+button:active{transform:scale(0.97)}
+.btn-primary{background:var(--green-mid);color:#fff;border:none;padding:10px 20px;font-weight:500}
+.btn-primary:hover{opacity:0.88}
+.btn-outline{background:transparent;border:0.5px solid var(--border2);color:var(--text);padding:9px 18px}
+.btn-outline:hover{background:var(--bg3)}
+.btn-sm{padding:6px 14px;font-size:13px}
+.btn-danger{background:var(--red-bg);color:var(--red);border:0.5px solid #f0c0c0}
+
+/* Badges */
+.badge{display:inline-block;padding:2px 10px;border-radius:20px;font-size:12px;font-weight:500}
+.badge-new{background:var(--blue-bg);color:var(--blue)}
+.badge-learning{background:var(--amber-bg);color:var(--amber)}
+.badge-mastered{background:var(--green-bg);color:var(--green)}
+.badge-weak{background:var(--red-bg);color:var(--red)}
+
+/* Word list */
+.word-table{width:100%;border-collapse:collapse}
+.word-table th{text-align:left;font-size:12px;color:var(--text3);font-weight:500;padding:0 12px 8px;border-bottom:0.5px solid var(--border)}
+.word-table td{padding:10px 12px;border-bottom:0.5px solid var(--border);vertical-align:middle}
+.word-table tr:last-child td{border-bottom:none}
+.word-table tr:hover td{background:var(--bg3)}
+.word-en{font-weight:500;font-size:15px}
+.word-phonetic{color:var(--amber-mid);font-size:13px;margin-top:1px}
+.word-cn{color:var(--text2);font-size:13px}
+.word-actions{display:flex;gap:6px;justify-content:flex-end}
+
+/* Game */
+.game-wrap{max-width:520px;margin:0 auto}
+.hearts{display:flex;gap:6px;margin-bottom:1.25rem}
+.heart{width:20px;height:20px}
+.progress-bar{height:8px;background:var(--bg3);border-radius:4px;margin-bottom:1.5rem;overflow:hidden}
+.progress-fill{height:100%;background:var(--green-mid);border-radius:4px;transition:width 0.4s}
+.speak-btn{width:88px;height:88px;border-radius:50%;border:2px solid var(--border2);background:var(--bg3);cursor:pointer;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;transition:background 0.15s,border-color 0.15s}
+.speak-btn:hover{background:var(--bg);border-color:var(--green-mid)}
+.speak-btn.playing{border-color:var(--green-mid);background:var(--green-bg)}
+.speak-btn svg{width:38px;height:38px;fill:var(--text2)}
+.speak-btn.playing svg{fill:var(--green)}
+.game-hint{text-align:center;font-size:13px;color:var(--text3);margin-bottom:1.25rem}
+.meaning-card{background:var(--bg3);border-radius:var(--radius);padding:0.875rem 1rem;margin-bottom:1.25rem;text-align:center}
+.meaning-pos{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:4px}
+.meaning-cn{font-size:16px;font-weight:500}
+.meaning-ex{font-size:13px;color:var(--text2);margin-top:4px;font-style:italic}
+.letter-slots{display:flex;gap:7px;justify-content:center;flex-wrap:wrap;margin-bottom:1.25rem;min-height:54px;align-items:center}
+.slot{width:40px;height:50px;border-bottom:2.5px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:21px;font-weight:500;transition:border-color 0.15s;text-transform:lowercase}
+.slot.active{border-color:var(--green-mid)}
+.slot.space{border-bottom-color:transparent;width:18px}
+.slot.correct{border-color:var(--green-mid);color:var(--green)}
+.slot.wrong{border-color:var(--red-mid);color:var(--red)}
+.keyboard{display:flex;flex-direction:column;gap:6px;margin-bottom:1.25rem}
+.key-row{display:flex;gap:5px;justify-content:center}
+.key{min-width:36px;height:46px;padding:0 6px;border:0.5px solid var(--border2);border-radius:var(--radius);background:var(--bg2);font-size:16px;font-weight:500;cursor:pointer;color:var(--text);transition:background 0.1s}
+.key:hover{background:var(--bg3)}
+.key.backspace{min-width:56px;font-size:13px}
+.check-btn{width:100%;padding:13px;border-radius:var(--radius);border:none;background:var(--green-mid);color:#fff;font-size:15px;font-weight:500;cursor:pointer}
+.check-btn:disabled{opacity:0.35;cursor:default}
+.check-btn:not(:disabled):hover{opacity:0.88}
+.feedback{border-radius:var(--radius);padding:0.75rem 1rem;margin-bottom:1rem;font-size:14px;font-weight:500;text-align:center}
+.feedback.ok{background:var(--green-bg);color:var(--green);border:0.5px solid #b8dda0}
+.feedback.fail{background:var(--red-bg);color:var(--red);border:0.5px solid #f0c0c0}
+.next-btn{width:100%;padding:13px;border-radius:var(--radius);border:0.5px solid var(--border2);background:var(--bg2);color:var(--text);font-size:15px;font-weight:500;cursor:pointer}
+.next-btn:hover{background:var(--bg3)}
+
+/* Choice game */
+.choice-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:1.25rem}
+.choice-btn{padding:14px 16px;border:0.5px solid var(--border2);border-radius:var(--radius);background:var(--bg2);font-size:14px;cursor:pointer;text-align:left;transition:background 0.1s,border-color 0.1s}
+.choice-btn:hover{background:var(--bg3);border-color:var(--border2)}
+.choice-btn.selected-ok{background:var(--green-bg);border-color:var(--green-mid);color:var(--green)}
+.choice-btn.selected-fail{background:var(--red-bg);border-color:var(--red-mid);color:var(--red)}
+.choice-btn.show-answer{background:var(--green-bg);border-color:var(--green-mid);color:var(--green)}
+
+/* Mode selector */
+.mode-tabs{display:flex;gap:8px;margin-bottom:1.5rem}
+.mode-tab{padding:8px 18px;border-radius:var(--radius);border:0.5px solid var(--border2);background:var(--bg2);color:var(--text2);font-size:14px;cursor:pointer}
+.mode-tab.active{background:var(--purple-bg);color:var(--purple);border-color:#afa9ec;font-weight:500}
+
+/* Add word form */
+.form-group{margin-bottom:1rem}
+.form-label{font-size:13px;color:var(--text2);margin-bottom:4px;display:block}
+.form-input{width:100%;padding:9px 12px;border:0.5px solid var(--border2);border-radius:var(--radius);font-size:14px;font-family:inherit;background:var(--bg2);color:var(--text);outline:none}
+.form-input:focus{border-color:var(--blue);box-shadow:0 0 0 2px rgba(24,95,165,0.12)}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+
+/* Finish */
+.finish-center{text-align:center;padding:2rem}
+.finish-icon{width:68px;height:68px;border-radius:50%;background:var(--green-bg);display:flex;align-items:center;justify-content:center;margin:0 auto 1rem}
+.finish-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:1.25rem 0}
+.finish-stat{background:var(--bg3);border-radius:var(--radius);padding:0.875rem;text-align:center}
+.finish-stat-val{font-size:22px;font-weight:600}
+.finish-stat-label{font-size:12px;color:var(--text3);margin-top:2px}
+
+/* Toast */
+.toast{position:fixed;bottom:24px;right:24px;background:var(--text);color:#fff;padding:10px 18px;border-radius:var(--radius);font-size:14px;opacity:0;transition:opacity 0.3s;pointer-events:none;z-index:999}
+.toast.show{opacity:1}
+
+/* Responsive */
+@media(max-width:700px){
+  .app{flex-direction:column}
+  .sidebar{width:100%;flex-direction:row;flex-wrap:wrap;padding:0.5rem}
+  .logo{display:none}
+  .nav-section{display:none}
+  .nav-item{flex-direction:column;gap:3px;padding:0.5rem 0.75rem;font-size:11px}
+  .sidebar-footer{display:none}
+  .main{padding:1rem}
+  .stats-grid{grid-template-columns:repeat(2,1fr)}
+  .form-row{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="logo">
+      <h1>我的生词本</h1>
+      <p id="word-count-label">加载中...</p>
+    </div>
+    <span class="nav-section">学习</span>
+    <div class="nav-item active" onclick="showPage('home')" id="nav-home">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+      首页
+    </div>
+    <div class="nav-item" onclick="showPage('practice')" id="nav-practice">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>
+      开始练习
+    </div>
+    <div class="nav-item" onclick="showPage('words')" id="nav-words">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-1 9H9V9h10v2zm-4 4H9v-2h6v2zm4-8H9V5h10v2z"/></svg>
+      生词库
+    </div>
+    <div class="nav-item" onclick="showPage('mistakes')" id="nav-mistakes">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+      错题本
+    </div>
+    <div class="nav-item" onclick="showPage('add')" id="nav-add">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/></svg>
+      添加生词
+    </div>
+    <div class="sidebar-footer">
+      <div class="streak-badge" id="streak-display">连续学习 0 天</div>
+    </div>
+  </aside>
+
+  <main class="main" id="main-content"></main>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const DEFAULT_WORDS = [
+  {id:1,word:"describe",phonetic:"/dɪˈskraɪb/",pos:"动词",meaning:"描述，描写",example:"She described the view beautifully.",status:"new",wrongCount:0,practiceCount:0,addedAt:"2024-01-01"},
+  {id:2,word:"scenery",phonetic:"/ˈsiːnəri/",pos:"名词",meaning:"风景，景色",example:"The mountain scenery was breathtaking.",status:"new",wrongCount:0,practiceCount:0,addedAt:"2024-01-01"},
+  {id:3,word:"confident",phonetic:"/ˈkɒnfɪdənt/",pos:"形容词",meaning:"自信的",example:"She felt confident speaking English.",status:"new",wrongCount:0,practiceCount:0,addedAt:"2024-01-01"},
+  {id:4,word:"framework",phonetic:"/ˈfreɪmwɜːrk/",pos:"名词",meaning:"框架，体系",example:"Here's a simple framework to follow.",status:"new",wrongCount:0,practiceCount:0,addedAt:"2024-01-01"},
+  {id:5,word:"memorize",phonetic:"/ˈmeməraɪz/",pos:"动词",meaning:"记忆，背诵",example:"Try to memorize ten words a day.",status:"new",wrongCount:0,practiceCount:0,addedAt:"2024-01-01"},
+  {id:6,word:"shadowing",phonetic:"/ˈʃædəʊɪŋ/",pos:"名词",meaning:"跟读练习法",example:"Shadowing helps improve your accent.",status:"new",wrongCount:0,practiceCount:0,addedAt:"2024-01-01"},
+  {id:7,word:"practice",phonetic:"/ˈpræktɪs/",pos:"名词",meaning:"练习",example:"Daily practice makes perfect.",status:"new",wrongCount:0,practiceCount:0,addedAt:"2024-01-01"},
+  {id:8,word:"comprehensible",phonetic:"/ˌkɒmprɪˈhensɪbl/",pos:"形容词",meaning:"可理解的，易懂的",example:"Use comprehensible input to learn faster.",status:"new",wrongCount:0,practiceCount:0,addedAt:"2024-01-01"},
+  {id:9,word:"efficient",phonetic:"/ɪˈfɪʃənt/",pos:"形容词",meaning:"高效的",example:"This method is four times more efficient.",status:"new",wrongCount:0,practiceCount:0,addedAt:"2024-01-01"},
+  {id:10,word:"concrete",phonetic:"/ˈkɒŋkriːt/",pos:"形容词",meaning:"具体的；混凝土",example:"A concrete jungle means a big city.",status:"new",wrongCount:0,practiceCount:0,addedAt:"2024-01-01"},
+  {id:11,word:"jungle",phonetic:"/ˈdʒʌŋɡl/",pos:"名词",meaning:"丛林；混凝土丛林",example:"New York is a real concrete jungle.",status:"new",wrongCount:0,practiceCount:0,addedAt:"2024-01-01"},
+  {id:12,word:"soaking",phonetic:"/ˈsəʊkɪŋ/",pos:"形容词",meaning:"浑身湿透的",example:"I got soaking wet in the rain.",status:"new",wrongCount:0,practiceCount:0,addedAt:"2024-01-01"},
+  {id:13,word:"rustling",phonetic:"/ˈrʌslɪŋ/",pos:"形容词",meaning:"沙沙作响的",example:"I heard the rustling of leaves.",status:"new",wrongCount:0,practiceCount:0,addedAt:"2024-01-01"},
+  {id:14,word:"rejuvenating",phonetic:"/rɪˈdʒuːvəneɪtɪŋ/",pos:"形容词",meaning:"令人焕发活力的",example:"A walk in nature is rejuvenating.",status:"new",wrongCount:0,practiceCount:0,addedAt:"2024-01-01"},
+  {id:15,word:"input",phonetic:"/ˈɪnpʊt/",pos:"名词",meaning:"输入；语言输入",example:"Listening is a form of language input.",status:"new",wrongCount:0,practiceCount:0,addedAt:"2024-01-01"},
+  {id:16,word:"methods",phonetic:"/ˈmeθədz/",pos:"名词",meaning:"方法（复数）",example:"There are many methods to learn English.",status:"new",wrongCount:0,practiceCount:0,addedAt:"2024-01-01"},
+  {id:17,word:"chain",phonetic:"/tʃeɪn/",pos:"名词",meaning:"连锁店；链条",example:"They stayed at a hotel chain.",status:"new",wrongCount:0,practiceCount:0,addedAt:"2024-01-01"},
+  {id:18,word:"designed",phonetic:"/dɪˈzaɪnd/",pos:"动词",meaning:"设计的，旨在",example:"This course is designed for beginners.",status:"new",wrongCount:0,practiceCount:0,addedAt:"2024-01-01"},
+  {id:19,word:"actually",phonetic:"/ˈæktʃuəli/",pos:"副词",meaning:"实际上，真正地",example:"Let's actually start speaking today.",status:"new",wrongCount:0,practiceCount:0,addedAt:"2024-01-01"},
+  {id:20,word:"stories",phonetic:"/ˈstɔːriz/",pos:"名词",meaning:"故事（复数）",example:"He loves telling travel stories.",status:"new",wrongCount:0,practiceCount:0,addedAt:"2024-01-01"},
+  {id:21,word:"comprehensible input",phonetic:"/ˌkɒmprɪˈhensɪbl ˈɪnpʊt/",pos:"短语",meaning:"可理解性输入（语言习得理论）",example:"Videos are a great source of comprehensible input.",status:"new",wrongCount:0,practiceCount:0,addedAt:"2024-01-01"},
+  {id:22,word:"rejuvenate",phonetic:"/rɪˈdʒuːvəneɪt/",pos:"动词",meaning:"使焕发活力，恢复精神",example:"Nature can rejuvenate your mind.",status:"new",wrongCount:0,practiceCount:0,addedAt:"2024-01-01"},
+];
+
+// ── Storage ──
+function load(){
+  try{
+    const d=JSON.parse(localStorage.getItem('vocabData')||'null');
+    if(!d){return init()}
+    return d;
+  }catch(e){return init()}
+}
+function init(){
+  const d={words:[...DEFAULT_WORDS],history:[],streak:0,lastDate:null,nextId:23};
+  save(d);return d;
+}
+function save(d){localStorage.setItem('vocabData',JSON.stringify(d))}
+function exportJSON(d){
+  const blob=new Blob([JSON.stringify(d,null,2)],{type:'application/json'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);
+  a.download='vocab_backup.json';a.click();
+}
+function importJSON(){
+  const input=document.createElement('input');input.type='file';input.accept='.json';
+  input.onchange=e=>{
+    const f=e.target.files[0];if(!f)return;
+    const r=new FileReader();
+    r.onload=ev=>{try{const d=JSON.parse(ev.target.result);save(d);location.reload()}catch(e){toast('文件格式错误')}};
+    r.readAsText(f);
+  };
+  input.click();
+}
+
+// ── Streak ──
+function checkStreak(d){
+  const today=new Date().toDateString();
+  if(d.lastDate===today)return;
+  const yest=new Date(Date.now()-86400000).toDateString();
+  d.streak=d.lastDate===yest?(d.streak||0)+1:1;
+  d.lastDate=today;
+  save(d);
+}
+
+// ── Toast ──
+let toastT;
+function toast(msg){
+  const el=document.getElementById('toast');el.textContent=msg;el.classList.add('show');
+  clearTimeout(toastT);toastT=setTimeout(()=>el.classList.remove('show'),2200);
+}
+
+// ── Speech ──
+function speak(word){
+  if(!window.speechSynthesis)return;
+  window.speechSynthesis.cancel();
+  const u=new SpeechSynthesisUtterance(word);
+  u.lang='en-US';u.rate=0.85;
+  const btn=document.querySelector('.speak-btn');
+  if(btn)btn.classList.add('playing');
+  u.onend=()=>{if(btn)btn.classList.remove('playing')};
+  window.speechSynthesis.speak(u);
+}
+
+// ── Nav ──
+let currentPage='home';
+function showPage(p){
+  document.querySelectorAll('.nav-item').forEach(el=>el.classList.remove('active'));
+  const nav=document.getElementById('nav-'+p);
+  if(nav)nav.classList.add('active');
+  currentPage=p;
+  render();
+}
+
+// ── Render ──
+function render(){
+  const d=load();
+  checkStreak(d);
+  const el=document.getElementById('streak-display');
+  if(el)el.textContent=`连续学习 ${d.streak||0} 天`;
+  const cnt=document.getElementById('word-count-label');
+  if(cnt)cnt.textContent=`共 ${d.words.length} 个单词`;
+  const main=document.getElementById('main-content');
+  if(currentPage==='home')main.innerHTML=renderHome(d);
+  else if(currentPage==='practice')renderPractice(d);
+  else if(currentPage==='words')main.innerHTML=renderWords(d);
+  else if(currentPage==='mistakes')main.innerHTML=renderMistakes(d);
+  else if(currentPage==='add')main.innerHTML=renderAdd();
+}
+
+// ── Home ──
+function renderHome(d){
+  const total=d.words.length;
+  const mastered=d.words.filter(w=>w.status==='mastered').length;
+  const learning=d.words.filter(w=>w.status==='learning').length;
+  const newW=d.words.filter(w=>w.status==='new').length;
+  const mistakes=d.words.filter(w=>w.wrongCount>0).length;
+  const pct=total?Math.round(mastered/total*100):0;
+  return `
+<h2 class="page-title">学习概览</h2>
+<div class="stats-grid">
+  <div class="stat-card"><div class="stat-val">${total}</div><div class="stat-label">总单词数</div></div>
+  <div class="stat-card"><div class="stat-val" style="color:var(--green)">${mastered}</div><div class="stat-label">已掌握</div></div>
+  <div class="stat-card"><div class="stat-val" style="color:var(--amber-mid)">${learning}</div><div class="stat-label">学习中</div></div>
+  <div class="stat-card"><div class="stat-val" style="color:var(--blue)">${newW}</div><div class="stat-label">待学习</div></div>
+</div>
+<div class="card" style="margin-bottom:1rem">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+    <span style="font-size:14px;color:var(--text2)">掌握进度</span>
+    <span style="font-size:14px;font-weight:500">${pct}%</span>
+  </div>
+  <div class="progress-bar" style="height:10px;margin:0"><div class="progress-fill" style="width:${pct}%"></div></div>
+</div>
+<div class="card" style="margin-bottom:1rem">
+  <div style="font-weight:500;margin-bottom:12px">快速开始</div>
+  <div style="display:flex;gap:10px;flex-wrap:wrap">
+    <button class="btn-primary" onclick="showPage('practice')">开始练习</button>
+    <button class="btn-outline" onclick="showPage('add')">添加生词</button>
+    <button class="btn-outline" onclick="exportJSON(load())">导出数据</button>
+    <button class="btn-outline" onclick="importJSON()">导入数据</button>
+  </div>
+</div>
+${mistakes>0?`<div class="card"><div style="display:flex;justify-content:space-between;align-items:center"><div><div style="font-weight:500">错题本提醒</div><div style="font-size:13px;color:var(--text2);margin-top:2px">有 ${mistakes} 个单词需要重点复习</div></div><button class="btn-outline btn-sm" onclick="showPage('mistakes')">查看错题</button></div></div>`:''}
+`;
+}
+
+// ── Words ──
+function renderWords(d){
+  const statusFilter=window._wordFilter||'all';
+  const filtered=statusFilter==='all'?d.words:d.words.filter(w=>w.status===statusFilter);
+  const badgeMap={new:'badge-new',learning:'badge-learning',mastered:'badge-mastered'};
+  const labelMap={new:'待学习',learning:'学习中',mastered:'已掌握'};
+  return `
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;flex-wrap:wrap;gap:10px">
+  <h2 class="page-title" style="margin:0">生词库</h2>
+  <div style="display:flex;gap:8px;flex-wrap:wrap">
+    ${['all','new','learning','mastered'].map(s=>`<button class="btn-sm btn-outline${statusFilter===s?' mode-tab active':''}" onclick="window._wordFilter='${s}';render()">${{all:'全部',new:'待学习',learning:'学习中',mastered:'已掌握'}[s]}</button>`).join('')}
+  </div>
+</div>
+<div class="card" style="padding:0;overflow:auto">
+<table class="word-table">
+<thead><tr><th>单词</th><th>中文释义</th><th>状态</th><th style="text-align:right">操作</th></tr></thead>
+<tbody>
+${filtered.map(w=>`
+<tr>
+  <td><div class="word-en">${w.word}</div><div class="word-phonetic">${w.phonetic||''}</div></td>
+  <td><div class="word-cn">${w.meaning}</div><div style="font-size:12px;color:var(--text3);font-style:italic;margin-top:2px">${w.example||''}</div></td>
+  <td><span class="badge ${badgeMap[w.status]||'badge-new'}">${labelMap[w.status]||'待学习'}</span></td>
+  <td><div class="word-actions">
+    <button class="btn-sm btn-outline" onclick="setStatus(${w.id},'${w.status==='mastered'?'new':'mastered'}')">${w.status==='mastered'?'取消掌握':'标记掌握'}</button>
+    <button class="btn-sm btn-danger" onclick="deleteWord(${w.id})">删除</button>
+  </div></td>
+</tr>`).join('')}
+</tbody>
+</table>
+</div>`;
+}
+
+function setStatus(id,status){
+  const d=load();
+  const w=d.words.find(w=>w.id===id);
+  if(w){w.status=status;save(d);render();toast(`已标记为${status==='mastered'?'已掌握':'待学习'}`);}
+}
+function deleteWord(id){
+  if(!confirm('确定要删除这个单词吗？'))return;
+  const d=load();d.words=d.words.filter(w=>w.id!==id);save(d);render();toast('已删除');
+}
+
+// ── Mistakes ──
+function renderMistakes(d){
+  const mistakes=d.words.filter(w=>w.wrongCount>0).sort((a,b)=>b.wrongCount-a.wrongCount);
+  if(!mistakes.length)return`<h2 class="page-title">错题本</h2><div class="card" style="text-align:center;padding:2rem;color:var(--text3)">暂无错题，继续保持！</div>`;
+  return`
+<h2 class="page-title">错题本</h2>
+<div class="card" style="padding:0;overflow:auto">
+<table class="word-table">
+<thead><tr><th>单词</th><th>中文释义</th><th>答错次数</th><th style="text-align:right">操作</th></tr></thead>
+<tbody>
+${mistakes.map(w=>`
+<tr>
+  <td><div class="word-en">${w.word}</div><div class="word-phonetic">${w.phonetic||''}</div></td>
+  <td><div class="word-cn">${w.meaning}</div></td>
+  <td><span class="badge badge-weak">答错 ${w.wrongCount} 次</span></td>
+  <td><div class="word-actions">
+    <button class="btn-sm btn-outline" onclick="clearWrong(${w.id})">清除记录</button>
+  </div></td>
+</tr>`).join('')}
+</tbody>
+</table>
+</div>`;
+}
+function clearWrong(id){
+  const d=load();const w=d.words.find(w=>w.id===id);if(w){w.wrongCount=0;save(d);render();toast('已清除错误记录');}
+}
+
+// ── Add ──
+function renderAdd(){
+  return`
+<h2 class="page-title">添加生词</h2>
+<div class="card">
+  <div class="form-row">
+    <div class="form-group"><label class="form-label">英文单词 *</label><input class="form-input" id="f-word" placeholder="e.g. magnificent"></div>
+    <div class="form-group"><label class="form-label">音标</label><input class="form-input" id="f-phonetic" placeholder="e.g. /mæɡˈnɪfɪsnt/"></div>
+  </div>
+  <div class="form-row">
+    <div class="form-group"><label class="form-label">词性</label><input class="form-input" id="f-pos" placeholder="e.g. 形容词"></div>
+    <div class="form-group"><label class="form-label">中文释义 *</label><input class="form-input" id="f-meaning" placeholder="e.g. 宏伟的，壮观的"></div>
+  </div>
+  <div class="form-group"><label class="form-label">例句</label><input class="form-input" id="f-example" placeholder="e.g. The view was magnificent."></div>
+  <div style="display:flex;gap:10px;margin-top:0.5rem">
+    <button class="btn-primary" onclick="addWord()">添加单词</button>
+    <button class="btn-outline" onclick="document.getElementById('f-word').value=document.getElementById('f-phonetic').value=document.getElementById('f-pos').value=document.getElementById('f-meaning').value=document.getElementById('f-example').value=''">清空</button>
+  </div>
+  <p style="font-size:12px;color:var(--text3);margin-top:1rem">💡 第二步将接入 AI 自动补全音标、释义和例句，只需输入英文单词即可。</p>
+</div>`;
+}
+function addWord(){
+  const word=document.getElementById('f-word').value.trim();
+  const meaning=document.getElementById('f-meaning').value.trim();
+  if(!word||!meaning){toast('请填写单词和释义');return;}
+  const d=load();
+  d.words.push({id:d.nextId++,word,phonetic:document.getElementById('f-phonetic').value.trim(),pos:document.getElementById('f-pos').value.trim(),meaning,example:document.getElementById('f-example').value.trim(),status:'new',wrongCount:0,practiceCount:0,addedAt:new Date().toISOString().split('T')[0]});
+  save(d);toast(`已添加「${word}」`);
+  document.getElementById('f-word').value=document.getElementById('f-phonetic').value=document.getElementById('f-pos').value=document.getElementById('f-meaning').value=document.getElementById('f-example').value='';
+}
+
+// ── Practice ──
+let gameState={};
+const ROWS=[['q','w','e','r','t','y','u','i','o','p'],['a','s','d','f','g','h','j','k','l'],['z','x','c','v','b','n','m']];
+
+function renderPractice(d){
+  const main=document.getElementById('main-content');
+  main.innerHTML=`
+<h2 class="page-title">练习模式</h2>
+<div class="mode-tabs">
+  <button class="mode-tab ${gameState.mode==='spell'||!gameState.mode?'active':''}" onclick="startGame('spell')">听写拼写</button>
+  <button class="mode-tab ${gameState.mode==='choice'?'active':''}" onclick="startGame('choice')">选择题</button>
+  <button class="mode-tab ${gameState.mode==='mistakes'?'active':''}" onclick="startGame('mistakes')">练习错题</button>
+</div>
+<div id="game-container"></div>`;
+  if(gameState.mode)drawGame();
+  else document.getElementById('game-container').innerHTML=`<div class="card" style="text-align:center;padding:2rem;color:var(--text2)">选择一种练习模式开始</div>`;
+}
+
+function startGame(mode){
+  const d=load();
+  let pool;
+  if(mode==='mistakes'){
+    pool=d.words.filter(w=>w.wrongCount>0);
+    if(!pool.length){toast('错题本为空，先去学习吧！');return;}
+  } else {
+    pool=[...d.words];
+  }
+  pool=pool.sort(()=>Math.random()-0.5);
+  gameState={mode,queue:pool,idx:0,hearts:5,correct:0,checked:false,typed:[]};
+  if(mode==='spell'||mode==='mistakes')initTyped();
+  drawGame();
+  setTimeout(()=>{if(mode==='spell'||mode==='mistakes')speak(gameState.queue[0].word)},400);
+}
+
+function initTyped(){
+  const w=gameState.queue[gameState.idx];
+  gameState.typed=new Array(w.word.length).fill('');
+}
+
+function drawGame(){
+  const g=gameState;
+  if(!g.queue||!g.queue.length){document.getElementById('game-container').innerHTML='<div class="card" style="text-align:center;padding:2rem;color:var(--text2)">选择一种练习模式开始</div>';return;}
+  if(g.hearts<=0||g.idx>=g.queue.length){drawFinish();return;}
+  if(g.mode==='choice')drawChoice();
+  else drawSpell();
+}
+
+function drawSpell(){
+  const g=gameState;
+  const w=g.queue[g.idx];
+  const prog=Math.round(g.idx/g.queue.length*100);
+  const totalL=w.word.replace(/ /g,'').length;
+  const filledL=g.typed.filter((c,i)=>w.word[i]!==' '&&c).length;
+  const canCheck=filledL===totalL&&!g.checked;
+  let slots='';
+  for(let i=0;i<w.word.length;i++){
+    if(w.word[i]===' '){slots+=`<div class="slot space"></div>`;continue;}
+    const ch=g.typed[i]||'';
+    let cls='slot';
+    if(g.checked)cls+=ch.toLowerCase()===w.word[i].toLowerCase()?' correct':' wrong';
+    else if(i===g.typed.filter((_,j)=>w.word[j]!==' ').length&&!ch)cls+=' active';
+    slots+=`<div class="${cls}">${ch}</div>`;
+  }
+  let keys='';
+  ROWS.forEach(row=>{keys+=`<div class="key-row">${row.map(k=>`<button class="key" onclick="pressKey('${k}')">${k}</button>`).join('')}</div>`;});
+  keys+=`<div class="key-row"><button class="key backspace" onclick="backspace()">⌫ del</button></div>`;
+  const feedbackHTML=g.checked?(g.typed.join('').toLowerCase()===w.word.toLowerCase()?`<div class="feedback ok">正确！</div>`:`<div class="feedback fail">答错了，正确拼写：<strong>${w.word}</strong></div>`):'';
+  const actionBtn=g.checked?`<button class="next-btn" onclick="nextWord()">继续 →</button>`:`<button class="check-btn" ${canCheck?'':'disabled'} onclick="checkSpell()">检查答案</button>`;
+  document.getElementById('game-container').innerHTML=`
+<div class="game-wrap">
+  <div class="card">
+    <div class="hearts">${Array.from({length:5},(_,i)=>`<div class="heart"><svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" fill="${i<g.hearts?'#e24b4a':'#e0ddd6'}"/></svg></div>`).join('')}</div>
+    <div class="progress-bar"><div class="progress-fill" style="width:${prog}%"></div></div>
+    <p style="font-size:12px;color:var(--text3);text-align:right;margin-bottom:1rem">${g.idx+1} / ${g.queue.length}</p>
+    <button class="speak-btn" onclick="speak('${w.word}')"><svg viewBox="0 0 24 24" fill="currentColor" style="width:38px;height:38px;fill:var(--text2)"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.97z"/></svg></button>
+    <p class="game-hint">点击喇叭播放发音，拼写单词</p>
+    <div class="meaning-card"><div class="meaning-pos">${w.pos}</div><div class="meaning-cn">${w.meaning}</div><div class="meaning-ex">${w.example||''}</div></div>
+    <div class="letter-slots">${slots}</div>
+    ${feedbackHTML}
+    <div class="keyboard">${keys}</div>
+    ${actionBtn}
+  </div>
+</div>`;
+}
+
+function pressKey(k){
+  if(gameState.checked)return;
+  const w=gameState.queue[gameState.idx].word;
+  for(let i=0;i<w.length;i++){if(w[i]===' ')continue;if(!gameState.typed[i]){gameState.typed[i]=k;break;}}
+  drawSpell();
+  const totalL=w.replace(/ /g,'').length;
+  const filledL=gameState.typed.filter((c,i)=>w[i]!==' '&&c).length;
+  const btn=document.querySelector('.check-btn');if(btn)btn.disabled=filledL!==totalL;
+}
+function backspace(){
+  if(gameState.checked)return;
+  const w=gameState.queue[gameState.idx].word;
+  for(let i=w.length-1;i>=0;i--){if(w[i]===' ')continue;if(gameState.typed[i]){gameState.typed[i]='';break;}}
+  drawSpell();
+}
+function checkSpell(){
+  const g=gameState;g.checked=true;
+  const w=g.queue[g.idx];
+  const ok=g.typed.join('').toLowerCase()===w.word.toLowerCase();
+  const d=load();const dw=d.words.find(x=>x.id===w.id);
+  if(dw){
+    dw.practiceCount=(dw.practiceCount||0)+1;
+    if(ok){if(dw.practiceCount>=3)dw.status='mastered';else if(dw.status==='new')dw.status='learning';}
+    else{dw.wrongCount=(dw.wrongCount||0)+1;dw.status='learning';}
+    save(d);
+  }
+  if(ok)g.correct++;
+  else g.hearts=Math.max(0,g.hearts-1);
+  drawSpell();
+}
+function nextWord(){
+  gameState.idx++;gameState.checked=false;
+  if(gameState.idx<gameState.queue.length){initTyped();drawGame();setTimeout(()=>speak(gameState.queue[gameState.idx].word),300);}
+  else drawFinish();
+}
+
+// Choice
+function drawChoice(){
+  const g=gameState;
+  const w=g.queue[g.idx];
+  const prog=Math.round(g.idx/g.queue.length*100);
+  const d=load();
+  let opts=[w];
+  const others=d.words.filter(x=>x.id!==w.id).sort(()=>Math.random()-0.5).slice(0,3);
+  opts=[...opts,...others].sort(()=>Math.random()-0.5);
+  gameState.choiceOpts=opts;gameState.choiceCorrect=w.id;
+  const feedbackHTML=g.checked?(g.choiceSelected===w.id?`<div class="feedback ok">正确！</div>`:`<div class="feedback fail">答错了，正确答案：${w.meaning}</div>`):'';
+  const actionBtn=g.checked?`<button class="next-btn" onclick="nextWord()">继续 →</button>`:'';
+  document.getElementById('game-container').innerHTML=`
+<div class="game-wrap">
+  <div class="card">
+    <div class="hearts">${Array.from({length:5},(_,i)=>`<div class="heart"><svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" fill="${i<g.hearts?'#e24b4a':'#e0ddd6'}"/></svg></div>`).join('')}</div>
+    <div class="progress-bar"><div class="progress-fill" style="width:${prog}%"></div></div>
+    <p style="font-size:12px;color:var(--text3);text-align:right;margin-bottom:1rem">${g.idx+1} / ${g.queue.length}</p>
+    <div style="text-align:center;margin-bottom:1.5rem">
+      <div style="font-size:28px;font-weight:600;margin-bottom:8px">${w.word}</div>
+      <div style="font-size:14px;color:var(--amber-mid)">${w.phonetic||''}</div>
+      <button class="speak-btn" style="width:56px;height:56px;margin:12px auto 0" onclick="speak('${w.word}')"><svg viewBox="0 0 24 24" fill="currentColor" style="width:26px;height:26px;fill:var(--text2)"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.97z"/></svg></button>
+    </div>
+    <p style="font-size:13px;color:var(--text3);text-align:center;margin-bottom:1rem">选择正确的中文释义</p>
+    <div class="choice-grid">
+      ${opts.map(o=>{
+        let cls='choice-btn';
+        if(g.checked){if(o.id===w.id)cls+=' show-answer';else if(o.id===g.choiceSelected&&o.id!==w.id)cls+=' selected-fail';}
+        return`<button class="${cls}" onclick="selectChoice(${o.id})" ${g.checked?'disabled':''}>${o.meaning}</button>`;
+      }).join('')}
+    </div>
+    ${feedbackHTML}${actionBtn}
+  </div>
+</div>`;
+}
+function selectChoice(id){
+  if(gameState.checked)return;
+  gameState.checked=true;gameState.choiceSelected=id;
+  const ok=id===gameState.choiceCorrect;
+  const w=gameState.queue[gameState.idx];
+  const d=load();const dw=d.words.find(x=>x.id===w.id);
+  if(dw){dw.practiceCount=(dw.practiceCount||0)+1;if(ok){if(dw.practiceCount>=3)dw.status='mastered';else if(dw.status==='new')dw.status='learning';}else{dw.wrongCount=(dw.wrongCount||0)+1;dw.status='learning';}save(d);}
+  if(ok)gameState.correct++;else gameState.hearts=Math.max(0,gameState.hearts-1);
+  drawChoice();
+}
+
+function drawFinish(){
+  const g=gameState;
+  const total=g.queue.length;
+  const pct=Math.round(g.correct/total*100);
+  document.getElementById('game-container').innerHTML=`
+<div class="game-wrap">
+<div class="card finish-center">
+  <div class="finish-icon"><svg viewBox="0 0 24 24" fill="var(--green)" style="width:36px;height:36px"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg></div>
+  <div style="font-size:20px;font-weight:600;margin-bottom:6px">${g.hearts<=0?'本轮结束':'练习完成！'}</div>
+  <div style="font-size:14px;color:var(--text2);margin-bottom:1.25rem">共 ${total} 个单词</div>
+  <div class="finish-stats">
+    <div class="finish-stat"><div class="finish-stat-val" style="color:var(--green)">${g.correct}</div><div class="finish-stat-label">答对</div></div>
+    <div class="finish-stat"><div class="finish-stat-val" style="color:var(--red)">${total-g.correct}</div><div class="finish-stat-label">答错</div></div>
+    <div class="finish-stat"><div class="finish-stat-val">${pct}%</div><div class="finish-stat-label">正确率</div></div>
+  </div>
+  <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+    <button class="btn-primary" onclick="startGame(gameState.mode)">再练一轮</button>
+    <button class="btn-outline" onclick="showPage('home')">返回首页</button>
+  </div>
+</div>
+</div>`;
+}
+
+// Keyboard
+document.addEventListener('keydown',e=>{
+  if(currentPage!=='practice'||!gameState.mode)return;
+  if(gameState.mode==='choice')return;
+  if(e.key==='Backspace'){backspace();return;}
+  if(e.key==='Enter'&&!gameState.checked){const btn=document.querySelector('.check-btn');if(btn&&!btn.disabled)checkSpell();return;}
+  if(e.key==='Enter'&&gameState.checked){nextWord();return;}
+  if(/^[a-zA-Z]$/.test(e.key))pressKey(e.key.toLowerCase());
+});
+
+render();
+</script>
+</body>
+</html>
