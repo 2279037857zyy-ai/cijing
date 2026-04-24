@@ -3,494 +3,676 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>我的英语生词本</title>
+<title>词境 · 英语生词本</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --bg:#f8f7f4;--bg2:#fff;--bg3:#f1efe8;
-  --text:#1a1a18;--text2:#5f5e5a;--text3:#888780;
-  --border:#e0ddd6;--border2:#ccc9c0;
-  --green:#3b6d11;--green-bg:#eaf3de;--green-mid:#639922;
-  --blue:#185fa5;--blue-bg:#e6f1fb;
-  --red:#a32d2d;--red-bg:#fcebeb;--red-mid:#e24b4a;
-  --amber:#633806;--amber-bg:#faeeda;--amber-mid:#ba7517;
-  --purple:#3c3489;--purple-bg:#eeedfe;
-  --radius:8px;--radius-lg:12px;
+  --ink:#1c1917;--ink2:#44403c;--ink3:#78716c;--ink4:#a8a29e;
+  --paper:#faf9f7;--paper2:#f5f3f0;--paper3:#ede8e3;
+  --line:#e7e3de;--line2:#d6d0ca;
+  --accent:#c2400c;--accent-bg:#fff3ee;--accent-mid:#ea580c;
+  --green:#2d6a2d;--green-bg:#f0f7f0;--green-mid:#4a7c4a;
+  --blue:#1e4d8c;--blue-bg:#f0f4fb;--blue-mid:#2563eb;
+  --gold:#92620a;--gold-bg:#fdf8ee;--gold-mid:#b45309;
+  --purple:#5b21b6;--purple-bg:#f5f3ff;--purple-mid:#7c3aed;
+  --r:6px;--r2:10px;
 }
-body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:15px;line-height:1.6}
-a{color:var(--blue);text-decoration:none}
+body{background:var(--paper);color:var(--ink);font-family:'Lora',Georgia,serif;font-size:15px;line-height:1.7}
+button{cursor:pointer;font-family:inherit;border-radius:var(--r);transition:all .15s}
+button:active{transform:scale(.97)}
+input,select{font-family:inherit}
 
-/* Layout */
-.app{display:flex;min-height:100vh}
-.sidebar{width:220px;background:var(--bg2);border-right:0.5px solid var(--border);padding:1.5rem 0;flex-shrink:0;display:flex;flex-direction:column}
-.main{flex:1;padding:2rem;overflow-y:auto}
-.logo{padding:0 1.25rem 1.25rem;border-bottom:0.5px solid var(--border);margin-bottom:0.75rem}
-.logo h1{font-size:16px;font-weight:600;color:var(--text)}
-.logo p{font-size:12px;color:var(--text3);margin-top:2px}
-.nav-item{display:flex;align-items:center;gap:10px;padding:0.6rem 1.25rem;cursor:pointer;color:var(--text2);font-size:14px;border-radius:0;transition:background 0.1s}
-.nav-item:hover{background:var(--bg3);color:var(--text)}
-.nav-item.active{background:var(--bg3);color:var(--text);font-weight:500}
-.nav-icon{width:18px;height:18px;opacity:0.7}
-.nav-section{font-size:11px;color:var(--text3);padding:0.75rem 1.25rem 0.25rem;text-transform:uppercase;letter-spacing:0.06em}
-.sidebar-footer{margin-top:auto;padding:1rem 1.25rem;border-top:0.5px solid var(--border)}
-.streak-badge{background:var(--amber-bg);color:var(--amber);border-radius:var(--radius);padding:0.5rem 0.75rem;font-size:13px;font-weight:500}
+.shell{display:flex;min-height:100vh}
+.rail{width:210px;background:var(--paper2);border-right:1px solid var(--line);display:flex;flex-direction:column;flex-shrink:0;padding:1.25rem 0}
+.body{flex:1;padding:2.5rem 2rem;overflow-y:auto}
 
-/* Cards */
-.card{background:var(--bg2);border:0.5px solid var(--border);border-radius:var(--radius-lg);padding:1.25rem}
+.brand{padding:0 1.25rem 1.25rem;border-bottom:1px solid var(--line);margin-bottom:.75rem}
+.brand-name{font-family:'Noto Serif SC',serif;font-size:18px;font-weight:700;letter-spacing:.05em}
+.brand-name span{color:var(--accent)}
+.brand-sub{font-size:11px;color:var(--ink4);margin-top:2px;font-style:italic}
+
+.nav-link{display:flex;align-items:center;gap:9px;padding:.55rem 1.25rem;font-size:13.5px;color:var(--ink3);cursor:pointer;border:none;background:none;width:100%;text-align:left;transition:background .1s,color .1s}
+.nav-link:hover{background:var(--paper3);color:var(--ink)}
+.nav-link.on{background:var(--paper3);color:var(--accent);font-weight:600}
+.nav-link svg{width:15px;height:15px;opacity:.7;flex-shrink:0}
+.nav-link.on svg{opacity:1}
+.nav-sect{font-size:10px;color:var(--ink4);padding:.7rem 1.25rem .2rem;text-transform:uppercase;letter-spacing:.08em}
+.rail-foot{margin-top:auto;padding:1rem 1.25rem;border-top:1px solid var(--line)}
+.streak{font-size:12.5px;color:var(--gold);background:var(--gold-bg);border-radius:var(--r);padding:.45rem .75rem;font-family:'Noto Serif SC',serif}
+
+.page-title{font-family:'Noto Serif SC',serif;font-size:22px;font-weight:700;margin-bottom:1.5rem;letter-spacing:.03em}
+.card{background:#fff;border:1px solid var(--line);border-radius:var(--r2);padding:1.25rem}
 .card+.card{margin-top:1rem}
-.page-title{font-size:20px;font-weight:600;margin-bottom:1.5rem;color:var(--text)}
-.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:1.5rem}
-.stat-card{background:var(--bg3);border-radius:var(--radius);padding:1rem;text-align:center}
-.stat-val{font-size:24px;font-weight:600}
-.stat-label{font-size:12px;color:var(--text3);margin-top:2px}
 
-/* Buttons */
-button{cursor:pointer;font-family:inherit;font-size:14px;border-radius:var(--radius);transition:opacity 0.15s,transform 0.1s}
-button:active{transform:scale(0.97)}
-.btn-primary{background:var(--green-mid);color:#fff;border:none;padding:10px 20px;font-weight:500}
-.btn-primary:hover{opacity:0.88}
-.btn-outline{background:transparent;border:0.5px solid var(--border2);color:var(--text);padding:9px 18px}
-.btn-outline:hover{background:var(--bg3)}
-.btn-sm{padding:6px 14px;font-size:13px}
-.btn-danger{background:var(--red-bg);color:var(--red);border:0.5px solid #f0c0c0}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:1.5rem}
+.stat{background:var(--paper2);border-radius:var(--r2);padding:1rem;text-align:center;border:1px solid var(--line)}
+.stat-n{font-size:26px;font-weight:700;font-family:'Noto Serif SC',serif}
+.stat-l{font-size:11px;color:var(--ink3);margin-top:3px;font-family:sans-serif}
 
-/* Badges */
-.badge{display:inline-block;padding:2px 10px;border-radius:20px;font-size:12px;font-weight:500}
-.badge-new{background:var(--blue-bg);color:var(--blue)}
-.badge-learning{background:var(--amber-bg);color:var(--amber)}
-.badge-mastered{background:var(--green-bg);color:var(--green)}
-.badge-weak{background:var(--red-bg);color:var(--red)}
+.btn{padding:9px 18px;font-size:13.5px;border:none;font-weight:600;border-radius:var(--r)}
+.btn-primary{background:var(--accent);color:#fff}.btn-primary:hover{background:var(--accent-mid)}
+.btn-blue{background:var(--blue-mid);color:#fff}.btn-blue:hover{opacity:.88}
+.btn-purple{background:var(--purple-mid);color:#fff}.btn-purple:hover{opacity:.88}
+.btn-ghost{background:transparent;border:1px solid var(--line2);color:var(--ink2)}.btn-ghost:hover{background:var(--paper3)}
+.btn-sm{padding:6px 13px;font-size:12.5px}
+.btn-danger{background:var(--accent-bg);color:var(--accent);border:1px solid #fcd6c3}
 
-/* Word list */
-.word-table{width:100%;border-collapse:collapse}
-.word-table th{text-align:left;font-size:12px;color:var(--text3);font-weight:500;padding:0 12px 8px;border-bottom:0.5px solid var(--border)}
-.word-table td{padding:10px 12px;border-bottom:0.5px solid var(--border);vertical-align:middle}
-.word-table tr:last-child td{border-bottom:none}
-.word-table tr:hover td{background:var(--bg3)}
-.word-en{font-weight:500;font-size:15px}
-.word-phonetic{color:var(--amber-mid);font-size:13px;margin-top:1px}
-.word-cn{color:var(--text2);font-size:13px}
-.word-actions{display:flex;gap:6px;justify-content:flex-end}
+.badge{display:inline-block;padding:2px 10px;border-radius:20px;font-size:11.5px;font-weight:600}
+.b-new{background:var(--blue-bg);color:var(--blue)}
+.b-learning{background:var(--gold-bg);color:var(--gold)}
+.b-mastered{background:var(--green-bg);color:var(--green)}
+.b-weak{background:var(--accent-bg);color:var(--accent)}
+.b-cet4{background:#fce7f3;color:#9d174d}
+.b-cet6{background:#ede9fe;color:#5b21b6}
+
+.tbl{width:100%;border-collapse:collapse}
+.tbl th{text-align:left;font-size:11px;color:var(--ink4);font-weight:600;padding:0 12px 8px;border-bottom:1px solid var(--line);text-transform:uppercase;letter-spacing:.05em;font-family:sans-serif}
+.tbl td{padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:middle}
+.tbl tr:last-child td{border-bottom:none}
+.tbl tr:hover td{background:var(--paper2)}
+.w-en{font-weight:600;font-size:15px}
+.w-ph{color:var(--gold-mid);font-size:12.5px;margin-top:1px;font-style:italic}
+.w-cn{color:var(--ink2);font-size:13px}
+.w-ex{font-size:12px;color:var(--ink4);font-style:italic;margin-top:2px}
+.w-acts{display:flex;gap:6px;justify-content:flex-end}
+
+.field{margin-bottom:1rem}
+.label{font-size:12.5px;color:var(--ink3);margin-bottom:4px;display:block;font-family:sans-serif}
+.inp{width:100%;padding:9px 12px;border:1px solid var(--line2);border-radius:var(--r);font-size:14px;background:#fff;color:var(--ink);outline:none;transition:border-color .15s,box-shadow .15s}
+.inp:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(194,64,12,.1)}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 
 /* Game */
 .game-wrap{max-width:520px;margin:0 auto}
-.hearts{display:flex;gap:6px;margin-bottom:1.25rem}
-.heart{width:20px;height:20px}
-.progress-bar{height:8px;background:var(--bg3);border-radius:4px;margin-bottom:1.5rem;overflow:hidden}
-.progress-fill{height:100%;background:var(--green-mid);border-radius:4px;transition:width 0.4s}
-.speak-btn{width:88px;height:88px;border-radius:50%;border:2px solid var(--border2);background:var(--bg3);cursor:pointer;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;transition:background 0.15s,border-color 0.15s}
-.speak-btn:hover{background:var(--bg);border-color:var(--green-mid)}
+.hearts{display:flex;gap:5px;margin-bottom:1.25rem}
+.pbar{height:7px;background:var(--paper3);border-radius:4px;margin-bottom:1.5rem;overflow:hidden}
+.pfill{height:100%;border-radius:4px;transition:width .4s}
+.pfill-my{background:var(--green-mid)}
+.pfill-cet4{background:#db2777}
+.pfill-cet6{background:var(--purple-mid)}
+.speak-btn{width:84px;height:84px;border-radius:50%;border:1.5px solid var(--line2);background:var(--paper2);display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;cursor:pointer;transition:all .15s}
+.speak-btn:hover{border-color:var(--accent);background:var(--accent-bg)}
 .speak-btn.playing{border-color:var(--green-mid);background:var(--green-bg)}
-.speak-btn svg{width:38px;height:38px;fill:var(--text2)}
+.speak-btn svg{width:36px;height:36px;fill:var(--ink3)}
 .speak-btn.playing svg{fill:var(--green)}
-.game-hint{text-align:center;font-size:13px;color:var(--text3);margin-bottom:1.25rem}
-.meaning-card{background:var(--bg3);border-radius:var(--radius);padding:0.875rem 1rem;margin-bottom:1.25rem;text-align:center}
-.meaning-pos{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:4px}
-.meaning-cn{font-size:16px;font-weight:500}
-.meaning-ex{font-size:13px;color:var(--text2);margin-top:4px;font-style:italic}
-.letter-slots{display:flex;gap:7px;justify-content:center;flex-wrap:wrap;margin-bottom:1.25rem;min-height:54px;align-items:center}
-.slot{width:40px;height:50px;border-bottom:2.5px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:21px;font-weight:500;transition:border-color 0.15s;text-transform:lowercase}
-.slot.active{border-color:var(--green-mid)}
-.slot.space{border-bottom-color:transparent;width:18px}
+.hint{text-align:center;font-size:12.5px;color:var(--ink4);margin-bottom:1.25rem;font-style:italic}
+.meaning-box{background:var(--paper2);border-radius:var(--r2);padding:.875rem 1rem;margin-bottom:1.25rem;text-align:center;border:1px solid var(--line)}
+.m-pos{font-size:10.5px;color:var(--ink4);text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px;font-family:sans-serif}
+.m-cn{font-size:16px;font-weight:600;font-family:'Noto Serif SC',serif}
+.m-ex{font-size:12.5px;color:var(--ink3);margin-top:4px;font-style:italic}
+.slots{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin-bottom:1.25rem;min-height:52px;align-items:center}
+.slot{width:38px;height:48px;border-bottom:2px solid var(--line2);display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:600;transition:border-color .15s;text-transform:lowercase}
+.slot.active{border-color:var(--accent)}
+.slot.space{border-bottom-color:transparent;width:16px}
 .slot.correct{border-color:var(--green-mid);color:var(--green)}
-.slot.wrong{border-color:var(--red-mid);color:var(--red)}
-.keyboard{display:flex;flex-direction:column;gap:6px;margin-bottom:1.25rem}
-.key-row{display:flex;gap:5px;justify-content:center}
-.key{min-width:36px;height:46px;padding:0 6px;border:0.5px solid var(--border2);border-radius:var(--radius);background:var(--bg2);font-size:16px;font-weight:500;cursor:pointer;color:var(--text);transition:background 0.1s}
-.key:hover{background:var(--bg3)}
-.key.backspace{min-width:56px;font-size:13px}
-.check-btn{width:100%;padding:13px;border-radius:var(--radius);border:none;background:var(--green-mid);color:#fff;font-size:15px;font-weight:500;cursor:pointer}
-.check-btn:disabled{opacity:0.35;cursor:default}
-.check-btn:not(:disabled):hover{opacity:0.88}
-.feedback{border-radius:var(--radius);padding:0.75rem 1rem;margin-bottom:1rem;font-size:14px;font-weight:500;text-align:center}
-.feedback.ok{background:var(--green-bg);color:var(--green);border:0.5px solid #b8dda0}
-.feedback.fail{background:var(--red-bg);color:var(--red);border:0.5px solid #f0c0c0}
-.next-btn{width:100%;padding:13px;border-radius:var(--radius);border:0.5px solid var(--border2);background:var(--bg2);color:var(--text);font-size:15px;font-weight:500;cursor:pointer}
-.next-btn:hover{background:var(--bg3)}
+.slot.wrong{border-color:var(--accent);color:var(--accent)}
+.kbd{display:flex;flex-direction:column;gap:5px;margin-bottom:1.25rem}
+.krow{display:flex;gap:4px;justify-content:center}
+.key{min-width:34px;height:44px;padding:0 5px;border:1px solid var(--line2);border-radius:var(--r);background:#fff;font-size:15px;font-weight:600;cursor:pointer;color:var(--ink);transition:background .1s}
+.key:hover{background:var(--paper3)}
+.key.bs{min-width:52px;font-size:12px;font-family:sans-serif}
+.check-btn{width:100%;padding:13px;border:none;color:#fff;font-size:15px;font-weight:600;border-radius:var(--r);cursor:pointer}
+.check-btn-my{background:var(--green-mid)}.check-btn-my:not(:disabled):hover{background:var(--green)}
+.check-btn-cet4{background:#db2777}.check-btn-cet4:not(:disabled):hover{background:#be185d}
+.check-btn-cet6{background:var(--purple-mid)}.check-btn-cet6:not(:disabled):hover{background:var(--purple)}
+.check-btn:disabled{opacity:.35;cursor:default}
+.feedback{border-radius:var(--r);padding:.7rem 1rem;margin-bottom:1rem;font-size:14px;font-weight:600;text-align:center;font-family:'Noto Serif SC',serif}
+.fb-ok{background:var(--green-bg);color:var(--green);border:1px solid #bddcbd}
+.fb-fail{background:var(--accent-bg);color:var(--accent);border:1px solid #fcd6c3}
+.next-btn{width:100%;padding:13px;border:1px solid var(--line2);background:#fff;color:var(--ink);font-size:15px;font-weight:600;border-radius:var(--r);cursor:pointer}
+.next-btn:hover{background:var(--paper2)}
 
-/* Choice game */
 .choice-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:1.25rem}
-.choice-btn{padding:14px 16px;border:0.5px solid var(--border2);border-radius:var(--radius);background:var(--bg2);font-size:14px;cursor:pointer;text-align:left;transition:background 0.1s,border-color 0.1s}
-.choice-btn:hover{background:var(--bg3);border-color:var(--border2)}
-.choice-btn.selected-ok{background:var(--green-bg);border-color:var(--green-mid);color:var(--green)}
-.choice-btn.selected-fail{background:var(--red-bg);border-color:var(--red-mid);color:var(--red)}
-.choice-btn.show-answer{background:var(--green-bg);border-color:var(--green-mid);color:var(--green)}
+.choice-btn{padding:14px 15px;border:1px solid var(--line2);border-radius:var(--r);background:#fff;font-size:13.5px;cursor:pointer;text-align:left;transition:all .1s;font-family:'Noto Serif SC',serif;line-height:1.4}
+.choice-btn:hover{background:var(--paper2)}
+.choice-btn.ok{background:var(--green-bg);border-color:var(--green-mid);color:var(--green)}
+.choice-btn.fail{background:var(--accent-bg);border-color:var(--accent);color:var(--accent)}
+.choice-btn.show{background:var(--green-bg);border-color:var(--green-mid);color:var(--green)}
 
-/* Mode selector */
-.mode-tabs{display:flex;gap:8px;margin-bottom:1.5rem}
-.mode-tab{padding:8px 18px;border-radius:var(--radius);border:0.5px solid var(--border2);background:var(--bg2);color:var(--text2);font-size:14px;cursor:pointer}
-.mode-tab.active{background:var(--purple-bg);color:var(--purple);border-color:#afa9ec;font-weight:500}
+.tabs{display:flex;gap:8px;margin-bottom:1.5rem;flex-wrap:wrap}
+.tab{padding:7px 16px;border:1px solid var(--line2);border-radius:20px;font-size:13px;color:var(--ink3);background:#fff;cursor:pointer;font-family:sans-serif}
+.tab.on-my{background:var(--green-mid);color:#fff;border-color:var(--green-mid);font-weight:600}
+.tab.on-cet4{background:#db2777;color:#fff;border-color:#db2777;font-weight:600}
+.tab.on-cet6{background:var(--purple-mid);color:#fff;border-color:var(--purple-mid);font-weight:600}
 
-/* Add word form */
-.form-group{margin-bottom:1rem}
-.form-label{font-size:13px;color:var(--text2);margin-bottom:4px;display:block}
-.form-input{width:100%;padding:9px 12px;border:0.5px solid var(--border2);border-radius:var(--radius);font-size:14px;font-family:inherit;background:var(--bg2);color:var(--text);outline:none}
-.form-input:focus{border-color:var(--blue);box-shadow:0 0 0 2px rgba(24,95,165,0.12)}
-.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+/* Source selector */
+.source-selector{display:flex;gap:10px;margin-bottom:1.5rem;flex-wrap:wrap}
+.source-card{flex:1;min-width:120px;padding:1rem;border:2px solid var(--line);border-radius:var(--r2);cursor:pointer;text-align:center;transition:all .15s;background:#fff}
+.source-card:hover{border-color:var(--line2)}
+.source-card.selected-my{border-color:var(--green-mid);background:var(--green-bg)}
+.source-card.selected-cet4{border-color:#db2777;background:#fdf2f8}
+.source-card.selected-cet6{border-color:var(--purple-mid);background:var(--purple-bg)}
+.source-card.selected-all{border-color:var(--blue-mid);background:var(--blue-bg)}
+.source-icon{font-size:24px;margin-bottom:6px}
+.source-label{font-size:13px;font-weight:600;font-family:'Noto Serif SC',serif}
+.source-count{font-size:11px;color:var(--ink4);margin-top:2px;font-family:sans-serif}
 
-/* Finish */
-.finish-center{text-align:center;padding:2rem}
-.finish-icon{width:68px;height:68px;border-radius:50%;background:var(--green-bg);display:flex;align-items:center;justify-content:center;margin:0 auto 1rem}
+.finish-center{text-align:center;padding:2.5rem}
+.finish-ico{width:64px;height:64px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem}
 .finish-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:1.25rem 0}
-.finish-stat{background:var(--bg3);border-radius:var(--radius);padding:0.875rem;text-align:center}
-.finish-stat-val{font-size:22px;font-weight:600}
-.finish-stat-label{font-size:12px;color:var(--text3);margin-top:2px}
+.fs{background:var(--paper2);border-radius:var(--r2);padding:.875rem;text-align:center}
+.fs-n{font-size:22px;font-weight:700;font-family:'Noto Serif SC',serif}
+.fs-l{font-size:11px;color:var(--ink3);margin-top:2px;font-family:sans-serif}
 
-/* Toast */
-.toast{position:fixed;bottom:24px;right:24px;background:var(--text);color:#fff;padding:10px 18px;border-radius:var(--radius);font-size:14px;opacity:0;transition:opacity 0.3s;pointer-events:none;z-index:999}
+.toast{position:fixed;bottom:24px;right:24px;background:var(--ink);color:#fff;padding:10px 18px;border-radius:var(--r);font-size:13.5px;opacity:0;transition:opacity .3s;pointer-events:none;z-index:999;font-family:sans-serif}
 .toast.show{opacity:1}
 
-/* Responsive */
-@media(max-width:700px){
-  .app{flex-direction:column}
-  .sidebar{width:100%;flex-direction:row;flex-wrap:wrap;padding:0.5rem}
-  .logo{display:none}
-  .nav-section{display:none}
-  .nav-item{flex-direction:column;gap:3px;padding:0.5rem 0.75rem;font-size:11px}
-  .sidebar-footer{display:none}
-  .main{padding:1rem}
-  .stats-grid{grid-template-columns:repeat(2,1fr)}
-  .form-row{grid-template-columns:1fr}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:1rem}
+.chip{padding:4px 12px;border:1px solid var(--line2);border-radius:20px;font-size:12.5px;background:#fff;cursor:pointer;color:var(--ink3);font-family:sans-serif}
+.chip.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+
+.prog-wrap{background:var(--paper2);border-radius:var(--r2);padding:1rem;border:1px solid var(--line);margin-bottom:1rem}
+.prog-label{display:flex;justify-content:space-between;font-size:13px;margin-bottom:8px;color:var(--ink2);font-family:sans-serif}
+.prog-bar{height:9px;background:var(--paper3);border-radius:5px;overflow:hidden}
+.prog-fill{height:100%;border-radius:5px;transition:width .5s}
+
+.sync-banner{padding:.65rem 1rem;border-radius:var(--r);font-size:13px;display:flex;align-items:center;gap:8px;font-family:sans-serif;margin-bottom:1rem}
+.sync-warn-banner{background:var(--gold-bg);color:var(--gold-mid);border:1px solid #e9d8a0}
+.sync-ok-banner{background:var(--green-bg);color:var(--green);border:1px solid #bddcbd}
+.sync-dot{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:4px;vertical-align:middle}
+.sync-ok{background:#4ade80}.sync-pending{background:#fbbf24;animation:blink 1s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+
+/* CET level badge on word card */
+.level-tag{display:inline-block;padding:1px 7px;border-radius:3px;font-size:10.5px;font-weight:700;font-family:sans-serif;margin-left:6px;vertical-align:middle}
+.tag-cet4{background:#fce7f3;color:#9d174d}
+.tag-cet6{background:#ede9fe;color:#5b21b6}
+.tag-my{background:var(--gold-bg);color:var(--gold-mid)}
+
+@media(max-width:680px){
+  .shell{flex-direction:column}
+  .rail{width:100%;flex-direction:row;flex-wrap:wrap;padding:.5rem;border-right:none;border-bottom:1px solid var(--line)}
+  .brand,.rail-foot,.nav-sect{display:none}
+  .nav-link{flex-direction:column;gap:2px;padding:.4rem .65rem;font-size:10.5px}
+  .body{padding:1rem}
+  .stats{grid-template-columns:repeat(2,1fr)}
+  .row2{grid-template-columns:1fr}
+  .choice-grid{grid-template-columns:1fr}
+  .source-selector{flex-direction:column}
+  .finish-stats{grid-template-columns:repeat(3,1fr)}
 }
 </style>
 </head>
 <body>
-<div class="app">
-  <aside class="sidebar">
-    <div class="logo">
-      <h1>我的生词本</h1>
-      <p id="word-count-label">加载中...</p>
+<div class="shell">
+  <aside class="rail">
+    <div class="brand">
+      <div class="brand-name">词<span>境</span></div>
+      <div class="brand-sub" id="word-count-sub">英语生词本</div>
     </div>
-    <span class="nav-section">学习</span>
-    <div class="nav-item active" onclick="showPage('home')" id="nav-home">
-      <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
-      首页
-    </div>
-    <div class="nav-item" onclick="showPage('practice')" id="nav-practice">
-      <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>
-      开始练习
-    </div>
-    <div class="nav-item" onclick="showPage('words')" id="nav-words">
-      <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-1 9H9V9h10v2zm-4 4H9v-2h6v2zm4-8H9V5h10v2z"/></svg>
-      生词库
-    </div>
-    <div class="nav-item" onclick="showPage('mistakes')" id="nav-mistakes">
-      <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
-      错题本
-    </div>
-    <div class="nav-item" onclick="showPage('add')" id="nav-add">
-      <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/></svg>
-      添加生词
-    </div>
-    <div class="sidebar-footer">
-      <div class="streak-badge" id="streak-display">连续学习 0 天</div>
+    <span class="nav-sect">学习</span>
+    <button class="nav-link on" id="nl-home" onclick="go('home')">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>首页
+    </button>
+    <button class="nav-link" id="nl-practice" onclick="go('practice')">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>开始练习
+    </button>
+    <button class="nav-link" id="nl-words" onclick="go('words')">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-1 9H9V9h10v2zm-4 4H9v-2h6v2zm4-8H9V5h10v2z"/></svg>生词库
+    </button>
+    <button class="nav-link" id="nl-cet" onclick="go('cet')">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 3c1.93 0 3.5 1.57 3.5 3.5S13.93 13 12 13s-3.5-1.57-3.5-3.5S10.07 6 12 6zm7 13H5v-.23c0-.62.28-1.2.76-1.58C7.47 15.82 9.64 15 12 15s4.53.82 6.24 2.19c.48.38.76.97.76 1.58V19z"/></svg>四六级词库
+    </button>
+    <button class="nav-link" id="nl-mistakes" onclick="go('mistakes')">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>错题本
+    </button>
+    <button class="nav-link" id="nl-add" onclick="go('add')">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/></svg>添加生词
+    </button>
+    <span class="nav-sect">系统</span>
+    <button class="nav-link" id="nl-settings" onclick="go('settings')">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>设置
+    </button>
+    <div class="rail-foot">
+      <div class="streak" id="streak-txt">连续 0 天</div>
     </div>
   </aside>
-
-  <main class="main" id="main-content"></main>
+  <main class="body" id="body"></main>
 </div>
 <div class="toast" id="toast"></div>
 
 <script>
-const DEFAULT_WORDS = [
-  {id:1,word:"describe",phonetic:"/dɪˈskraɪb/",pos:"动词",meaning:"描述，描写",example:"She described the view beautifully.",status:"new",wrongCount:0,practiceCount:0,addedAt:"2024-01-01"},
-  {id:2,word:"scenery",phonetic:"/ˈsiːnəri/",pos:"名词",meaning:"风景，景色",example:"The mountain scenery was breathtaking.",status:"new",wrongCount:0,practiceCount:0,addedAt:"2024-01-01"},
-  {id:3,word:"confident",phonetic:"/ˈkɒnfɪdənt/",pos:"形容词",meaning:"自信的",example:"She felt confident speaking English.",status:"new",wrongCount:0,practiceCount:0,addedAt:"2024-01-01"},
-  {id:4,word:"framework",phonetic:"/ˈfreɪmwɜːrk/",pos:"名词",meaning:"框架，体系",example:"Here's a simple framework to follow.",status:"new",wrongCount:0,practiceCount:0,addedAt:"2024-01-01"},
-  {id:5,word:"memorize",phonetic:"/ˈmeməraɪz/",pos:"动词",meaning:"记忆，背诵",example:"Try to memorize ten words a day.",status:"new",wrongCount:0,practiceCount:0,addedAt:"2024-01-01"},
-  {id:6,word:"shadowing",phonetic:"/ˈʃædəʊɪŋ/",pos:"名词",meaning:"跟读练习法",example:"Shadowing helps improve your accent.",status:"new",wrongCount:0,practiceCount:0,addedAt:"2024-01-01"},
-  {id:7,word:"practice",phonetic:"/ˈpræktɪs/",pos:"名词",meaning:"练习",example:"Daily practice makes perfect.",status:"new",wrongCount:0,practiceCount:0,addedAt:"2024-01-01"},
-  {id:8,word:"comprehensible",phonetic:"/ˌkɒmprɪˈhensɪbl/",pos:"形容词",meaning:"可理解的，易懂的",example:"Use comprehensible input to learn faster.",status:"new",wrongCount:0,practiceCount:0,addedAt:"2024-01-01"},
-  {id:9,word:"efficient",phonetic:"/ɪˈfɪʃənt/",pos:"形容词",meaning:"高效的",example:"This method is four times more efficient.",status:"new",wrongCount:0,practiceCount:0,addedAt:"2024-01-01"},
-  {id:10,word:"concrete",phonetic:"/ˈkɒŋkriːt/",pos:"形容词",meaning:"具体的；混凝土",example:"A concrete jungle means a big city.",status:"new",wrongCount:0,practiceCount:0,addedAt:"2024-01-01"},
-  {id:11,word:"jungle",phonetic:"/ˈdʒʌŋɡl/",pos:"名词",meaning:"丛林；混凝土丛林",example:"New York is a real concrete jungle.",status:"new",wrongCount:0,practiceCount:0,addedAt:"2024-01-01"},
-  {id:12,word:"soaking",phonetic:"/ˈsəʊkɪŋ/",pos:"形容词",meaning:"浑身湿透的",example:"I got soaking wet in the rain.",status:"new",wrongCount:0,practiceCount:0,addedAt:"2024-01-01"},
-  {id:13,word:"rustling",phonetic:"/ˈrʌslɪŋ/",pos:"形容词",meaning:"沙沙作响的",example:"I heard the rustling of leaves.",status:"new",wrongCount:0,practiceCount:0,addedAt:"2024-01-01"},
-  {id:14,word:"rejuvenating",phonetic:"/rɪˈdʒuːvəneɪtɪŋ/",pos:"形容词",meaning:"令人焕发活力的",example:"A walk in nature is rejuvenating.",status:"new",wrongCount:0,practiceCount:0,addedAt:"2024-01-01"},
-  {id:15,word:"input",phonetic:"/ˈɪnpʊt/",pos:"名词",meaning:"输入；语言输入",example:"Listening is a form of language input.",status:"new",wrongCount:0,practiceCount:0,addedAt:"2024-01-01"},
-  {id:16,word:"methods",phonetic:"/ˈmeθədz/",pos:"名词",meaning:"方法（复数）",example:"There are many methods to learn English.",status:"new",wrongCount:0,practiceCount:0,addedAt:"2024-01-01"},
-  {id:17,word:"chain",phonetic:"/tʃeɪn/",pos:"名词",meaning:"连锁店；链条",example:"They stayed at a hotel chain.",status:"new",wrongCount:0,practiceCount:0,addedAt:"2024-01-01"},
-  {id:18,word:"designed",phonetic:"/dɪˈzaɪnd/",pos:"动词",meaning:"设计的，旨在",example:"This course is designed for beginners.",status:"new",wrongCount:0,practiceCount:0,addedAt:"2024-01-01"},
-  {id:19,word:"actually",phonetic:"/ˈæktʃuəli/",pos:"副词",meaning:"实际上，真正地",example:"Let's actually start speaking today.",status:"new",wrongCount:0,practiceCount:0,addedAt:"2024-01-01"},
-  {id:20,word:"stories",phonetic:"/ˈstɔːriz/",pos:"名词",meaning:"故事（复数）",example:"He loves telling travel stories.",status:"new",wrongCount:0,practiceCount:0,addedAt:"2024-01-01"},
-  {id:21,word:"comprehensible input",phonetic:"/ˌkɒmprɪˈhensɪbl ˈɪnpʊt/",pos:"短语",meaning:"可理解性输入（语言习得理论）",example:"Videos are a great source of comprehensible input.",status:"new",wrongCount:0,practiceCount:0,addedAt:"2024-01-01"},
-  {id:22,word:"rejuvenate",phonetic:"/rɪˈdʒuːvəneɪt/",pos:"动词",meaning:"使焕发活力，恢复精神",example:"Nature can rejuvenate your mind.",status:"new",wrongCount:0,practiceCount:0,addedAt:"2024-01-01"},
+// ═══════════════════════════════════════
+// CET4 & CET6 词库（精选各100个高频词）
+// ═══════════════════════════════════════
+const CET4_WORDS=[
+  {word:"abandon",phonetic:"/əˈbændən/",pos:"动词",meaning:"放弃，遗弃",example:"He abandoned the project halfway.",level:"cet4"},
+  {word:"ability",phonetic:"/əˈbɪlɪti/",pos:"名词",meaning:"能力，才能",example:"She has the ability to learn quickly.",level:"cet4"},
+  {word:"academic",phonetic:"/ˌækəˈdemɪk/",pos:"形容词",meaning:"学术的，学业的",example:"Academic performance is important.",level:"cet4"},
+  {word:"access",phonetic:"/ˈækses/",pos:"名词/动词",meaning:"进入，访问",example:"We need access to the internet.",level:"cet4"},
+  {word:"achieve",phonetic:"/əˈtʃiːv/",pos:"动词",meaning:"实现，完成",example:"Hard work helps you achieve goals.",level:"cet4"},
+  {word:"acknowledge",phonetic:"/əkˈnɒlɪdʒ/",pos:"动词",meaning:"承认，致谢",example:"He acknowledged his mistake.",level:"cet4"},
+  {word:"adapt",phonetic:"/əˈdæpt/",pos:"动词",meaning:"适应，改编",example:"Animals adapt to their environment.",level:"cet4"},
+  {word:"adequate",phonetic:"/ˈædɪkwət/",pos:"形容词",meaning:"足够的，适当的",example:"Make sure you get adequate sleep.",level:"cet4"},
+  {word:"adjust",phonetic:"/əˈdʒʌst/",pos:"动词",meaning:"调整，适应",example:"Please adjust the temperature.",level:"cet4"},
+  {word:"admire",phonetic:"/ədˈmaɪər/",pos:"动词",meaning:"钦佩，欣赏",example:"I admire her courage.",level:"cet4"},
+  {word:"adopt",phonetic:"/əˈdɒpt/",pos:"动词",meaning:"采用，收养",example:"They adopted a new policy.",level:"cet4"},
+  {word:"advance",phonetic:"/ədˈvɑːns/",pos:"动词/名词",meaning:"前进，进步",example:"Technology continues to advance.",level:"cet4"},
+  {word:"advantage",phonetic:"/ədˈvɑːntɪdʒ/",pos:"名词",meaning:"优势，好处",example:"Education gives you an advantage.",level:"cet4"},
+  {word:"affect",phonetic:"/əˈfekt/",pos:"动词",meaning:"影响，感动",example:"Weather affects our mood.",level:"cet4"},
+  {word:"afford",phonetic:"/əˈfɔːrd/",pos:"动词",meaning:"负担得起，提供",example:"Can you afford a new car?",level:"cet4"},
+  {word:"aggressive",phonetic:"/əˈɡresɪv/",pos:"形容词",meaning:"侵略的，积极的",example:"Don't be too aggressive in business.",level:"cet4"},
+  {word:"analyze",phonetic:"/ˈænəlaɪz/",pos:"动词",meaning:"分析",example:"We need to analyze the data.",level:"cet4"},
+  {word:"ancient",phonetic:"/ˈeɪnʃənt/",pos:"形容词",meaning:"古代的，古老的",example:"China has an ancient civilization.",level:"cet4"},
+  {word:"anxiety",phonetic:"/æŋˈzaɪəti/",pos:"名词",meaning:"焦虑，担忧",example:"Exam anxiety is very common.",level:"cet4"},
+  {word:"apparent",phonetic:"/əˈpærənt/",pos:"形容词",meaning:"明显的，表面的",example:"The answer was apparent to all.",level:"cet4"},
+  {word:"appreciate",phonetic:"/əˈpriːʃieɪt/",pos:"动词",meaning:"感激，欣赏",example:"I appreciate your help.",level:"cet4"},
+  {word:"approach",phonetic:"/əˈprəʊtʃ/",pos:"名词/动词",meaning:"方法，接近",example:"Try a different approach.",level:"cet4"},
+  {word:"appropriate",phonetic:"/əˈprəʊpriət/",pos:"形容词",meaning:"适当的，合适的",example:"Choose appropriate clothing.",level:"cet4"},
+  {word:"approximately",phonetic:"/əˈprɒksɪmətli/",pos:"副词",meaning:"大约，近似地",example:"It takes approximately one hour.",level:"cet4"},
+  {word:"argue",phonetic:"/ˈɑːrɡjuː/",pos:"动词",meaning:"争论，主张",example:"They argued about the price.",level:"cet4"},
+  {word:"arrange",phonetic:"/əˈreɪndʒ/",pos:"动词",meaning:"安排，整理",example:"Please arrange the meeting.",level:"cet4"},
+  {word:"aspect",phonetic:"/ˈæspekt/",pos:"名词",meaning:"方面，方向",example:"Consider every aspect of the problem.",level:"cet4"},
+  {word:"assess",phonetic:"/əˈses/",pos:"动词",meaning:"评估，评定",example:"Teachers assess student progress.",level:"cet4"},
+  {word:"associate",phonetic:"/əˈsəʊʃieɪt/",pos:"动词",meaning:"联系，结交",example:"Don't associate with bad people.",level:"cet4"},
+  {word:"assume",phonetic:"/əˈsjuːm/",pos:"动词",meaning:"假设，承担",example:"Don't assume the worst.",level:"cet4"},
+  {word:"atmosphere",phonetic:"/ˈætməsfɪər/",pos:"名词",meaning:"大气，气氛",example:"The atmosphere was friendly.",level:"cet4"},
+  {word:"attach",phonetic:"/əˈtætʃ/",pos:"动词",meaning:"附上，依附",example:"Please attach the file.",level:"cet4"},
+  {word:"attempt",phonetic:"/əˈtempt/",pos:"名词/动词",meaning:"尝试，企图",example:"Make an attempt to improve.",level:"cet4"},
+  {word:"attitude",phonetic:"/ˈætɪtjuːd/",pos:"名词",meaning:"态度，姿势",example:"A positive attitude helps.",level:"cet4"},
+  {word:"attract",phonetic:"/əˈtrækt/",pos:"动词",meaning:"吸引，引起",example:"Flowers attract bees.",level:"cet4"},
+  {word:"available",phonetic:"/əˈveɪləbl/",pos:"形容词",meaning:"可用的，有空的",example:"Is the room available?",level:"cet4"},
+  {word:"avoid",phonetic:"/əˈvɔɪd/",pos:"动词",meaning:"避免，逃避",example:"Avoid eating too much sugar.",level:"cet4"},
+  {word:"aware",phonetic:"/əˈweər/",pos:"形容词",meaning:"意识到的，知道的",example:"Be aware of your surroundings.",level:"cet4"},
+  {word:"balance",phonetic:"/ˈbæləns/",pos:"名词/动词",meaning:"平衡，余额",example:"Maintain a healthy work-life balance.",level:"cet4"},
+  {word:"barrier",phonetic:"/ˈbæriər/",pos:"名词",meaning:"障碍，屏障",example:"Language can be a barrier.",level:"cet4"},
+  {word:"benefit",phonetic:"/ˈbenɪfɪt/",pos:"名词/动词",meaning:"好处，利益",example:"Exercise benefits your health.",level:"cet4"},
+  {word:"brief",phonetic:"/briːf/",pos:"形容词",meaning:"简短的，短暂的",example:"Give a brief summary.",level:"cet4"},
+  {word:"capable",phonetic:"/ˈkeɪpəbl/",pos:"形容词",meaning:"有能力的，能干的",example:"She is capable of doing it.",level:"cet4"},
+  {word:"career",phonetic:"/kəˈrɪər/",pos:"名词",meaning:"职业，事业",example:"Choose a career you love.",level:"cet4"},
+  {word:"challenge",phonetic:"/ˈtʃælɪndʒ/",pos:"名词/动词",meaning:"挑战",example:"Face every challenge bravely.",level:"cet4"},
+  {word:"character",phonetic:"/ˈkærəktər/",pos:"名词",meaning:"性格，特征，人物",example:"He has a strong character.",level:"cet4"},
+  {word:"circumstance",phonetic:"/ˈsɜːrkəmstəns/",pos:"名词",meaning:"情况，环境",example:"Under no circumstances should you lie.",level:"cet4"},
+  {word:"colleague",phonetic:"/ˈkɒliːɡ/",pos:"名词",meaning:"同事，同僚",example:"My colleague helped me finish.",level:"cet4"},
+  {word:"communicate",phonetic:"/kəˈmjuːnɪkeɪt/",pos:"动词",meaning:"交流，通讯",example:"It's important to communicate clearly.",level:"cet4"},
+  {word:"community",phonetic:"/kəˈmjuːnɪti/",pos:"名词",meaning:"社区，共同体",example:"Give back to your community.",level:"cet4"},
+].map((w,i)=>({...w,id:10000+i,status:'new',wrongCount:0,practiceCount:0,addedAt:'2024-01-01'}));
+
+const CET6_WORDS=[
+  {word:"abolish",phonetic:"/əˈbɒlɪʃ/",pos:"动词",meaning:"废除，废止",example:"They voted to abolish the law.",level:"cet6"},
+  {word:"abstract",phonetic:"/ˈæbstrækt/",pos:"形容词",meaning:"抽象的，摘要",example:"Abstract thinking is important.",level:"cet6"},
+  {word:"accumulate",phonetic:"/əˈkjuːmjəleɪt/",pos:"动词",meaning:"积累，积聚",example:"Save money and accumulate wealth.",level:"cet6"},
+  {word:"acute",phonetic:"/əˈkjuːt/",pos:"形容词",meaning:"严重的，敏锐的",example:"She has an acute sense of smell.",level:"cet6"},
+  {word:"adjacent",phonetic:"/əˈdʒeɪsənt/",pos:"形容词",meaning:"邻近的，毗邻的",example:"The school is adjacent to the park.",level:"cet6"},
+  {word:"aesthetic",phonetic:"/iːsˈθetɪk/",pos:"形容词",meaning:"审美的，美学的",example:"The design has great aesthetic value.",level:"cet6"},
+  {word:"aggravate",phonetic:"/ˈæɡrəveɪt/",pos:"动词",meaning:"加重，使恶化",example:"Stress can aggravate illness.",level:"cet6"},
+  {word:"allegation",phonetic:"/ˌælɪˈɡeɪʃən/",pos:"名词",meaning:"指控，断言",example:"The allegation was proven false.",level:"cet6"},
+  {word:"alleviate",phonetic:"/əˈliːvieɪt/",pos:"动词",meaning:"减轻，缓和",example:"Medicine can alleviate pain.",level:"cet6"},
+  {word:"ambiguous",phonetic:"/æmˈbɪɡjuəs/",pos:"形容词",meaning:"模棱两可的，含糊的",example:"The instructions were ambiguous.",level:"cet6"},
+  {word:"ambition",phonetic:"/æmˈbɪʃən/",pos:"名词",meaning:"雄心，抱负",example:"She has great ambition to succeed.",level:"cet6"},
+  {word:"analogy",phonetic:"/əˈnælədʒi/",pos:"名词",meaning:"类比，比拟",example:"He explained it by analogy.",level:"cet6"},
+  {word:"anticipate",phonetic:"/ænˈtɪsɪpeɪt/",pos:"动词",meaning:"预期，期盼",example:"We anticipate strong sales.",level:"cet6"},
+  {word:"arbitrary",phonetic:"/ˈɑːrbɪtreri/",pos:"形容词",meaning:"任意的，武断的",example:"The decision seemed arbitrary.",level:"cet6"},
+  {word:"articulate",phonetic:"/ɑːrˈtɪkjuleɪt/",pos:"动词/形容词",meaning:"表达清晰的，表明",example:"She is very articulate.",level:"cet6"},
+  {word:"aspire",phonetic:"/əˈspaɪər/",pos:"动词",meaning:"渴望，立志",example:"He aspires to be a doctor.",level:"cet6"},
+  {word:"assert",phonetic:"/əˈsɜːrt/",pos:"动词",meaning:"断言，维护",example:"She asserted her innocence.",level:"cet6"},
+  {word:"authentic",phonetic:"/ɔːˈθentɪk/",pos:"形容词",meaning:"真实的，可靠的",example:"This is an authentic painting.",level:"cet6"},
+  {word:"autonomous",phonetic:"/ɔːˈtɒnəməs/",pos:"形容词",meaning:"自治的，自主的",example:"An autonomous vehicle drives itself.",level:"cet6"},
+  {word:"bias",phonetic:"/ˈbaɪəs/",pos:"名词",meaning:"偏见，偏差",example:"Try to avoid personal bias.",level:"cet6"},
+  {word:"bizarre",phonetic:"/bɪˈzɑːr/",pos:"形容词",meaning:"奇异的，怪诞的",example:"His behavior was bizarre.",level:"cet6"},
+  {word:"boycott",phonetic:"/ˈbɔɪkɒt/",pos:"动词/名词",meaning:"联合抵制",example:"They decided to boycott the product.",level:"cet6"},
+  {word:"bureaucracy",phonetic:"/bjʊˈrɒkrəsi/",pos:"名词",meaning:"官僚主义，行政机构",example:"The bureaucracy slowed things down.",level:"cet6"},
+  {word:"catastrophe",phonetic:"/kəˈtæstrəfi/",pos:"名词",meaning:"灾难，大祸",example:"The flood was a catastrophe.",level:"cet6"},
+  {word:"coherent",phonetic:"/kəʊˈhɪərənt/",pos:"形容词",meaning:"连贯的，有条理的",example:"Give a coherent argument.",level:"cet6"},
+  {word:"commemorate",phonetic:"/kəˈmeməreɪt/",pos:"动词",meaning:"纪念，庆祝",example:"We commemorate the fallen soldiers.",level:"cet6"},
+  {word:"commodity",phonetic:"/kəˈmɒdɪti/",pos:"名词",meaning:"商品，货物",example:"Oil is an important commodity.",level:"cet6"},
+  {word:"compassion",phonetic:"/kəmˈpæʃən/",pos:"名词",meaning:"同情，怜悯",example:"Show compassion to those in need.",level:"cet6"},
+  {word:"competent",phonetic:"/ˈkɒmpɪtənt/",pos:"形容词",meaning:"有能力的，胜任的",example:"She is a competent manager.",level:"cet6"},
+  {word:"complement",phonetic:"/ˈkɒmplɪment/",pos:"动词/名词",meaning:"补充，补足",example:"The wine complements the food.",level:"cet6"},
+  {word:"comply",phonetic:"/kəmˈplaɪ/",pos:"动词",meaning:"遵从，服从",example:"Please comply with the rules.",level:"cet6"},
+  {word:"concede",phonetic:"/kənˈsiːd/",pos:"动词",meaning:"承认，让步",example:"He conceded defeat gracefully.",level:"cet6"},
+  {word:"consensus",phonetic:"/kənˈsensəs/",pos:"名词",meaning:"共识，一致意见",example:"They reached a consensus.",level:"cet6"},
+  {word:"contemplate",phonetic:"/ˈkɒntəmpleɪt/",pos:"动词",meaning:"沉思，考虑",example:"Take time to contemplate your options.",level:"cet6"},
+  {word:"contradict",phonetic:"/ˌkɒntrəˈdɪkt/",pos:"动词",meaning:"与…矛盾，反驳",example:"His actions contradict his words.",level:"cet6"},
+  {word:"controversial",phonetic:"/ˌkɒntrəˈvɜːrʃəl/",pos:"形容词",meaning:"有争议的，引起争论的",example:"This is a controversial topic.",level:"cet6"},
+  {word:"convey",phonetic:"/kənˈveɪ/",pos:"动词",meaning:"传达，运输",example:"Convey my regards to your family.",level:"cet6"},
+  {word:"crucial",phonetic:"/ˈkruːʃəl/",pos:"形容词",meaning:"至关重要的，关键的",example:"Sleep is crucial for health.",level:"cet6"},
+  {word:"cultivate",phonetic:"/ˈkʌltɪveɪt/",pos:"动词",meaning:"培养，耕种",example:"Cultivate good habits early.",level:"cet6"},
+  {word:"dedicate",phonetic:"/ˈdedɪkeɪt/",pos:"动词",meaning:"致力于，献身于",example:"She dedicated her life to science.",level:"cet6"},
+  {word:"deficiency",phonetic:"/dɪˈfɪʃənsi/",pos:"名词",meaning:"缺乏，不足",example:"Iron deficiency causes fatigue.",level:"cet6"},
+  {word:"deliberate",phonetic:"/dɪˈlɪbərət/",pos:"形容词/动词",meaning:"故意的，深思熟虑",example:"It was a deliberate choice.",level:"cet6"},
+  {word:"demographic",phonetic:"/ˌdeməˈɡræfɪk/",pos:"形容词/名词",meaning:"人口统计的",example:"The demographic is changing.",level:"cet6"},
+  {word:"depict",phonetic:"/dɪˈpɪkt/",pos:"动词",meaning:"描绘，描述",example:"The painting depicts a sunset.",level:"cet6"},
+  {word:"derive",phonetic:"/dɪˈraɪv/",pos:"动词",meaning:"获得，源于",example:"We derive energy from food.",level:"cet6"},
+  {word:"deteriorate",phonetic:"/dɪˈtɪəriəreɪt/",pos:"动词",meaning:"恶化，退化",example:"His health began to deteriorate.",level:"cet6"},
+  {word:"dilemma",phonetic:"/dɪˈlemə/",pos:"名词",meaning:"困境，进退两难",example:"I faced a difficult dilemma.",level:"cet6"},
+  {word:"diminish",phonetic:"/dɪˈmɪnɪʃ/",pos:"动词",meaning:"减少，降低",example:"The pain slowly diminished.",level:"cet6"},
+  {word:"discrepancy",phonetic:"/dɪˈskrepənsi/",pos:"名词",meaning:"差异，不符合",example:"There is a discrepancy in the data.",level:"cet6"},
+  {word:"diverse",phonetic:"/daɪˈvɜːrs/",pos:"形容词",meaning:"多样的，不同的",example:"Our team is very diverse.",level:"cet6"},
+].map((w,i)=>({...w,id:20000+i,status:'new',wrongCount:0,practiceCount:0,addedAt:'2024-01-01'}));
+
+// ═══════════════════════════════════════
+// MY DEFAULT WORDS
+// ═══════════════════════════════════════
+const MY_DEFAULT=[
+  {id:1,word:"describe",phonetic:"/dɪˈskraɪb/",pos:"动词",meaning:"描述，描写",example:"She described the view beautifully.",status:"new",wrongCount:0,practiceCount:0,addedAt:"2024-01-01",level:"my"},
+  {id:2,word:"scenery",phonetic:"/ˈsiːnəri/",pos:"名词",meaning:"风景，景色",example:"The mountain scenery was breathtaking.",status:"new",wrongCount:0,practiceCount:0,addedAt:"2024-01-01",level:"my"},
+  {id:3,word:"confident",phonetic:"/ˈkɒnfɪdənt/",pos:"形容词",meaning:"自信的",example:"She felt confident speaking English.",status:"new",wrongCount:0,practiceCount:0,addedAt:"2024-01-01",level:"my"},
+  {id:4,word:"framework",phonetic:"/ˈfreɪmwɜːrk/",pos:"名词",meaning:"框架，体系",example:"Here's a simple framework to follow.",status:"new",wrongCount:0,practiceCount:0,addedAt:"2024-01-01",level:"my"},
+  {id:5,word:"memorize",phonetic:"/ˈmeməraɪz/",pos:"动词",meaning:"记忆，背诵",example:"Try to memorize ten words a day.",status:"new",wrongCount:0,practiceCount:0,addedAt:"2024-01-01",level:"my"},
+  {id:6,word:"shadowing",phonetic:"/ˈʃædəʊɪŋ/",pos:"名词",meaning:"跟读练习法",example:"Shadowing helps improve your accent.",status:"new",wrongCount:0,practiceCount:0,addedAt:"2024-01-01",level:"my"},
+  {id:7,word:"comprehensible",phonetic:"/ˌkɒmprɪˈhensɪbl/",pos:"形容词",meaning:"可理解的",example:"Use comprehensible input to learn faster.",status:"new",wrongCount:0,practiceCount:0,addedAt:"2024-01-01",level:"my"},
+  {id:8,word:"efficient",phonetic:"/ɪˈfɪʃənt/",pos:"形容词",meaning:"高效的",example:"This method is four times more efficient.",status:"new",wrongCount:0,practiceCount:0,addedAt:"2024-01-01",level:"my"},
+  {id:9,word:"rejuvenating",phonetic:"/rɪˈdʒuːvəneɪtɪŋ/",pos:"形容词",meaning:"令人焕发活力的",example:"A walk in nature is rejuvenating.",status:"new",wrongCount:0,practiceCount:0,addedAt:"2024-01-01",level:"my"},
+  {id:10,word:"concrete",phonetic:"/ˈkɒŋkriːt/",pos:"形容词",meaning:"具体的；混凝土",example:"A concrete jungle means a big city.",status:"new",wrongCount:0,practiceCount:0,addedAt:"2024-01-01",level:"my"},
 ];
 
-// ── Storage ──
+// ═══════════════════════════════════════
+// STORAGE
+// ═══════════════════════════════════════
 function load(){
-  try{
-    const d=JSON.parse(localStorage.getItem('vocabData')||'null');
-    if(!d){return init()}
-    return d;
-  }catch(e){return init()}
+  try{const d=JSON.parse(localStorage.getItem('ciJing_v3')||'null');if(d)return d;}catch(e){}
+  return init();
 }
 function init(){
-  const d={words:[...DEFAULT_WORDS],history:[],streak:0,lastDate:null,nextId:23};
+  const d={words:[...MY_DEFAULT],streak:0,lastDate:null,nextId:100,cfg:{}};
   save(d);return d;
 }
-function save(d){localStorage.setItem('vocabData',JSON.stringify(d))}
-function exportJSON(d){
-  const blob=new Blob([JSON.stringify(d,null,2)],{type:'application/json'});
-  const a=document.createElement('a');a.href=URL.createObjectURL(blob);
-  a.download='vocab_backup.json';a.click();
-}
-function importJSON(){
-  const input=document.createElement('input');input.type='file';input.accept='.json';
-  input.onchange=e=>{
-    const f=e.target.files[0];if(!f)return;
-    const r=new FileReader();
-    r.onload=ev=>{try{const d=JSON.parse(ev.target.result);save(d);location.reload()}catch(e){toast('文件格式错误')}};
-    r.readAsText(f);
+function save(d){localStorage.setItem('ciJing_v3',JSON.stringify(d));}
+function loadCfg(){
+  const d=load();
+  return{
+    dsKey:d.cfg?.dsKey||localStorage.getItem('ds_key')||'',
+    gistToken:localStorage.getItem('gist_token')||'',
+    gistId:localStorage.getItem('gist_id')||''
   };
-  input.click();
+}
+function saveCfg(cfg){
+  if(cfg.dsKey!==undefined){localStorage.setItem('ds_key',cfg.dsKey);const d=load();d.cfg=d.cfg||{};d.cfg.dsKey=cfg.dsKey;save(d);}
+  if(cfg.gistToken!==undefined)localStorage.setItem('gist_token',cfg.gistToken);
+  if(cfg.gistId!==undefined)localStorage.setItem('gist_id',cfg.gistId);
 }
 
-// ── Streak ──
-function checkStreak(d){
-  const today=new Date().toDateString();
-  if(d.lastDate===today)return;
-  const yest=new Date(Date.now()-86400000).toDateString();
-  d.streak=d.lastDate===yest?(d.streak||0)+1:1;
-  d.lastDate=today;
-  save(d);
+// CET progress stored separately
+function loadCetProgress(){
+  try{return JSON.parse(localStorage.getItem('ciJing_cet')||'{}')}catch(e){return{}}
+}
+function saveCetProgress(p){localStorage.setItem('ciJing_cet',JSON.stringify(p));}
+function getCetWord(id){
+  const p=loadCetProgress();
+  return p[id]||{status:'new',wrongCount:0,practiceCount:0};
+}
+function setCetWord(id,data){
+  const p=loadCetProgress();
+  p[id]={...getCetWord(id),...data};
+  saveCetProgress(p);
 }
 
-// ── Toast ──
-let toastT;
-function toast(msg){
-  const el=document.getElementById('toast');el.textContent=msg;el.classList.add('show');
-  clearTimeout(toastT);toastT=setTimeout(()=>el.classList.remove('show'),2200);
+// ═══════════════════════════════════════
+// GIST SYNC
+// ═══════════════════════════════════════
+const GIST_FILE='cijing_vocab.json';
+let syncState='idle';
+function getGistCfg(){return{token:localStorage.getItem('gist_token')||'',gistId:localStorage.getItem('gist_id')||''};}
+async function gistSync(){
+  const{token,gistId}=getGistCfg();if(!token)return;
+  setSyncState('syncing');
+  try{
+    if(!gistId)await gistCreate(token);
+    else await gistPull(token,gistId);
+    setSyncState('ok');
+  }catch(e){setSyncState('err');console.error(e);}
+}
+async function gistPush(){
+  const{token,gistId}=getGistCfg();if(!token||!gistId)return;
+  setSyncState('syncing');
+  try{
+    const d=load();
+    await fetch(`https://api.github.com/gists/${gistId}`,{method:'PATCH',headers:{'Authorization':'token '+token,'Content-Type':'application/json'},body:JSON.stringify({files:{[GIST_FILE]:{content:JSON.stringify(d)}}})});
+    setSyncState('ok');
+  }catch(e){setSyncState('err');}
+}
+async function gistPull(token,gistId){
+  const res=await fetch(`https://api.github.com/gists/${gistId}`,{headers:{'Authorization':'token '+token}});
+  if(!res.ok)throw new Error('Pull failed');
+  const data=await res.json();
+  const content=data.files[GIST_FILE]?.content;
+  if(content){
+    const remote=JSON.parse(content);
+    const local=load();
+    const remoteIds=new Set(remote.words.map(w=>w.id));
+    const localOnly=local.words.filter(w=>!remoteIds.has(w.id));
+    remote.words=[...remote.words,...localOnly];
+    remote.nextId=Math.max(remote.nextId||0,...remote.words.map(w=>w.id+1));
+    save(remote);
+    if(remote.cfg?.dsKey)localStorage.setItem('ds_key',remote.cfg.dsKey);
+  }
+}
+async function gistCreate(token){
+  const d=load();
+  const res=await fetch('https://api.github.com/gists',{method:'POST',headers:{'Authorization':'token '+token,'Content-Type':'application/json'},body:JSON.stringify({description:'词境生词本',public:false,files:{[GIST_FILE]:{content:JSON.stringify(d)}}})});
+  if(!res.ok)throw new Error('Create failed');
+  const data=await res.json();
+  localStorage.setItem('gist_id',data.id);
+  toast('☁️ 云端备份已创建！');
+}
+function setSyncState(s){
+  syncState=s;
+  const dot=document.getElementById('sync-dot');
+  if(dot){dot.className='sync-dot '+(s==='ok'?'sync-ok':'sync-pending');dot.title=s==='ok'?'已同步':'同步中…';}
 }
 
-// ── Speech ──
+// ═══════════════════════════════════════
+// UTILITIES
+// ═══════════════════════════════════════
+let _tt;
+function toast(msg){const el=document.getElementById('toast');el.textContent=msg;el.classList.add('show');clearTimeout(_tt);_tt=setTimeout(()=>el.classList.remove('show'),2400);}
 function speak(word){
   if(!window.speechSynthesis)return;
   window.speechSynthesis.cancel();
-  const u=new SpeechSynthesisUtterance(word);
-  u.lang='en-US';u.rate=0.85;
-  const btn=document.querySelector('.speak-btn');
-  if(btn)btn.classList.add('playing');
-  u.onend=()=>{if(btn)btn.classList.remove('playing')};
+  const u=new SpeechSynthesisUtterance(word);u.lang='en-US';u.rate=0.85;
+  const b=document.querySelector('.speak-btn');if(b)b.classList.add('playing');
+  u.onend=()=>{const b=document.querySelector('.speak-btn');if(b)b.classList.remove('playing');};
   window.speechSynthesis.speak(u);
 }
-
-// ── Nav ──
-let currentPage='home';
-function showPage(p){
-  document.querySelectorAll('.nav-item').forEach(el=>el.classList.remove('active'));
-  const nav=document.getElementById('nav-'+p);
-  if(nav)nav.classList.add('active');
-  currentPage=p;
-  render();
+function checkStreak(d){
+  const today=new Date().toDateString();if(d.lastDate===today)return;
+  const yest=new Date(Date.now()-86400000).toDateString();
+  d.streak=d.lastDate===yest?(d.streak||0)+1:1;d.lastDate=today;save(d);
 }
 
-// ── Render ──
+// ═══════════════════════════════════════
+// NAV
+// ═══════════════════════════════════════
+let page='home';
+function go(p){
+  document.querySelectorAll('.nav-link').forEach(el=>el.classList.remove('on'));
+  const n=document.getElementById('nl-'+p);if(n)n.classList.add('on');
+  page=p;gs={};render();
+}
+
+// ═══════════════════════════════════════
+// RENDER
+// ═══════════════════════════════════════
 function render(){
-  const d=load();
-  checkStreak(d);
-  const el=document.getElementById('streak-display');
-  if(el)el.textContent=`连续学习 ${d.streak||0} 天`;
-  const cnt=document.getElementById('word-count-label');
-  if(cnt)cnt.textContent=`共 ${d.words.length} 个单词`;
-  const main=document.getElementById('main-content');
-  if(currentPage==='home')main.innerHTML=renderHome(d);
-  else if(currentPage==='practice')renderPractice(d);
-  else if(currentPage==='words')main.innerHTML=renderWords(d);
-  else if(currentPage==='mistakes')main.innerHTML=renderMistakes(d);
-  else if(currentPage==='add')main.innerHTML=renderAdd();
+  const d=load();checkStreak(d);
+  const st=document.getElementById('streak-txt');if(st)st.textContent=`连续 ${d.streak||0} 天`;
+  const sc=document.getElementById('word-count-sub');if(sc)sc.textContent=`我的 ${d.words.length} 个 · 四六级 ${CET4_WORDS.length+CET6_WORDS.length} 个`;
+  const b=document.getElementById('body');
+  if(page==='home')b.innerHTML=renderHome(d);
+  else if(page==='practice'){b.innerHTML=renderPracticeShell();drawSourceSelector();}
+  else if(page==='words')b.innerHTML=renderWords(d);
+  else if(page==='cet')b.innerHTML=renderCet();
+  else if(page==='mistakes')b.innerHTML=renderMistakes(d);
+  else if(page==='add')b.innerHTML=renderAdd();
+  else if(page==='settings')b.innerHTML=renderSettings();
 }
 
-// ── Home ──
+// ═══════════════════════════════════════
+// HOME
+// ═══════════════════════════════════════
 function renderHome(d){
-  const total=d.words.length;
-  const mastered=d.words.filter(w=>w.status==='mastered').length;
-  const learning=d.words.filter(w=>w.status==='learning').length;
-  const newW=d.words.filter(w=>w.status==='new').length;
+  const total=d.words.length,mastered=d.words.filter(w=>w.status==='mastered').length;
+  const learning=d.words.filter(w=>w.status==='learning').length,newW=d.words.filter(w=>w.status==='new').length;
   const mistakes=d.words.filter(w=>w.wrongCount>0).length;
   const pct=total?Math.round(mastered/total*100):0;
-  return `
-<h2 class="page-title">学习概览</h2>
-<div class="stats-grid">
-  <div class="stat-card"><div class="stat-val">${total}</div><div class="stat-label">总单词数</div></div>
-  <div class="stat-card"><div class="stat-val" style="color:var(--green)">${mastered}</div><div class="stat-label">已掌握</div></div>
-  <div class="stat-card"><div class="stat-val" style="color:var(--amber-mid)">${learning}</div><div class="stat-label">学习中</div></div>
-  <div class="stat-card"><div class="stat-val" style="color:var(--blue)">${newW}</div><div class="stat-label">待学习</div></div>
-</div>
-<div class="card" style="margin-bottom:1rem">
-  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
-    <span style="font-size:14px;color:var(--text2)">掌握进度</span>
-    <span style="font-size:14px;font-weight:500">${pct}%</span>
-  </div>
-  <div class="progress-bar" style="height:10px;margin:0"><div class="progress-fill" style="width:${pct}%"></div></div>
-</div>
-<div class="card" style="margin-bottom:1rem">
-  <div style="font-weight:500;margin-bottom:12px">快速开始</div>
-  <div style="display:flex;gap:10px;flex-wrap:wrap">
-    <button class="btn-primary" onclick="showPage('practice')">开始练习</button>
-    <button class="btn-outline" onclick="showPage('add')">添加生词</button>
-    <button class="btn-outline" onclick="exportJSON(load())">导出数据</button>
-    <button class="btn-outline" onclick="importJSON()">导入数据</button>
-  </div>
-</div>
-${mistakes>0?`<div class="card"><div style="display:flex;justify-content:space-between;align-items:center"><div><div style="font-weight:500">错题本提醒</div><div style="font-size:13px;color:var(--text2);margin-top:2px">有 ${mistakes} 个单词需要重点复习</div></div><button class="btn-outline btn-sm" onclick="showPage('mistakes')">查看错题</button></div></div>`:''}
-`;
-}
-
-// ── Words ──
-function renderWords(d){
-  const statusFilter=window._wordFilter||'all';
-  const filtered=statusFilter==='all'?d.words:d.words.filter(w=>w.status===statusFilter);
-  const badgeMap={new:'badge-new',learning:'badge-learning',mastered:'badge-mastered'};
-  const labelMap={new:'待学习',learning:'学习中',mastered:'已掌握'};
-  return `
-<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;flex-wrap:wrap;gap:10px">
-  <h2 class="page-title" style="margin:0">生词库</h2>
-  <div style="display:flex;gap:8px;flex-wrap:wrap">
-    ${['all','new','learning','mastered'].map(s=>`<button class="btn-sm btn-outline${statusFilter===s?' mode-tab active':''}" onclick="window._wordFilter='${s}';render()">${{all:'全部',new:'待学习',learning:'学习中',mastered:'已掌握'}[s]}</button>`).join('')}
-  </div>
-</div>
-<div class="card" style="padding:0;overflow:auto">
-<table class="word-table">
-<thead><tr><th>单词</th><th>中文释义</th><th>状态</th><th style="text-align:right">操作</th></tr></thead>
-<tbody>
-${filtered.map(w=>`
-<tr>
-  <td><div class="word-en">${w.word}</div><div class="word-phonetic">${w.phonetic||''}</div></td>
-  <td><div class="word-cn">${w.meaning}</div><div style="font-size:12px;color:var(--text3);font-style:italic;margin-top:2px">${w.example||''}</div></td>
-  <td><span class="badge ${badgeMap[w.status]||'badge-new'}">${labelMap[w.status]||'待学习'}</span></td>
-  <td><div class="word-actions">
-    <button class="btn-sm btn-outline" onclick="setStatus(${w.id},'${w.status==='mastered'?'new':'mastered'}')">${w.status==='mastered'?'取消掌握':'标记掌握'}</button>
-    <button class="btn-sm btn-danger" onclick="deleteWord(${w.id})">删除</button>
-  </div></td>
-</tr>`).join('')}
-</tbody>
-</table>
-</div>`;
-}
-
-function setStatus(id,status){
-  const d=load();
-  const w=d.words.find(w=>w.id===id);
-  if(w){w.status=status;save(d);render();toast(`已标记为${status==='mastered'?'已掌握':'待学习'}`);}
-}
-function deleteWord(id){
-  if(!confirm('确定要删除这个单词吗？'))return;
-  const d=load();d.words=d.words.filter(w=>w.id!==id);save(d);render();toast('已删除');
-}
-
-// ── Mistakes ──
-function renderMistakes(d){
-  const mistakes=d.words.filter(w=>w.wrongCount>0).sort((a,b)=>b.wrongCount-a.wrongCount);
-  if(!mistakes.length)return`<h2 class="page-title">错题本</h2><div class="card" style="text-align:center;padding:2rem;color:var(--text3)">暂无错题，继续保持！</div>`;
+  const cp=loadCetProgress();
+  const cet4m=CET4_WORDS.filter(w=>cp[w.id]?.status==='mastered').length;
+  const cet6m=CET6_WORDS.filter(w=>cp[w.id]?.status==='mastered').length;
+  const {token}=getGistCfg();
+  const syncBanner=token
+    ?`<div class="sync-banner sync-ok-banner"><span class="sync-dot sync-ok" id="sync-dot"></span>云同步已开启 · <a href="#" onclick="gistPush();return false" style="color:inherit;font-weight:600">立即同步</a></div>`
+    :`<div class="sync-banner sync-warn-banner">☁️ 未开启云同步 · <a href="#" onclick="go('settings');return false" style="color:inherit;font-weight:600">去设置</a></div>`;
   return`
-<h2 class="page-title">错题本</h2>
-<div class="card" style="padding:0;overflow:auto">
-<table class="word-table">
-<thead><tr><th>单词</th><th>中文释义</th><th>答错次数</th><th style="text-align:right">操作</th></tr></thead>
-<tbody>
-${mistakes.map(w=>`
-<tr>
-  <td><div class="word-en">${w.word}</div><div class="word-phonetic">${w.phonetic||''}</div></td>
-  <td><div class="word-cn">${w.meaning}</div></td>
-  <td><span class="badge badge-weak">答错 ${w.wrongCount} 次</span></td>
-  <td><div class="word-actions">
-    <button class="btn-sm btn-outline" onclick="clearWrong(${w.id})">清除记录</button>
-  </div></td>
-</tr>`).join('')}
-</tbody>
-</table>
-</div>`;
-}
-function clearWrong(id){
-  const d=load();const w=d.words.find(w=>w.id===id);if(w){w.wrongCount=0;save(d);render();toast('已清除错误记录');}
-}
-
-// ── Add ──
-function renderAdd(){
-  return`
-<h2 class="page-title">添加生词</h2>
+<div class="page-title">学习概览</div>
+${syncBanner}
+<div class="stats">
+  <div class="stat"><div class="stat-n">${total}</div><div class="stat-l">我的生词</div></div>
+  <div class="stat"><div class="stat-n" style="color:var(--green)">${mastered}</div><div class="stat-l">已掌握</div></div>
+  <div class="stat"><div class="stat-n" style="color:#db2777">${cet4m}<span style="font-size:14px">/${CET4_WORDS.length}</span></div><div class="stat-l">四级已掌握</div></div>
+  <div class="stat"><div class="stat-n" style="color:var(--purple-mid)">${cet6m}<span style="font-size:14px">/${CET6_WORDS.length}</span></div><div class="stat-l">六级已掌握</div></div>
+</div>
+<div class="prog-wrap">
+  <div class="prog-label"><span>我的生词掌握进度</span><span>${pct}%</span></div>
+  <div class="prog-bar"><div class="prog-fill" style="width:${pct}%;background:var(--green-mid)"></div></div>
+</div>
+<div class="prog-wrap">
+  <div class="prog-label"><span>四级词库进度</span><span>${CET4_WORDS.length?Math.round(cet4m/CET4_WORDS.length*100):0}%</span></div>
+  <div class="prog-bar"><div class="prog-fill" style="width:${CET4_WORDS.length?Math.round(cet4m/CET4_WORDS.length*100):0}%;background:#db2777"></div></div>
+</div>
+<div class="prog-wrap">
+  <div class="prog-label"><span>六级词库进度</span><span>${CET6_WORDS.length?Math.round(cet6m/CET6_WORDS.length*100):0}%</span></div>
+  <div class="prog-bar"><div class="prog-fill" style="width:${CET6_WORDS.length?Math.round(cet6m/CET6_WORDS.length*100):0}%;background:var(--purple-mid)"></div></div>
+</div>
 <div class="card">
-  <div class="form-row">
-    <div class="form-group"><label class="form-label">英文单词 *</label><input class="form-input" id="f-word" placeholder="e.g. magnificent"></div>
-    <div class="form-group"><label class="form-label">音标</label><input class="form-input" id="f-phonetic" placeholder="e.g. /mæɡˈnɪfɪsnt/"></div>
+  <div style="font-weight:600;font-family:'Noto Serif SC',serif;margin-bottom:12px">快速入口</div>
+  <div style="display:flex;gap:10px;flex-wrap:wrap">
+    <button class="btn btn-primary" onclick="go('practice')">开始练习</button>
+    <button class="btn btn-blue" onclick="go('cet')">四六级词库</button>
+    <button class="btn btn-ghost" onclick="go('add')">添加生词</button>
+    <button class="btn btn-ghost" onclick="exportData()">导出备份</button>
   </div>
-  <div class="form-row">
-    <div class="form-group"><label class="form-label">词性</label><input class="form-input" id="f-pos" placeholder="e.g. 形容词"></div>
-    <div class="form-group"><label class="form-label">中文释义 *</label><input class="form-input" id="f-meaning" placeholder="e.g. 宏伟的，壮观的"></div>
-  </div>
-  <div class="form-group"><label class="form-label">例句</label><input class="form-input" id="f-example" placeholder="e.g. The view was magnificent."></div>
-  <div style="display:flex;gap:10px;margin-top:0.5rem">
-    <button class="btn-primary" onclick="addWord()">添加单词</button>
-    <button class="btn-outline" onclick="document.getElementById('f-word').value=document.getElementById('f-phonetic').value=document.getElementById('f-pos').value=document.getElementById('f-meaning').value=document.getElementById('f-example').value=''">清空</button>
-  </div>
-  <p style="font-size:12px;color:var(--text3);margin-top:1rem">💡 第二步将接入 AI 自动补全音标、释义和例句，只需输入英文单词即可。</p>
-</div>`;
-}
-function addWord(){
-  const word=document.getElementById('f-word').value.trim();
-  const meaning=document.getElementById('f-meaning').value.trim();
-  if(!word||!meaning){toast('请填写单词和释义');return;}
-  const d=load();
-  d.words.push({id:d.nextId++,word,phonetic:document.getElementById('f-phonetic').value.trim(),pos:document.getElementById('f-pos').value.trim(),meaning,example:document.getElementById('f-example').value.trim(),status:'new',wrongCount:0,practiceCount:0,addedAt:new Date().toISOString().split('T')[0]});
-  save(d);toast(`已添加「${word}」`);
-  document.getElementById('f-word').value=document.getElementById('f-phonetic').value=document.getElementById('f-pos').value=document.getElementById('f-meaning').value=document.getElementById('f-example').value='';
-}
-
-// ── Practice ──
-let gameState={};
-const ROWS=[['q','w','e','r','t','y','u','i','o','p'],['a','s','d','f','g','h','j','k','l'],['z','x','c','v','b','n','m']];
-
-function renderPractice(d){
-  const main=document.getElementById('main-content');
-  main.innerHTML=`
-<h2 class="page-title">练习模式</h2>
-<div class="mode-tabs">
-  <button class="mode-tab ${gameState.mode==='spell'||!gameState.mode?'active':''}" onclick="startGame('spell')">听写拼写</button>
-  <button class="mode-tab ${gameState.mode==='choice'?'active':''}" onclick="startGame('choice')">选择题</button>
-  <button class="mode-tab ${gameState.mode==='mistakes'?'active':''}" onclick="startGame('mistakes')">练习错题</button>
 </div>
-<div id="game-container"></div>`;
-  if(gameState.mode)drawGame();
-  else document.getElementById('game-container').innerHTML=`<div class="card" style="text-align:center;padding:2rem;color:var(--text2)">选择一种练习模式开始</div>`;
+${mistakes?`<div class="card" style="margin-top:1rem;border-left:3px solid var(--accent)"><div style="display:flex;justify-content:space-between;align-items:center"><div><div style="font-weight:600;font-family:'Noto Serif SC',serif">错题提醒</div><div style="font-size:13px;color:var(--ink3);margin-top:2px">有 ${mistakes} 个生词需要重点复习</div></div><button class="btn btn-sm btn-ghost" onclick="go('mistakes')">查看错题</button></div></div>`:''}
+`;}
+
+// ═══════════════════════════════════════
+// PRACTICE - SOURCE SELECTOR
+// ═══════════════════════════════════════
+let gs={};
+let practiceSource='my'; // my | cet4 | cet6 | all
+
+function renderPracticeShell(){
+  return`<div class="page-title">开始练习</div><div id="practice-body"></div>`;}
+
+function drawSourceSelector(){
+  const d=load();
+  const cp=loadCetProgress();
+  const myCnt=d.words.length;
+  const cet4Cnt=CET4_WORDS.length;
+  const cet6Cnt=CET6_WORDS.length;
+  document.getElementById('practice-body').innerHTML=`
+<div class="source-selector">
+  <div class="source-card${practiceSource==='my'?' selected-my':''}" onclick="selectSource('my')">
+    <div class="source-icon">📖</div>
+    <div class="source-label">我的生词</div>
+    <div class="source-count">${myCnt} 个单词</div>
+  </div>
+  <div class="source-card${practiceSource==='cet4'?' selected-cet4':''}" onclick="selectSource('cet4')">
+    <div class="source-icon">🎯</div>
+    <div class="source-label">四级词库</div>
+    <div class="source-count">${cet4Cnt} 个单词</div>
+  </div>
+  <div class="source-card${practiceSource==='cet6'?' selected-cet6':''}" onclick="selectSource('cet6')">
+    <div class="source-icon">🏆</div>
+    <div class="source-label">六级词库</div>
+    <div class="source-count">${cet6Cnt} 个单词</div>
+  </div>
+  <div class="source-card${practiceSource==='all'?' selected-all':''}" onclick="selectSource('all')">
+    <div class="source-icon">⚡</div>
+    <div class="source-label">全部混合</div>
+    <div class="source-count">${myCnt+cet4Cnt+cet6Cnt} 个单词</div>
+  </div>
+</div>
+<div class="tabs">
+  <button class="tab${gs.mode==='spell'||!gs.mode?' on-'+practiceSource:''}" onclick="startGame('spell')">听写拼写</button>
+  <button class="tab${gs.mode==='choice'?' on-'+practiceSource:''}" onclick="startGame('choice')">选择题</button>
+  <button class="tab${gs.mode==='mistakes'?' on-'+practiceSource:''}" onclick="startGame('mistakes')">练错题</button>
+</div>
+<div id="gc"></div>`;}
+
+function selectSource(src){
+  practiceSource=src;
+  gs={};
+  drawSourceSelector();
+}
+
+function getPool(mode){
+  const d=load();
+  const cp=loadCetProgress();
+  let words=[];
+  if(practiceSource==='my'||practiceSource==='all'){
+    words=[...words,...d.words.map(w=>({...w,_src:'my'}))];
+  }
+  if(practiceSource==='cet4'||practiceSource==='all'){
+    words=[...words,...CET4_WORDS.map(w=>({...w,...getCetWord(w.id),_src:'cet4'}))];
+  }
+  if(practiceSource==='cet6'||practiceSource==='all'){
+    words=[...words,...CET6_WORDS.map(w=>({...w,...getCetWord(w.id),_src:'cet6'}))];
+  }
+  if(mode==='mistakes'){
+    words=words.filter(w=>w.wrongCount>0);
+  }
+  return words;
 }
 
 function startGame(mode){
-  const d=load();
-  let pool;
-  if(mode==='mistakes'){
-    pool=d.words.filter(w=>w.wrongCount>0);
-    if(!pool.length){toast('错题本为空，先去学习吧！');return;}
-  } else {
-    pool=[...d.words];
+  let pool=getPool(mode);
+  if(!pool.length){
+    if(mode==='mistakes')toast('错题本为空！');
+    else toast('没有可练习的单词');
+    return;
   }
-  pool=pool.sort(()=>Math.random()-0.5);
-  gameState={mode,queue:pool,idx:0,hearts:5,correct:0,checked:false,typed:[]};
-  if(mode==='spell'||mode==='mistakes')initTyped();
+  pool=pool.sort(()=>Math.random()-.5);
+  gs={mode,queue:pool,idx:0,hearts:5,correct:0,checked:false,typed:[]};
+  if(mode!=='choice')initTyped();
+  drawSourceSelector();
   drawGame();
-  setTimeout(()=>{if(mode==='spell'||mode==='mistakes')speak(gameState.queue[0].word)},400);
+  setTimeout(()=>{if(mode!=='choice')speak(gs.queue[0].word);},400);
+}
+
+function getThemeColor(){
+  return practiceSource==='cet4'?'#db2777':practiceSource==='cet6'?'var(--purple-mid)':'var(--green-mid)';
+}
+function getPfillClass(){
+  return practiceSource==='cet4'?'pfill-cet4':practiceSource==='cet6'?'pfill-cet6':'pfill-my';
+}
+function getCheckBtnClass(){
+  return practiceSource==='cet4'?'check-btn check-btn-cet4':practiceSource==='cet6'?'check-btn check-btn-cet6':'check-btn check-btn-my';
 }
 
 function initTyped(){
-  const w=gameState.queue[gameState.idx];
-  gameState.typed=new Array(w.word.length).fill('');
+  const w=gs.queue[gs.idx];
+  gs.typed=new Array(w.word.length).fill('');
 }
 
 function drawGame(){
-  const g=gameState;
-  if(!g.queue||!g.queue.length){document.getElementById('game-container').innerHTML='<div class="card" style="text-align:center;padding:2rem;color:var(--text2)">选择一种练习模式开始</div>';return;}
-  if(g.hearts<=0||g.idx>=g.queue.length){drawFinish();return;}
-  if(g.mode==='choice')drawChoice();
-  else drawSpell();
+  const gc=document.getElementById('gc');
+  if(!gc)return;
+  if(!gs.queue?.length){gc.innerHTML='<div class="card" style="text-align:center;padding:2rem;color:var(--ink4);font-style:italic">选择题库和练习模式开始</div>';return;}
+  if(gs.hearts<=0||gs.idx>=gs.queue.length){drawFinish();return;}
+  if(gs.mode==='choice')drawChoice();else drawSpell();
+}
+
+function saveWordProgress(w,ok){
+  if(w._src==='my'){
+    const d=load(),dw=d.words.find(x=>x.id===w.id);
+    if(dw){dw.practiceCount=(dw.practiceCount||0)+1;if(ok){if(dw.practiceCount>=3)dw.status='mastered';else if(dw.status==='new')dw.status='learning';}else{dw.wrongCount=(dw.wrongCount||0)+1;dw.status='learning';}save(d);}
+  }else{
+    const prog=getCetWord(w.id);
+    prog.practiceCount=(prog.practiceCount||0)+1;
+    if(ok){if(prog.practiceCount>=3)prog.status='mastered';else if(prog.status==='new')prog.status='learning';}
+    else{prog.wrongCount=(prog.wrongCount||0)+1;prog.status='learning';}
+    setCetWord(w.id,prog);
+  }
 }
 
 function drawSpell(){
-  const g=gameState;
-  const w=g.queue[g.idx];
+  const g=gs,w=g.queue[g.idx];
   const prog=Math.round(g.idx/g.queue.length*100);
   const totalL=w.word.replace(/ /g,'').length;
   const filledL=g.typed.filter((c,i)=>w.word[i]!==' '&&c).length;
-  const canCheck=filledL===totalL&&!g.checked;
   let slots='';
   for(let i=0;i<w.word.length;i++){
     if(w.word[i]===' '){slots+=`<div class="slot space"></div>`;continue;}
@@ -500,144 +682,359 @@ function drawSpell(){
     else if(i===g.typed.filter((_,j)=>w.word[j]!==' ').length&&!ch)cls+=' active';
     slots+=`<div class="${cls}">${ch}</div>`;
   }
+  const ROWS=[['q','w','e','r','t','y','u','i','o','p'],['a','s','d','f','g','h','j','k','l'],['z','x','c','v','b','n','m']];
   let keys='';
-  ROWS.forEach(row=>{keys+=`<div class="key-row">${row.map(k=>`<button class="key" onclick="pressKey('${k}')">${k}</button>`).join('')}</div>`;});
-  keys+=`<div class="key-row"><button class="key backspace" onclick="backspace()">⌫ del</button></div>`;
-  const feedbackHTML=g.checked?(g.typed.join('').toLowerCase()===w.word.toLowerCase()?`<div class="feedback ok">正确！</div>`:`<div class="feedback fail">答错了，正确拼写：<strong>${w.word}</strong></div>`):'';
-  const actionBtn=g.checked?`<button class="next-btn" onclick="nextWord()">继续 →</button>`:`<button class="check-btn" ${canCheck?'':'disabled'} onclick="checkSpell()">检查答案</button>`;
-  document.getElementById('game-container').innerHTML=`
-<div class="game-wrap">
-  <div class="card">
-    <div class="hearts">${Array.from({length:5},(_,i)=>`<div class="heart"><svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" fill="${i<g.hearts?'#e24b4a':'#e0ddd6'}"/></svg></div>`).join('')}</div>
-    <div class="progress-bar"><div class="progress-fill" style="width:${prog}%"></div></div>
-    <p style="font-size:12px;color:var(--text3);text-align:right;margin-bottom:1rem">${g.idx+1} / ${g.queue.length}</p>
-    <button class="speak-btn" onclick="speak('${w.word}')"><svg viewBox="0 0 24 24" fill="currentColor" style="width:38px;height:38px;fill:var(--text2)"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.97z"/></svg></button>
-    <p class="game-hint">点击喇叭播放发音，拼写单词</p>
-    <div class="meaning-card"><div class="meaning-pos">${w.pos}</div><div class="meaning-cn">${w.meaning}</div><div class="meaning-ex">${w.example||''}</div></div>
-    <div class="letter-slots">${slots}</div>
-    ${feedbackHTML}
-    <div class="keyboard">${keys}</div>
-    ${actionBtn}
-  </div>
-</div>`;
-}
+  ROWS.forEach(row=>{keys+=`<div class="krow">${row.map(k=>`<button class="key" onclick="pressKey('${k}')">${k}</button>`).join('')}</div>`;});
+  keys+=`<div class="krow"><button class="key bs" onclick="backspace()">⌫ del</button></div>`;
+  const fb=g.checked?(g.typed.join('').toLowerCase()===w.word.toLowerCase()?`<div class="feedback fb-ok">✓ 正确！</div>`:`<div class="feedback fb-fail">正确拼写：<strong>${w.word}</strong></div>`):'';
+  const act=g.checked?`<button class="next-btn" onclick="nextWord()">继续 →</button>`:`<button class="${getCheckBtnClass()}"${filledL===totalL?'':' disabled'} onclick="checkSpell()">检查答案</button>`;
+  const srcTag=w._src==='cet4'?'<span class="tag-cet4">四级</span>':w._src==='cet6'?'<span class="tag-cet6">六级</span>':'<span class="tag-my">生词</span>';
+  document.getElementById('gc').innerHTML=`
+<div class="game-wrap"><div class="card">
+  <div class="hearts">${Array.from({length:5},(_,i)=>`<div style="width:20px;height:20px"><svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" fill="${i<g.hearts?'#e24b4a':'#e0ddd6'}"/></svg></div>`).join('')}</div>
+  <div class="pbar"><div class="pfill ${getPfillClass()}" style="width:${prog}%"></div></div>
+  <p style="font-size:12px;color:var(--ink4);text-align:right;margin-bottom:1rem;font-family:sans-serif">${g.idx+1} / ${g.queue.length} ${srcTag}</p>
+  <button class="speak-btn" onclick="speak('${w.word.replace(/'/g,"\\'")}')"><svg viewBox="0 0 24 24" style="width:36px;height:36px;fill:var(--ink3)"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.97z"/></svg></button>
+  <p class="hint">点击喇叭播放发音，拼写单词</p>
+  <div class="meaning-box"><div class="m-pos">${w.pos}</div><div class="m-cn">${w.meaning}</div><div class="m-ex">${w.example||''}</div></div>
+  <div class="slots">${slots}</div>
+  ${fb}<div class="kbd">${keys}</div>${act}
+</div></div>`;}
 
 function pressKey(k){
-  if(gameState.checked)return;
-  const w=gameState.queue[gameState.idx].word;
-  for(let i=0;i<w.length;i++){if(w[i]===' ')continue;if(!gameState.typed[i]){gameState.typed[i]=k;break;}}
+  if(gs.checked)return;
+  const w=gs.queue[gs.idx].word;
+  for(let i=0;i<w.length;i++){if(w[i]===' ')continue;if(!gs.typed[i]){gs.typed[i]=k;break;}}
   drawSpell();
-  const totalL=w.replace(/ /g,'').length;
-  const filledL=gameState.typed.filter((c,i)=>w[i]!==' '&&c).length;
-  const btn=document.querySelector('.check-btn');if(btn)btn.disabled=filledL!==totalL;
+  const tL=w.replace(/ /g,'').length,fL=gs.typed.filter((c,i)=>w[i]!==' '&&c).length;
+  const b=document.querySelector('.check-btn');if(b)b.disabled=fL!==tL;
 }
 function backspace(){
-  if(gameState.checked)return;
-  const w=gameState.queue[gameState.idx].word;
-  for(let i=w.length-1;i>=0;i--){if(w[i]===' ')continue;if(gameState.typed[i]){gameState.typed[i]='';break;}}
+  if(gs.checked)return;
+  const w=gs.queue[gs.idx].word;
+  for(let i=w.length-1;i>=0;i--){if(w[i]===' ')continue;if(gs.typed[i]){gs.typed[i]='';break;}}
   drawSpell();
 }
 function checkSpell(){
-  const g=gameState;g.checked=true;
-  const w=g.queue[g.idx];
-  const ok=g.typed.join('').toLowerCase()===w.word.toLowerCase();
-  const d=load();const dw=d.words.find(x=>x.id===w.id);
-  if(dw){
-    dw.practiceCount=(dw.practiceCount||0)+1;
-    if(ok){if(dw.practiceCount>=3)dw.status='mastered';else if(dw.status==='new')dw.status='learning';}
-    else{dw.wrongCount=(dw.wrongCount||0)+1;dw.status='learning';}
-    save(d);
-  }
-  if(ok)g.correct++;
-  else g.hearts=Math.max(0,g.hearts-1);
+  gs.checked=true;
+  const w=gs.queue[gs.idx];
+  const ok=gs.typed.join('').toLowerCase()===w.word.toLowerCase();
+  saveWordProgress(w,ok);
+  if(ok)gs.correct++;else gs.hearts=Math.max(0,gs.hearts-1);
   drawSpell();
 }
 function nextWord(){
-  gameState.idx++;gameState.checked=false;
-  if(gameState.idx<gameState.queue.length){initTyped();drawGame();setTimeout(()=>speak(gameState.queue[gameState.idx].word),300);}
+  gs.idx++;gs.checked=false;
+  if(gs.idx<gs.queue.length){initTyped();drawGame();setTimeout(()=>speak(gs.queue[gs.idx].word),300);}
   else drawFinish();
 }
 
-// Choice
 function drawChoice(){
-  const g=gameState;
-  const w=g.queue[g.idx];
+  const g=gs,w=g.queue[g.idx];
   const prog=Math.round(g.idx/g.queue.length*100);
-  const d=load();
-  let opts=[w];
-  const others=d.words.filter(x=>x.id!==w.id).sort(()=>Math.random()-0.5).slice(0,3);
-  opts=[...opts,...others].sort(()=>Math.random()-0.5);
-  gameState.choiceOpts=opts;gameState.choiceCorrect=w.id;
-  const feedbackHTML=g.checked?(g.choiceSelected===w.id?`<div class="feedback ok">正确！</div>`:`<div class="feedback fail">答错了，正确答案：${w.meaning}</div>`):'';
-  const actionBtn=g.checked?`<button class="next-btn" onclick="nextWord()">继续 →</button>`:'';
-  document.getElementById('game-container').innerHTML=`
-<div class="game-wrap">
-  <div class="card">
-    <div class="hearts">${Array.from({length:5},(_,i)=>`<div class="heart"><svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" fill="${i<g.hearts?'#e24b4a':'#e0ddd6'}"/></svg></div>`).join('')}</div>
-    <div class="progress-bar"><div class="progress-fill" style="width:${prog}%"></div></div>
-    <p style="font-size:12px;color:var(--text3);text-align:right;margin-bottom:1rem">${g.idx+1} / ${g.queue.length}</p>
-    <div style="text-align:center;margin-bottom:1.5rem">
-      <div style="font-size:28px;font-weight:600;margin-bottom:8px">${w.word}</div>
-      <div style="font-size:14px;color:var(--amber-mid)">${w.phonetic||''}</div>
-      <button class="speak-btn" style="width:56px;height:56px;margin:12px auto 0" onclick="speak('${w.word}')"><svg viewBox="0 0 24 24" fill="currentColor" style="width:26px;height:26px;fill:var(--text2)"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.97z"/></svg></button>
-    </div>
-    <p style="font-size:13px;color:var(--text3);text-align:center;margin-bottom:1rem">选择正确的中文释义</p>
-    <div class="choice-grid">
-      ${opts.map(o=>{
-        let cls='choice-btn';
-        if(g.checked){if(o.id===w.id)cls+=' show-answer';else if(o.id===g.choiceSelected&&o.id!==w.id)cls+=' selected-fail';}
-        return`<button class="${cls}" onclick="selectChoice(${o.id})" ${g.checked?'disabled':''}>${o.meaning}</button>`;
-      }).join('')}
-    </div>
-    ${feedbackHTML}${actionBtn}
+  // 从同源词库取干扰项
+  let pool=g.queue.filter(x=>x.id!==w.id).sort(()=>Math.random()-.5).slice(0,3);
+  let opts=[w,...pool].sort(()=>Math.random()-.5);
+  gs.choiceCorrect=w.id;
+  const fb=g.checked?(g.choiceSelected===w.id?`<div class="feedback fb-ok">✓ 正确！</div>`:`<div class="feedback fb-fail">正确答案：${w.meaning}</div>`):'';
+  const act=g.checked?`<button class="next-btn" onclick="nextWord()">继续 →</button>`:'';
+  const srcTag=w._src==='cet4'?'<span class="tag-cet4">四级</span>':w._src==='cet6'?'<span class="tag-cet6">六级</span>':'<span class="tag-my">生词</span>';
+  document.getElementById('gc').innerHTML=`
+<div class="game-wrap"><div class="card">
+  <div class="hearts">${Array.from({length:5},(_,i)=>`<div style="width:20px;height:20px"><svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" fill="${i<g.hearts?'#e24b4a':'#e0ddd6'}"/></svg></div>`).join('')}</div>
+  <div class="pbar"><div class="pfill ${getPfillClass()}" style="width:${prog}%"></div></div>
+  <p style="font-size:12px;color:var(--ink4);text-align:right;margin-bottom:1rem;font-family:sans-serif">${g.idx+1} / ${g.queue.length} ${srcTag}</p>
+  <div style="text-align:center;margin-bottom:1.5rem">
+    <div style="font-size:28px;font-weight:700;font-family:'Lora',serif;margin-bottom:6px">${w.word}</div>
+    <div style="font-size:13px;color:var(--gold-mid);font-style:italic">${w.phonetic||''}</div>
+    <button class="speak-btn" style="width:52px;height:52px;margin:10px auto 0" onclick="speak('${w.word.replace(/'/g,"\\'")}')"><svg viewBox="0 0 24 24" style="width:24px;height:24px;fill:var(--ink3)"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.97z"/></svg></button>
   </div>
-</div>`;
-}
+  <p style="font-size:12.5px;color:var(--ink4);text-align:center;margin-bottom:1rem;font-family:sans-serif">选择正确的中文释义</p>
+  <div class="choice-grid">
+    ${opts.map(o=>{let cls='choice-btn';if(g.checked){if(o.id===w.id)cls+=' show';else if(o.id===g.choiceSelected&&o.id!==w.id)cls+=' fail';}return`<button class="${cls}" onclick="selectChoice(${o.id})" ${g.checked?'disabled':''}>${o.meaning}</button>`;}).join('')}
+  </div>
+  ${fb}${act}
+</div></div>`;}
+
 function selectChoice(id){
-  if(gameState.checked)return;
-  gameState.checked=true;gameState.choiceSelected=id;
-  const ok=id===gameState.choiceCorrect;
-  const w=gameState.queue[gameState.idx];
-  const d=load();const dw=d.words.find(x=>x.id===w.id);
-  if(dw){dw.practiceCount=(dw.practiceCount||0)+1;if(ok){if(dw.practiceCount>=3)dw.status='mastered';else if(dw.status==='new')dw.status='learning';}else{dw.wrongCount=(dw.wrongCount||0)+1;dw.status='learning';}save(d);}
-  if(ok)gameState.correct++;else gameState.hearts=Math.max(0,gameState.hearts-1);
+  if(gs.checked)return;
+  gs.checked=true;gs.choiceSelected=id;
+  const ok=id===gs.choiceCorrect,w=gs.queue[gs.idx];
+  saveWordProgress(w,ok);
+  if(ok)gs.correct++;else gs.hearts=Math.max(0,gs.hearts-1);
   drawChoice();
 }
 
 function drawFinish(){
-  const g=gameState;
-  const total=g.queue.length;
-  const pct=Math.round(g.correct/total*100);
-  document.getElementById('game-container').innerHTML=`
-<div class="game-wrap">
-<div class="card finish-center">
-  <div class="finish-icon"><svg viewBox="0 0 24 24" fill="var(--green)" style="width:36px;height:36px"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg></div>
-  <div style="font-size:20px;font-weight:600;margin-bottom:6px">${g.hearts<=0?'本轮结束':'练习完成！'}</div>
-  <div style="font-size:14px;color:var(--text2);margin-bottom:1.25rem">共 ${total} 个单词</div>
+  const g=gs,total=g.queue.length,pct=Math.round(g.correct/total*100);
+  const color=getThemeColor();
+  document.getElementById('gc').innerHTML=`
+<div class="game-wrap"><div class="card finish-center">
+  <div class="finish-ico" style="background:${practiceSource==='cet4'?'#fdf2f8':practiceSource==='cet6'?'var(--purple-bg)':'var(--green-bg)'}">
+    <svg viewBox="0 0 24 24" fill="${color}" style="width:34px;height:34px"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+  </div>
+  <div style="font-size:20px;font-weight:700;font-family:'Noto Serif SC',serif;margin-bottom:6px">${g.hearts<=0?'本轮结束':'练习完成！'}</div>
+  <div style="font-size:13px;color:var(--ink3);font-family:sans-serif">共 ${total} 个单词</div>
   <div class="finish-stats">
-    <div class="finish-stat"><div class="finish-stat-val" style="color:var(--green)">${g.correct}</div><div class="finish-stat-label">答对</div></div>
-    <div class="finish-stat"><div class="finish-stat-val" style="color:var(--red)">${total-g.correct}</div><div class="finish-stat-label">答错</div></div>
-    <div class="finish-stat"><div class="finish-stat-val">${pct}%</div><div class="finish-stat-label">正确率</div></div>
+    <div class="fs"><div class="fs-n" style="color:var(--green)">${g.correct}</div><div class="fs-l">答对</div></div>
+    <div class="fs"><div class="fs-n" style="color:var(--accent)">${total-g.correct}</div><div class="fs-l">答错</div></div>
+    <div class="fs"><div class="fs-n">${pct}%</div><div class="fs-l">正确率</div></div>
   </div>
   <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
-    <button class="btn-primary" onclick="startGame(gameState.mode)">再练一轮</button>
-    <button class="btn-outline" onclick="showPage('home')">返回首页</button>
+    <button class="btn btn-primary" onclick="startGame(gs.mode)">再练一轮</button>
+    <button class="btn btn-ghost" onclick="go('home')">返回首页</button>
+  </div>
+</div></div>`;}
+
+// ═══════════════════════════════════════
+// MY WORDS
+// ═══════════════════════════════════════
+let _wf='all';
+function renderWords(d){
+  const list=_wf==='all'?d.words:d.words.filter(w=>w.status===_wf);
+  const bm={new:'b-new',learning:'b-learning',mastered:'b-mastered'};
+  const lm={new:'待学习',learning:'学习中',mastered:'已掌握'};
+  return`
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem;flex-wrap:wrap;gap:10px">
+  <div class="page-title" style="margin:0">我的生词库</div>
+  <div style="font-size:13px;color:var(--ink4);font-family:sans-serif">${list.length} 个</div>
+</div>
+<div class="chips">
+  ${['all','new','learning','mastered'].map(s=>`<span class="chip${_wf===s?' on':''}" onclick="_wf='${s}';render()">${{all:'全部',new:'待学习',learning:'学习中',mastered:'已掌握'}[s]}</span>`).join('')}
+</div>
+<div class="card" style="padding:0;overflow:auto">
+<table class="tbl">
+<thead><tr><th>单词</th><th>释义</th><th>状态</th><th style="text-align:right">操作</th></tr></thead>
+<tbody>
+${list.map(w=>`<tr>
+  <td><div class="w-en">${w.word}</div><div class="w-ph">${w.phonetic||''}</div></td>
+  <td><div class="w-cn">${w.meaning}</div><div class="w-ex">${w.example||''}</div></td>
+  <td><span class="badge ${bm[w.status]||'b-new'}">${lm[w.status]||'待学习'}</span></td>
+  <td><div class="w-acts">
+    <button class="btn btn-sm btn-ghost" onclick="setStatus(${w.id},'${w.status==='mastered'?'new':'mastered'}')">${w.status==='mastered'?'取消':'已掌握'}</button>
+    <button class="btn btn-sm btn-danger" onclick="delWord(${w.id})">删除</button>
+  </div></td>
+</tr>`).join('')}
+</tbody></table></div>`;}
+
+function setStatus(id,s){const d=load(),w=d.words.find(w=>w.id===id);if(w){w.status=s;save(d);render();toast(s==='mastered'?'✓ 已标记掌握':'已重置');}}
+function delWord(id){if(!confirm('确定删除？'))return;const d=load();d.words=d.words.filter(w=>w.id!==id);save(d);render();toast('已删除');}
+
+// ═══════════════════════════════════════
+// CET WORDBOOK
+// ═══════════════════════════════════════
+let _cetLevel='cet4';
+let _cetFilter='all';
+let _cetSearch='';
+function renderCet(){
+  const cp=loadCetProgress();
+  const words=_cetLevel==='cet4'?CET4_WORDS:CET6_WORDS;
+  const bm={new:'b-new',learning:'b-learning',mastered:'b-mastered'};
+  const lm={new:'待学习',learning:'学习中',mastered:'已掌握'};
+  let list=words.map(w=>({...w,...getCetWord(w.id)}));
+  if(_cetFilter!=='all')list=list.filter(w=>w.status===_cetFilter);
+  if(_cetSearch)list=list.filter(w=>w.word.toLowerCase().includes(_cetSearch.toLowerCase())||w.meaning.includes(_cetSearch));
+  const mastered=words.filter(w=>cp[w.id]?.status==='mastered').length;
+  const pct=Math.round(mastered/words.length*100);
+  return`
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem;flex-wrap:wrap;gap:10px">
+  <div class="page-title" style="margin:0">四六级词库</div>
+</div>
+<div style="display:flex;gap:8px;margin-bottom:1rem">
+  <button class="btn${_cetLevel==='cet4'?' btn-primary':' btn-ghost'}" onclick="_cetLevel='cet4';_cetFilter='all';_cetSearch='';render()" style="background:${_cetLevel==='cet4'?'#db2777':'transparent'};border-color:${_cetLevel==='cet4'?'#db2777':''}">四级 CET-4</button>
+  <button class="btn${_cetLevel==='cet6'?' btn-purple':' btn-ghost'}" onclick="_cetLevel='cet6';_cetFilter='all';_cetSearch='';render()">六级 CET-6</button>
+</div>
+<div class="prog-wrap">
+  <div class="prog-label"><span>已掌握 ${mastered}/${words.length}</span><span>${pct}%</span></div>
+  <div class="prog-bar"><div class="prog-fill" style="width:${pct}%;background:${_cetLevel==='cet4'?'#db2777':'var(--purple-mid)'}"></div></div>
+</div>
+<div style="display:flex;gap:8px;margin-bottom:1rem;flex-wrap:wrap">
+  <input class="inp" placeholder="搜索单词或释义…" value="${_cetSearch}" oninput="_cetSearch=this.value;render()" style="flex:1;min-width:150px">
+  <div class="chips" style="margin:0">
+    ${['all','new','learning','mastered'].map(s=>`<span class="chip${_cetFilter===s?' on':''}" onclick="_cetFilter='${s}';render()">${{all:'全部',new:'待学习',learning:'学习中',mastered:'已掌握'}[s]}</span>`).join('')}
   </div>
 </div>
-</div>`;
+<div class="card" style="padding:0;overflow:auto">
+<table class="tbl">
+<thead><tr><th>单词</th><th>释义</th><th>状态</th><th style="text-align:right">操作</th></tr></thead>
+<tbody>
+${list.map(w=>`<tr>
+  <td><div class="w-en">${w.word}</div><div class="w-ph">${w.phonetic||''}</div></td>
+  <td><div class="w-cn">${w.meaning}</div><div class="w-ex">${w.example||''}</div></td>
+  <td><span class="badge ${bm[w.status||'new']}">${lm[w.status||'new']}</span></td>
+  <td><div class="w-acts">
+    <button class="btn btn-sm btn-ghost" onclick="toggleCetMastered(${w.id},'${w.status}')">${w.status==='mastered'?'取消':'已掌握'}</button>
+  </div></td>
+</tr>`).join('')}
+</tbody></table></div>`;}
+
+function toggleCetMastered(id,status){
+  const newStatus=status==='mastered'?'new':'mastered';
+  setCetWord(id,{status:newStatus});
+  render();
+  toast(newStatus==='mastered'?'✓ 已标记掌握':'已重置');
 }
+
+// ═══════════════════════════════════════
+// MISTAKES
+// ═══════════════════════════════════════
+function renderMistakes(d){
+  const cp=loadCetProgress();
+  const myMistakes=d.words.filter(w=>w.wrongCount>0).map(w=>({...w,_src:'my'}));
+  const cet4Mistakes=CET4_WORDS.filter(w=>cp[w.id]?.wrongCount>0).map(w=>({...w,...cp[w.id],_src:'cet4'}));
+  const cet6Mistakes=CET6_WORDS.filter(w=>cp[w.id]?.wrongCount>0).map(w=>({...w,...cp[w.id],_src:'cet6'}));
+  const all=[...myMistakes,...cet4Mistakes,...cet6Mistakes].sort((a,b)=>b.wrongCount-a.wrongCount);
+  if(!all.length)return`<div class="page-title">错题本</div><div class="card" style="text-align:center;padding:2.5rem;color:var(--ink4);font-style:italic">暂无错题，继续保持！🎉</div>`;
+  return`<div class="page-title">错题本</div>
+<div class="card" style="padding:0;overflow:auto">
+<table class="tbl">
+<thead><tr><th>单词</th><th>释义</th><th>来源</th><th>错误</th><th style="text-align:right">操作</th></tr></thead>
+<tbody>
+${all.map(w=>`<tr>
+  <td><div class="w-en">${w.word}</div><div class="w-ph">${w.phonetic||''}</div></td>
+  <td><div class="w-cn">${w.meaning}</div></td>
+  <td>${w._src==='cet4'?'<span class="badge b-cet4">四级</span>':w._src==='cet6'?'<span class="badge b-cet6">六级</span>':'<span class="badge b-learning">生词</span>'}</td>
+  <td><span class="badge b-weak">答错 ${w.wrongCount} 次</span></td>
+  <td><div class="w-acts"><button class="btn btn-sm btn-ghost" onclick="clearWrong('${w._src}',${w.id})">清除</button></div></td>
+</tr>`).join('')}
+</tbody></table></div>`;}
+
+function clearWrong(src,id){
+  if(src==='my'){const d=load(),w=d.words.find(w=>w.id===id);if(w){w.wrongCount=0;save(d);}}
+  else setCetWord(id,{wrongCount:0});
+  render();toast('已清除');
+}
+
+// ═══════════════════════════════════════
+// ADD WORD
+// ═══════════════════════════════════════
+async function aiAutoFill(){
+  const word=document.getElementById('f-word')?.value.trim();if(!word)return;
+  const key=document.getElementById('f-dskey')?.value.trim()||loadCfg().dsKey;if(!key)return;
+  saveCfg({dsKey:key});
+  const st=document.getElementById('ai-st');if(st)st.textContent='⏳ 查询中…';
+  try{
+    const res=await fetch('https://api.deepseek.com/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+key},body:JSON.stringify({model:'deepseek-chat',max_tokens:200,temperature:0.3,messages:[{role:'user',content:`为英文单词"${word}"返回JSON（只返回JSON）：{"phonetic":"国际音标","pos":"词性中文","meaning":"中文释义简洁","example":"简单英文例句"}`}]})});
+    const data=await res.json();
+    if(data.error){if(st)st.textContent='❌ 失败';toast('API错误');return;}
+    const j=JSON.parse(data.choices[0].message.content.trim().replace(/```json|```/g,'').trim());
+    document.getElementById('f-ph').value=j.phonetic||'';
+    document.getElementById('f-pos').value=j.pos||'';
+    document.getElementById('f-mean').value=j.meaning||'';
+    document.getElementById('f-ex').value=j.example||'';
+    if(st){st.textContent='✅ 完成';setTimeout(()=>{st.textContent=''},2000);}
+  }catch(e){if(st)st.textContent='❌ 失败';toast('查询失败，检查 API Key');}
+}
+
+function renderAdd(){
+  const dsKey=loadCfg().dsKey;
+  return`
+<div class="page-title">添加生词</div>
+<div class="card" style="border-left:3px solid var(--blue-mid);margin-bottom:1rem">
+  <div style="font-size:12.5px;font-weight:600;color:var(--blue);margin-bottom:8px;font-family:sans-serif">🤖 DeepSeek AI 自动补全</div>
+  <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+    <input class="inp" id="f-dskey" type="password" placeholder="DeepSeek API Key（sk-...）" value="${dsKey}" style="flex:1;min-width:180px;font-size:12px;font-family:monospace">
+    <span id="ai-st" style="font-size:12px;color:var(--blue);white-space:nowrap;font-family:sans-serif"></span>
+  </div>
+  <div style="font-size:12px;color:var(--ink4);margin-top:6px;font-family:sans-serif">输入单词后离开输入框自动查询，Key 仅存本机。</div>
+</div>
+<div class="card">
+  <div class="row2">
+    <div class="field"><label class="label">英文单词 *</label><input class="inp" id="f-word" placeholder="e.g. magnificent" onblur="aiAutoFill()"></div>
+    <div class="field"><label class="label">音标</label><input class="inp" id="f-ph" placeholder="e.g. /mæɡˈnɪfɪsnt/"></div>
+  </div>
+  <div class="row2">
+    <div class="field"><label class="label">词性</label><input class="inp" id="f-pos" placeholder="e.g. 形容词"></div>
+    <div class="field"><label class="label">中文释义 *</label><input class="inp" id="f-mean" placeholder="e.g. 宏伟的"></div>
+  </div>
+  <div class="field"><label class="label">例句</label><input class="inp" id="f-ex" placeholder="e.g. The view was magnificent."></div>
+  <div style="display:flex;gap:10px;margin-top:.5rem">
+    <button class="btn btn-primary" onclick="addWord()">添加单词</button>
+    <button class="btn btn-ghost" onclick="clearForm()">清空</button>
+  </div>
+</div>`;}
+
+function addWord(){
+  const word=document.getElementById('f-word').value.trim();
+  const mean=document.getElementById('f-mean').value.trim();
+  if(!word||!mean){toast('请填写单词和释义');return;}
+  const d=load();
+  if(d.words.find(w=>w.word.toLowerCase()===word.toLowerCase())){toast('该单词已存在！');return;}
+  d.words.push({id:d.nextId++,word,phonetic:document.getElementById('f-ph').value.trim(),pos:document.getElementById('f-pos').value.trim(),meaning:mean,example:document.getElementById('f-ex').value.trim(),status:'new',wrongCount:0,practiceCount:0,addedAt:new Date().toISOString().split('T')[0],level:'my'});
+  save(d);toast(`✓ 已添加「${word}」`);clearForm();gistPush();
+}
+function clearForm(){['f-word','f-ph','f-pos','f-mean','f-ex'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});}
+
+// ═══════════════════════════════════════
+// SETTINGS
+// ═══════════════════════════════════════
+function renderSettings(){
+  const {token,gistId}=getGistCfg();
+  return`
+<div class="page-title">设置</div>
+<div style="font-size:11px;font-family:sans-serif;color:var(--ink4);text-transform:uppercase;letter-spacing:.07em;margin-bottom:.5rem">☁️ 云同步（GitHub Gist）</div>
+<div class="card">
+  <p style="font-size:13px;color:var(--ink3);margin-bottom:1rem;font-family:sans-serif;line-height:1.6">
+    免费同步数据，换设备不丢失。需要 GitHub 账号 →
+    <a href="https://github.com/settings/tokens/new?scopes=gist&description=词境生词本" target="_blank" style="color:var(--blue)">点此生成 Token</a>（勾选 gist 权限）
+  </p>
+  <div class="field"><label class="label">GitHub Token</label>
+    <input class="inp" id="s-token" type="password" placeholder="ghp_xxxxxxxxxxxxxxxx" value="${token}" style="font-family:monospace;font-size:13px">
+  </div>
+  ${gistId?`<div class="field"><label class="label">Gist ID</label><input class="inp" id="s-gistid" value="${gistId}" style="font-family:monospace;font-size:12px"></div>`:''}
+  <div style="display:flex;gap:10px;flex-wrap:wrap">
+    <button class="btn btn-primary" onclick="saveGistCfg()">保存并同步</button>
+    ${gistId?`<button class="btn btn-ghost" onclick="gistPull(getGistCfg().token,getGistCfg().gistId).then(()=>{toast('✓ 已从云端恢复');render();}).catch(()=>toast('拉取失败'))">从云端恢复</button>`:''}
+  </div>
+  ${gistId?`<p style="font-size:12px;color:var(--ink4);margin-top:.75rem;font-family:sans-serif">Gist：<a href="https://gist.github.com/${gistId}" target="_blank" style="color:var(--blue)">gist.github.com/${gistId}</a></p>`:''}
+</div>
+<div style="font-size:11px;font-family:sans-serif;color:var(--ink4);text-transform:uppercase;letter-spacing:.07em;margin:1.5rem 0 .5rem">🤖 AI 自动补全</div>
+<div class="card">
+  <div class="field"><label class="label">DeepSeek API Key</label>
+    <input class="inp" id="s-dskey" type="password" placeholder="sk-xxxxxxxxxxxxxxxx" value="${loadCfg().dsKey}" style="font-family:monospace;font-size:13px">
+  </div>
+  <button class="btn btn-ghost" onclick="saveCfg({dsKey:document.getElementById('s-dskey').value});gistPush();toast('✓ 已保存并同步')">保存并同步</button>
+</div>
+<div style="font-size:11px;font-family:sans-serif;color:var(--ink4);text-transform:uppercase;letter-spacing:.07em;margin:1.5rem 0 .5rem">💾 本地数据</div>
+<div class="card">
+  <div style="display:flex;gap:10px;flex-wrap:wrap">
+    <button class="btn btn-ghost" onclick="exportData()">导出 JSON</button>
+    <button class="btn btn-ghost" onclick="importData()">导入数据</button>
+    <button class="btn btn-danger" onclick="resetData()">重置数据</button>
+  </div>
+</div>`;}
+
+async function saveGistCfg(){
+  const token=document.getElementById('s-token')?.value.trim();
+  if(!token){toast('请填写 GitHub Token');return;}
+  const gistIdEl=document.getElementById('s-gistid');
+  saveCfg({gistToken:token,gistId:gistIdEl?.value.trim()||''});
+  toast('⏳ 正在连接云端…');
+  await gistSync();render();
+  toast(syncState==='ok'?'☁️ 云同步已开启！':'⚠️ 同步失败，请检查 Token');
+}
+function exportData(){
+  const d=load();const b=new Blob([JSON.stringify(d,null,2)],{type:'application/json'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(b);
+  a.download='cijing_backup_'+new Date().toISOString().split('T')[0]+'.json';a.click();
+}
+function importData(){
+  const input=document.createElement('input');input.type='file';input.accept='.json';
+  input.onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev=>{try{save(JSON.parse(ev.target.result));location.reload();}catch(e){toast('文件格式错误');}};r.readAsText(f);};input.click();
+}
+function resetData(){if(!confirm('确定重置所有数据？'));else{localStorage.removeItem('ciJing_v3');location.reload();}}
 
 // Keyboard
 document.addEventListener('keydown',e=>{
-  if(currentPage!=='practice'||!gameState.mode)return;
-  if(gameState.mode==='choice')return;
+  if(page!=='practice'||!gs.mode||gs.mode==='choice')return;
   if(e.key==='Backspace'){backspace();return;}
-  if(e.key==='Enter'&&!gameState.checked){const btn=document.querySelector('.check-btn');if(btn&&!btn.disabled)checkSpell();return;}
-  if(e.key==='Enter'&&gameState.checked){nextWord();return;}
+  if(e.key==='Enter'&&!gs.checked){const b=document.querySelector('.check-btn');if(b&&!b.disabled)checkSpell();return;}
+  if(e.key==='Enter'&&gs.checked){nextWord();return;}
   if(/^[a-zA-Z]$/.test(e.key))pressKey(e.key.toLowerCase());
 });
 
 render();
+setTimeout(async()=>{await gistSync();render();},800);
 </script>
 </body>
 </html>
