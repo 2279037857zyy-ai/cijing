@@ -1004,7 +1004,25 @@ async function generateAIDlg(scene,userWords){
 // ══════════════ UTILS ══════════════
 let _tt;
 function toast(msg){const el=document.getElementById('toast');el.textContent=msg;el.classList.add('show');clearTimeout(_tt);_tt=setTimeout(()=>el.classList.remove('show'),2400);}
-function speak(word,cb){window.speechSynthesis?.cancel();const u=new SpeechSynthesisUtterance(word);u.lang='en-US';u.rate=0.8;const b=document.querySelector('.speak-ring');if(b)b.classList.add('playing');u.onend=()=>{const b=document.querySelector('.speak-ring');if(b)b.classList.remove('playing');if(cb)cb();};window.speechSynthesis?.speak(u);}
+let _ttsUnlocked=false;
+function _unlockTTS(){if(_ttsUnlocked)return;_ttsUnlocked=true;const u=new SpeechSynthesisUtterance('');u.volume=0;window.speechSynthesis.speak(u);}
+document.addEventListener('touchstart',_unlockTTS,{once:true});
+document.addEventListener('click',_unlockTTS,{once:true});
+function speak(word,cb){
+  if(!window.speechSynthesis)return;
+  window.speechSynthesis.cancel();
+  const _do=()=>{
+    const u=new SpeechSynthesisUtterance(word);
+    u.lang='en-US';u.rate=0.8;u.volume=1;
+    const b=document.querySelector('.speak-ring');if(b)b.classList.add('playing');
+    u.onend=()=>{const b=document.querySelector('.speak-ring');if(b)b.classList.remove('playing');if(cb)cb();};
+    u.onerror=()=>{const b=document.querySelector('.speak-ring');if(b)b.classList.remove('playing');};
+    window.speechSynthesis.speak(u);
+    // iOS Safari fix: kick the synth if it stalls
+    setTimeout(()=>{if(window.speechSynthesis.paused)window.speechSynthesis.resume();},200);
+  };
+  if(!_ttsUnlocked){_unlockTTS();setTimeout(_do,150);}else{_do();}
+}
 function checkStreak(d){const today=new Date().toDateString();if(d.lastDate===today)return;const yest=new Date(Date.now()-86400000).toDateString();d.streak=d.lastDate===yest?(d.streak||0)+1:1;d.lastDate=today;save(d);}
 function closeModal(){document.getElementById('modal').innerHTML='';}
 function getTodayWord(){return CET4_WORDS[new Date().getDate()%CET4_WORDS.length];}
@@ -1759,7 +1777,7 @@ function drawSpUI(){
   <button class="sp-next" onclick="spS.idx++;drawSpUI()">${i<total-1?'下一个 →':'完成 🎉'}</button>
 </div>`;
 }
-function spSpeak(word){window.speechSynthesis?.cancel();const u=new SpeechSynthesisUtterance(word);u.lang='en-US';u.rate=0.75;window.speechSynthesis?.speak(u);toast('播放标准发音…');}
+function spSpeak(word){if(!window.speechSynthesis)return;window.speechSynthesis.cancel();const _do=()=>{const u=new SpeechSynthesisUtterance(word);u.lang='en-US';u.rate=0.75;u.volume=1;window.speechSynthesis.speak(u);setTimeout(()=>{if(window.speechSynthesis.paused)window.speechSynthesis.resume();},200);};if(!_ttsUnlocked){_unlockTTS();setTimeout(_do,150);}else{_do();}toast('播放标准发音…');}
 
 function ldist(a,b){const m=a.length,n=b.length;if(!m)return n;if(!n)return m;const dp=Array.from({length:m+1},(_,i)=>Array.from({length:n+1},(_,j)=>i===0?j:j===0?i:0));for(let i=1;i<=m;i++)for(let j=1;j<=n;j++)dp[i][j]=a[i-1]===b[j-1]?dp[i-1][j-1]:1+Math.min(dp[i-1][j],dp[i][j-1],dp[i-1][j-1]);return dp[m][n];}
 function spSim(spoken,target){const t=target.toLowerCase(),words=spoken.toLowerCase().split(/\s+/);const best=words.reduce((acc,w)=>Math.max(acc,Math.round((1-ldist(w,t)/Math.max(w.length,t.length))*100)),0);return best;}
